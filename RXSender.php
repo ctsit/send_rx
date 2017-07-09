@@ -93,7 +93,8 @@ abstract class RXSender {
             return;
         }
 
-        if (!$config = send_rx_get_project_config($config['pharmacy_project_id'], 'pharmacy')) {
+        $this->pharmacyProjectId = $config['pharmacy_project_id'];
+        if (!$config = send_rx_get_project_config($this->pharmacyProjectId, 'pharmacy')) {
             return;
         }
 
@@ -104,12 +105,13 @@ abstract class RXSender {
         }
 
         $this->setPatientData($data);
-        $this->pharmacyId = $this->patientData['pharmacy_id'];
+        $this->pharmacyId = $this->patientData['send_rx_pharmacy_id'];
 
         if (!$data = send_rx_get_record_data($config['pharmacy_project_id'], $this->pharmacyId)) {
             return;
         }
 
+        $data['send_rx_logs'] = json_decode('send_rx_logs');
         $this->setPharmacyData($data);
 
         if (!$data = send_rx_get_repeat_instance_data($config['pharmacy_project_id'], $this->pharmacyId, 'send_rx_users')) {
@@ -117,7 +119,7 @@ abstract class RXSender {
         }
 
         foreach ($data as $value) {
-            if ($value['username'] == $username) {
+            if ($value['send_rx_username'] == $username) {
                 $this->setPrescriberData($value);
                 break;
             }
@@ -160,14 +162,14 @@ abstract class RXSender {
      * Gets the delivery method.
      */
     function getDeliveryMethod() {
-        return $this->pharmacyData['delivery_method'];
+        return $this->pharmacyData['send_rx_delivery_method'];
     }
 
     /**
      * Sets list of logs of the current data entry record.
      */
     function getLogs() {
-        return $this->patientData['logs'];
+        return $this->patientData['send_rx_logs'];
     }
 
     /**
@@ -206,14 +208,14 @@ abstract class RXSender {
             return FALSE;
         }
 
-        $data = $this->getPipingData();
+        $data = $this->getPipingData($pdf_file_url);
         $subject = send_rx_piping($this->config['message_subject'], $data);
         $body = send_rx_piping($this->config['message_body'], $data);
 
         switch ($this->getDeliveryMethod()) {
             case 'email':
-                $success = REDCap::email($this->pharmacyData['emails'], $subject, $body);
-                $this->log($success, $this->pharmacyData['emails'], $subject, $body);
+                $success = REDCap::email($this->pharmacyData['send_rx_emails'], $subject, $body);
+                $this->log($success, $this->pharmacyData['send_rx_emails'], $subject, $body);
 
                 return $success;
 
@@ -244,22 +246,37 @@ abstract class RXSender {
      * Generates a default PDF file path.
      */
     protected function generateFilePath() {
-        $components = array('send_rx', $this->patientProjectId, $this->patientEventId, $this->patientId, time());
-        return implode('_', $components) . '.pdf';
+        $components = array($this->patientProjectId, $this->patientEventId, $this->patientId, time());
+        return 'send_rx_' . implode('_', $components) . '.pdf';
     }
 
     /**
      * Logs whether the message send operation was successful
      */
     protected function log($success, $emails, $subject, $body) {
-        $this->patientData['logs'][] = array($success, time(), $emails, $this->username, $this->getDeliveryMethod(), $subject, $body);
-        send_rx_update_record_field($this->patientProjectId, $this->patientEventId, $this->patientId, 'logs', json_encode($this->patientData['logs']));
+        $this->patientData['send_rx_logs'][] = array(
+            $success,
+            time(),
+            $emails,
+            $this->username,
+            $this->getDeliveryMethod(),
+            $subject,
+            $body,
+        );
+        
+        send_rx_update_record_field(
+            $this->patientProjectId,
+            $this->patientEventId,
+            $this->patientId,
+            'logs',
+            json_encode($this->patientData['send_rx_logs'])
+        );
     }
 
     /**
-     * Gets data to be used as source for piping on templates and messages.
+     * Gets data to be used as source for Piping on templates and messages.
      */
-    protected function getPipingData() {
+    protected function getPipingData($pdf_file_url = '') {
         return array(
             'pdf_file_url' => $pdf_file_url,
             'patient' => $this->getPatientData(),
