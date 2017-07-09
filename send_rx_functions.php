@@ -19,10 +19,10 @@
  *     - class: The class name that extends RXSender.
  *     - lock_instruments: The instruments to be locked after the message is sent.
  *   If pharmacy project, the array should include at least the following info:
- *     - pdf_template: The PDF markup (HTML & CSS) to be displayed at the description.
+ *     - pdf_template: The PDF markup (HTML & CSS) of the prescription.
  *     - message_subject: The message subject.
  *     - message_body: The message body.
- *   Returns FALSE if the project does not provide the above info.
+ *   Returns FALSE if the project is not configure properly.
  */
 function send_rx_get_project_config($project_id, $project_type) {
     // TODO.
@@ -32,7 +32,7 @@ function send_rx_get_project_config($project_id, $project_type) {
 }
 
 /**
- * Applies piping on the given subject string.
+ * Applies Piping on the given subject string.
  *
  * Example: "Hello, [first_name]!" turns into "Hello, Joe Doe!".
  *
@@ -41,6 +41,9 @@ function send_rx_get_project_config($project_id, $project_type) {
  * @param array $data
  *   An array of source data. It supports nesting values, which are mapped on the
  *   subject string as nesting square brackets (e.g. [user][first_name]).
+ *
+ * @return string
+ *   The processed string, with the replaced values from source data.
  */
 function send_rx_piping($subject, $data) {
     // Checking for wildcards.
