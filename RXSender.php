@@ -111,7 +111,7 @@ abstract class RXSender {
             return;
         }
 
-        $data['send_rx_logs'] = json_decode('send_rx_logs');
+        $data['send_rx_logs'] = json_decode($data['send_rx_logs']);
         $this->setPharmacyData($data);
 
         if (!$data = send_rx_get_repeat_instance_data($config['pharmacy_project_id'], $this->pharmacyId, 'send_rx_users')) {
