@@ -268,7 +268,7 @@ abstract class RXSender {
             $this->patientProjectId,
             $this->patientEventId,
             $this->patientId,
-            'logs',
+            'send_rx_logs',
             json_encode($this->patientData['send_rx_logs'])
         );
     }
