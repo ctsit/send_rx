@@ -59,11 +59,7 @@
 
 		$sender = send_rx_get_sender($project_id, $config, $redcap_event_name, $record, $username); 
 
-		$isSecure = $sender->checkSecurityToken();
-		if($isSecure == FALSE){
-			return;
-		}
-
+		//ToDo : Additional check to call this function based on the button clicked.
 		$sender->send();
 	};
 	
