@@ -72,18 +72,32 @@ abstract class RXSender {
     protected $prescriberData;
 
     /**
-     * Configuration data.
+     * Patient configuration data.
+     *
+     * @var object
+     */
+    protected $patientConfig;
+
+    /**
+     * Pharmacy configuration data.
+     *
+     * @var object
+     */
+    protected $pharmacyConfig;
+
+    /**
+     * Sent messages log.
      *
      * @var array
      */
-    protected $config;
+    protected $logs = array();
 
     /**
      * Constructor.
      *
      * Sets up properties and processes data to be easily read.
      */
-    function __construct($project_id, $event_id, $patient_id, $username) {
+    function __construct($project_id, $event_id, $patient_id, $username = USERID) {
         $this->patientProjectId = $project_id;
         $this->patientId = $patient_id;
         $this->patientEventId = $event_id;
@@ -93,12 +107,14 @@ abstract class RXSender {
             return;
         }
 
-        $this->pharmacyProjectId = $config['pharmacy_project_id'];
+        $this->patientConfig = $config;
+        $this->pharmacyProjectId = $config->targetProjectId;
+
         if (!$config = send_rx_get_project_config($this->pharmacyProjectId, 'pharmacy')) {
             return;
         }
 
-        $this->setConfig($config);
+        $this->pharmacyConfig = $config;
 
         if (!$data = send_rx_get_record_data($project_id, $record_id, $event_id)) {
             return;
@@ -107,14 +123,17 @@ abstract class RXSender {
         $this->setPatientData($data);
         $this->pharmacyId = $this->patientData['send_rx_pharmacy_id'];
 
-        if (!$data = send_rx_get_record_data($config['pharmacy_project_id'], $this->pharmacyId)) {
+        if (!$data = send_rx_get_record_data($this->pharmacyProjectId, $this->pharmacyId)) {
             return;
         }
 
-        $data['send_rx_logs'] = json_decode($data['send_rx_logs']);
         $this->setPharmacyData($data);
 
-        if (!$data = send_rx_get_repeat_instance_data($config['pharmacy_project_id'], $this->pharmacyId, 'send_rx_users')) {
+        if (!empty($data['send_rx_logs']) && ($logs = send_rx_get_file_contents($data['send_rx_logs']))) {
+            $this->logs = json_decode($logs, TRUE);
+        }
+
+        if (!$data = send_rx_get_repeat_instance_data($this->pharmacyProjectId, $this->pharmacyId, 'send_rx_users')) {
             return;
         }
 
@@ -141,21 +160,26 @@ abstract class RXSender {
     }
 
     /**
-     * Gets the configuration array.
-     *
-     * Contains important guidelines to build the message.
+     * Gets the prescriber data.
      */
     function getPrescriberData() {
         return $this->prescriberData;
     }
 
     /**
-     * Gets the configuration array.
+     * Gets the patient configuration array.
+     */
+    function getPatientConfig() {
+        return $this->patientConfig;
+    }
+
+    /**
+     * Gets the pharmacy configuration array.
      *
      * Contains important settings to build the message and PDF contents.
      */
-    function getConfig() {
-        return $this->config;
+    function getPharmacyConfig() {
+        return $this->pharmacyConfig;
     }
 
     /**
@@ -194,23 +218,16 @@ abstract class RXSender {
     }
 
     /**
-     * Sets config data.
-     */
-    protected function setConfig($config) {
-        $this->config = $config;
-    }
-
-    /**
      * Sends the message to the pharmacy and returns whether the operation was successful.
      */
-    function send($pdf_file_url = NULL, $log = TRUE) {
-        if (!$pdf_file_url && !($pdf_file_url = $this->generatePDFFile())) {
+    function send($file_id = NULL, $log = TRUE) {
+        if (!$file_id && !($file_id = $this->generatePDFFile())) {
             return FALSE;
         }
 
         $data = $this->getPipingData($pdf_file_url);
-        $subject = send_rx_piping($this->config['message_subject'], $data);
-        $body = send_rx_piping($this->config['message_body'], $data);
+        $subject = send_rx_piping($this->pharmacyConfig->messageSubject, $data);
+        $body = send_rx_piping($this->pharmacyConfig->messageBody, $data);
 
         switch ($this->getDeliveryMethod()) {
             case 'email':
@@ -232,45 +249,45 @@ abstract class RXSender {
      */
     function generatePDFFile() {
         $data = $this->getPipingData();
-        $contents = send_rx_piping($this->config['pdf_template'], $data);
-        $file_path = $this->generateFilePath();
+        $contents = send_rx_piping($this->pharmacyConfig->pdfTemplate, $data);
+        $file_path = $this->generateTmpFilePath('pdf');
 
-        if (send_rx_generate_pdf_file($contents, $file_path)) {
-            return $file_path;
+        if (!send_rx_generate_pdf_file($contents, $file_path)) {
+            return FALSE;
         }
 
-        return FALSE;
+        if (!$file_id = send_rx_upload_file($file_path)) {
+            return FALSE;
+        }
+
+        send_rx_save_record_field($this->patientProjectId, $this->patientEventId, $this->patientId, 'send_rx_pdf', $file_id);
+        return $file_id;
     }
 
     /**
-     * Generates a default PDF file path.
+     * Generates a prescription PDF file path.
      */
-    protected function generateFilePath() {
+    protected function generateTmpFilePath($extension) {
         $components = array($this->patientProjectId, $this->patientEventId, $this->patientId, time());
-        return 'send_rx_' . implode('_', $components) . '.pdf';
+        return APP_PATH_TEMP . 'send_rx_' . implode('_', $components) . '.' . $extension;
     }
 
     /**
      * Logs whether the message send operation was successful
      */
     protected function log($success, $emails, $subject, $body) {
-        $this->patientData['send_rx_logs'][] = array(
-            $success,
-            time(),
-            $emails,
-            $this->username,
-            $this->getDeliveryMethod(),
-            $subject,
-            $body,
-        );
-        
-        send_rx_update_record_field(
-            $this->patientProjectId,
-            $this->patientEventId,
-            $this->patientId,
-            'send_rx_logs',
-            json_encode($this->patientData['send_rx_logs'])
-        );
+        $this->logs[] = array($success, time(), $emails, $this->username, $this->getDeliveryMethod(), $subject, $body);
+        $contents = json_encode($this->logs);
+
+        $file_path = $this->generateTmpFilePath('json');
+        if (!file_put_contents($file_path, $contents)) {
+            return FALSE;
+        }
+        if (!$file_id = send_rx_upload_file($file_path)) {
+            return FALSE;
+        }
+
+        send_rx_save_record_field($this->patientProjectId, $this->patientEventId, $this->patientId, 'send_rx_logs', $file_id);
     }
 
     /**
