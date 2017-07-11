@@ -1,5 +1,12 @@
 <?php
 
+if (!file_exists('../../redcap_connect.php')) {
+    $REDCAP_ROOT = "/var/www/redcap";
+    require_once $REDCAP_ROOT . '/redcap_connect.php';
+} else {
+    require_once '../../redcap_connect.php';
+}
+
 class lock_record {
 	var $username;
 	var $project_id;
@@ -31,30 +38,36 @@ class lock_record {
 	  * This method takes event_id(int), form_name("string"), and instances("array") as params
 	  * and locks all the instances provided.
 	  */
-	function lockForm($event_id, $form_name, $instances=array()) {
+	function lockForm($event_id, $form_name, $instances=null) {
 		if (!isset($event_id) || !isSet($form_name)) {
 			return false;
 		}
+		if (!isSet($instances)) {
+			$instances = $this->getInstancesInForm($event_id, $form_name);
+		}
+		echo '<pre>'. '<br>';
+		echo var_dump($instances). '<br>';
+		echo '</pre>'. '<br>';
 		foreach($instances as $currInstance) {
-			lockInstance($event_id, $form_name, $currInstance);
+			$this->lockInstance($event_id, $form_name, $currInstance);
 		}
 		return true;
 	}
 
-	function lockEvent($event_id) {
+	function lockEvent($event_id, $forms = null) {
 		if (!isset($event_id)) {
 			return false;
 		}
-		// forms is of type arrray.
-		$forms = getFormsInAnEvent($event_id);
+		if (!isSet($forms)) {
+			$forms = $this->getFormsInAnEvent($event_id);
+		}
 
 		foreach($forms as $currForm) {
-			$instances = getInstancesInForm();
-			lockForm($event_id, $form_name, $instances);
+			$this->lockForm($event_id, $currForm);
 		}
 		return true;
 	}
-
+	
 	function getInstancesInForm($event_id, $form_name) {
 		$result = array();
 
@@ -74,21 +87,11 @@ class lock_record {
 	}
 
 	function getFormsInAnEvent($event_id) {
-		//select * from redcap_events_forms where event_id = 40 ;
-		$sql = "SELECT form_name from redcap_events_forms where event_id = ?";
-		$result = array();
-		if ($stmt=$this->conn->prepare($sql)) {
-			/* bind variables to prepared statement */
-			$stmt->bind_param("i", $this->event_id);
-			
-			$stmt->execute();
-			$stmt->bind_result($col1);
-			
-      		while ($stmt->fetch()) {
-      			$result[] = $col1;
-      		}
+		$result = $this->project_data->eventsForms[$event_id];
+		if (isSet($result)) {
 			return $result;
 		}
+		return array();
 	}
 
 	function insertData($event_id, $form_name, $instance) {
@@ -96,7 +99,6 @@ class lock_record {
 		if ($stmt=$this->conn->prepare($sql)) {
 			$stmt->bind_param("isisis", $this->project_id, $this->record_id, $event_id, $form_name, $instance, $this->username);
 			if ($stmt->execute()) {
-			// echo "New record created successfully." . '<br>';
 				return true;
 			}
 		}
