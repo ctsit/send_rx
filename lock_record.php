@@ -30,6 +30,7 @@ class lock_record {
 	function lockInstance($event_id, $form_name, $instance=1) {
 		if (isSet($event_id) && isSet($form_name)) {
 			$this->insertData($event_id, $form_name, $instance);
+			return true;
 		}
 		return false;
 	}
