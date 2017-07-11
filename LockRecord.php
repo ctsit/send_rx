@@ -46,9 +46,7 @@ class LockRecord {
 		if (!isSet($instances)) {
 			$instances = $this->getInstancesInForm($event_id, $form_name);
 		}
-		echo '<pre>'. '<br>';
-		echo var_dump($instances). '<br>';
-		echo '</pre>'. '<br>';
+
 		foreach($instances as $currInstance) {
 			$this->lockInstance($event_id, $form_name, $currInstance);
 		}
