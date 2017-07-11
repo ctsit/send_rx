@@ -4,6 +4,8 @@
  * Helper Send RX functions.
  */
 
+require_once 'LockRecord.php';
+
 /**
  * Gets Send RX config from project.
  *
@@ -192,7 +194,27 @@ function send_rx_upload_file($file_path) {
  *   TRUE if success, FALSE otherwise.
  */
 function send_rx_save_record_field($project_id, $event_id, $record_id, $field_name, $value, $instance = null) {
-    // TODO.
+    $readsql = "SELECT 1 from redcap_data where project_id = $project_id and event_id = $event_id and record = '".db_escape($record_id)."' and field_name = '".db_escape($field_name)."' " . ($instance == null ? "AND instance is null" : "AND instance = '".db_escape($instance)."'");
+
+    $q = db_query($readsql);
+    if (!$q) return false;
+    
+    $record_count = db_result($q, 0);
+    if ($record_count == 0) {
+        if (isSet($instance)) {
+            $sql = "INSERT INTO redcap_data (project_id, event_id, record, field_name, value, instance) " . "VALUES ($project_id, $event_id, '".db_escape($record_id)."', '".db_escape($field_name)."', '".db_escape($value)."' , $instance)";
+        } else {
+            $sql = "INSERT INTO redcap_data (project_id, event_id, record, field_name, value) " . "VALUES ($project_id, $event_id, '".db_escape($record_id)."', '".db_escape($field_name)."', '".db_escape($value)."')";
+        }
+        $q = db_query($sql);
+        if (!$q) return false;
+        return true;
+    } else {
+        $sql = "UPDATE redcap_data set value = '".db_escape($value)."' where project_id = $project_id and event_id = $event_id and record = '".db_escape($record_id)."' and field_name = '".db_escape($field_name)."' " . ($instance == null ? "AND instance is null" : "AND instance = '".db_escape($instance)."'");
+        $q = db_query($sql);
+        if (!$q) return false;
+        return true;
+    }
 }
 
 /**
@@ -268,7 +290,12 @@ function send_rx_get_repeat_instrument_instances($project_id, $record_id, $instr
  *   TRUE if success, FALSE otherwise.
  */
 function send_rx_lock_instruments($project_id, $record_id, $instruments = null, $event_id = null) {
-    // TODO.
+    // TODO. yet to handle locking all events functionality
+    if (!isSet($event_id)) {
+        return false;
+    }
+    $lockObj = new LockRecord($username, $project_id, $record_id);
+    return $lockObj->lockEvent($event_id, $instruments);
 }
 
 /**
