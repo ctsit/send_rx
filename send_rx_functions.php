@@ -4,6 +4,8 @@
  * Helper Send RX functions.
  */
 
+require_once 'LockRecord.php';
+
 /**
  * Gets Send RX config from project.
  *
@@ -251,5 +253,10 @@ function send_rx_get_repeat_instrument_instances($project_id, $record_id, $instr
  *   TRUE if success, FALSE otherwise.
  */
 function send_rx_lock_instruments($project_id, $record_id, $instruments = NULL, $event_id = NULL) {
-    // TODO.
+    // TODO. yet to handle locking all events functionality
+    if (!isSet($event_id)) {
+        return false;
+    }
+    $lockObj = new LockRecord($username, $project_id, $record_id);
+    return $lockObj->lockEvent($event_id, $instruments);
 }
