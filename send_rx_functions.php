@@ -96,6 +96,37 @@ function send_rx_generate_pdf_file($contents, $file_path) {
 }
 
 /**
+ * Checks if there is an already an entry in the table and accordingly calls update or insert methods.
+ *
+ * @param int $project_id
+ *   Data entry project ID.
+ * @param int $event_id
+ *   Data entry event ID.
+ * @param int $record_id
+ *   Data entry record ID.
+ * @param string $field_name
+ *   Machine name of the field to be updated.
+ * @param string $value
+ *   The value to be saved.
+ *
+ * @return bool
+ *   TRUE if success, FALSE otherwise.
+ */
+function send_rx_save_record_field($project_id, $event_id, $record_id, $field_name, $value, $instance = null) {
+    $readsql = "SELECT 1 from redcap_data where project_id = $project_id and event_id = $event_id and record = '".db_escape($record_id)."' and field_name = '".db_escape($field_name)."' " . ($instance == null ? "AND instance is null" : "AND instance = '".db_escape($instance)."'");
+
+    $q = db_query($readsql);
+    if (!$q) return false;
+    
+    $record_count = db_result($q, 0);
+    if ($record_count == 0) {
+        return send_rx_insert_record_field($project_id, $event_id, $record_id, $field_name, $value, $instance);
+    } else {
+        return send_rx_update_record_field($project_id, $event_id, $record_id, $field_name, $value, $instance);
+    }
+}
+
+/**
  * Updates a data entry field value.
  *
  * @param int $project_id
@@ -113,7 +144,38 @@ function send_rx_generate_pdf_file($contents, $file_path) {
  *   TRUE if success, FALSE otherwise.
  */
 function send_rx_update_record_field($project_id, $event_id, $record_id, $field_name, $value, $instance = null) {
-    // TODO.
+    $sql = "UPDATE redcap_data set value = '".db_escape($value)."' where project_id = $project_id and event_id = $event_id and record = '".db_escape($record_id)."' and field_name = '".db_escape($field_name)."' " . ($instance == null ? "AND instance is null" : "AND instance = '".db_escape($instance)."'");
+    $q = db_query($sql);
+    if (!$q) return false;
+    return true;
+}
+
+/**
+ * Inserts a data entry field value.
+ *
+ * @param int $project_id
+ *   Data entry project ID.
+ * @param int $event_id
+ *   Data entry event ID.
+ * @param int $record_id
+ *   Data entry record ID.
+ * @param string $field_name
+ *   Machine name of the field to be updated.
+ * @param string $value
+ *   The value to be saved.
+ *
+ * @return bool
+ *   TRUE if success, FALSE otherwise.
+ */
+function send_rx_insert_record_field($project_id, $event_id, $record_id, $field_name, $value, $instance = null) {
+    if (isSet($instance)) {
+        $sql = "INSERT INTO redcap_data (project_id, event_id, record, field_name, value, instance) " . "VALUES ($project_id, $event_id, '".db_escape($record_id)."', '".db_escape($field_name)."', '".db_escape($value)."' , $instance)";
+    } else {
+        $sql = "INSERT INTO redcap_data (project_id, event_id, record, field_name, value) " . "VALUES ($project_id, $event_id, '".db_escape($record_id)."', '".db_escape($field_name)."', '".db_escape($value)."')";
+    }
+    $q = db_query($sql);
+    if (!$q) return false;
+    return true;
 }
 
 /**
