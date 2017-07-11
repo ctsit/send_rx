@@ -130,7 +130,7 @@ abstract class RXSender {
         $this->setPharmacyData($data);
 
         if (!empty($data['send_rx_logs']) && ($logs = send_rx_get_file_contents($data['send_rx_logs']))) {
-            $this->logs = json_decode($logs, TRUE);
+            $this->logs = json_decode($logs, true);
         }
 
         if (!$data = send_rx_get_repeat_instance_data($this->pharmacyProjectId, $this->pharmacyId, 'send_rx_users')) {
@@ -220,9 +220,9 @@ abstract class RXSender {
     /**
      * Sends the message to the pharmacy and returns whether the operation was successful.
      */
-    function send($file_id = NULL, $log = TRUE) {
+    function send($file_id = null, $log = true) {
         if (!$file_id && !($file_id = $this->generatePDFFile())) {
-            return FALSE;
+            return false;
         }
 
         $data = $this->getPipingData($pdf_file_url);
@@ -241,7 +241,7 @@ abstract class RXSender {
                 break;
         }
 
-        return FALSE;
+        return false;
     }
 
     /**
@@ -253,11 +253,11 @@ abstract class RXSender {
         $file_path = $this->generateTmpFilePath('pdf');
 
         if (!send_rx_generate_pdf_file($contents, $file_path)) {
-            return FALSE;
+            return false;
         }
 
         if (!$file_id = send_rx_upload_file($file_path)) {
-            return FALSE;
+            return false;
         }
 
         send_rx_save_record_field($this->patientProjectId, $this->patientEventId, $this->patientId, 'send_rx_pdf', $file_id);
@@ -281,10 +281,10 @@ abstract class RXSender {
 
         $file_path = $this->generateTmpFilePath('json');
         if (!file_put_contents($file_path, $contents)) {
-            return FALSE;
+            return false;
         }
         if (!$file_id = send_rx_upload_file($file_path)) {
-            return FALSE;
+            return false;
         }
 
         send_rx_save_record_field($this->patientProjectId, $this->patientEventId, $this->patientId, 'send_rx_logs', $file_id);

@@ -48,7 +48,7 @@ function send_rx_get_project_config($project_id, $project_type) {
  */
 function send_rx_get_sender($project_id, $event_id, $patient_id, $username = USERID) {
     if (!$config = send_rx_get_project_config($project_id, 'patient')) {
-        return FALSE;
+        return false;
     }
 
     $class = $config->senderClass;
@@ -71,7 +71,7 @@ function send_rx_get_sender($project_id, $event_id, $patient_id, $username = USE
  */
 function send_rx_piping($subject, $data) {
     // Checking for wildcards.
-    if (!$brackets = getBracketedFields($subject, TRUE, TRUE, FALSE)) {
+    if (!$brackets = getBracketedFields($subject, true, true, false)) {
         return $subject;
     }
 
@@ -133,14 +133,14 @@ function send_rx_get_file_contents($file_id) {
     $q = db_query($sql);
 
     if (!db_num_rows($q)) {
-        return FALSE;
+        return false;
     }
 
     $file = db_fetch_assoc($q);
     $file_path = EDOC_PATH . $file['stored_name'];
 
     if (!file_exists($file_path) || !is_file($file_path)) {
-        return FALSE;
+        return false;
     }
 
     return file_get_contents($file_path);
@@ -157,7 +157,7 @@ function send_rx_get_file_contents($file_id) {
  */
 function send_rx_upload_file($file_path) {
     if (!file_exists($file_path) || !is_file($file_path)) {
-        return FALSE;
+        return false;
     }
 
     $file = array(
@@ -189,7 +189,7 @@ function send_rx_upload_file($file_path) {
  * @return bool
  *   TRUE if success, FALSE otherwise.
  */
-function send_rx_save_record_field($project_id, $event_id, $record_id, $field_name, $value, $instance = NULL) {
+function send_rx_save_record_field($project_id, $event_id, $record_id, $field_name, $value, $instance = null) {
     // TODO.
 }
 
@@ -208,10 +208,10 @@ function send_rx_save_record_field($project_id, $event_id, $record_id, $field_na
  * @return array|bool
  *   Data entry record information array. FALSE if failure.
  */
-function send_rx_get_record_data($project_id, $record_id, $event_id = NULL) {
-    $data = REDCap::getData($project_id, 'array', $record_id, NULL, $event_id);
+function send_rx_get_record_data($project_id, $record_id, $event_id = null) {
+    $data = REDCap::getData($project_id, 'array', $record_id, null, $event_id);
     if (empty($data[$record_id])) {
-        return FALSE;
+        return false;
     }
 
     if ($event_id) {
@@ -236,15 +236,15 @@ function send_rx_get_record_data($project_id, $record_id, $event_id = NULL) {
  * @return array|bool
  *   Array containing repeat instrument instances information. FALSE if failure.
  */
-function send_rx_get_repeat_instrument_instances($project_id, $record_id, $instrument_name, $event_id = NULL) {
-    $data = REDCap::getData($project_id, 'array', $record_id, NULL, $event_id);
+function send_rx_get_repeat_instrument_instances($project_id, $record_id, $instrument_name, $event_id = null) {
+    $data = REDCap::getData($project_id, 'array', $record_id, null, $event_id);
     if (empty($data[$record_id]['repeat_instances'])) {
-        return FALSE;
+        return false;
     }
 
     $data = $event_id ? $data[$record_id]['repeat_instances'][$event_id] : reset($data['repeat_instances'][$record_id]);
     if (empty($data[$instrument_name])) {
-        return FALSE;
+        return false;
     }
 
     return $data[$instrument_name];
@@ -265,7 +265,7 @@ function send_rx_get_repeat_instrument_instances($project_id, $record_id, $instr
  * @return bool
  *   TRUE if success, FALSE otherwise.
  */
-function send_rx_lock_instruments($project_id, $record_id, $instruments = NULL, $event_id = NULL) {
+function send_rx_lock_instruments($project_id, $record_id, $instruments = null, $event_id = null) {
     // TODO.
 }
 
@@ -286,7 +286,7 @@ function send_rx_lock_instruments($project_id, $record_id, $instruments = NULL, 
 function send_rx_get_user_pharmacies($project_id, $username = USERID, $project_type = 'patient') {
     if ($project_type == 'patient') {
         if (!$config = send_rx_get_project_config($project_id, $project_type)) {
-            return FALSE;
+            return false;
         }
 
         // Gets pharmacy project from the patient project.
@@ -296,12 +296,12 @@ function send_rx_get_user_pharmacies($project_id, $username = USERID, $project_t
 
     // Checking if pharmacy project is ok.
     if (send_rx_get_project_config($project_id, $project_type)) {
-        return FALSE;
+        return false;
     }
 
     $pharmacies = array();
 
-    $data = REDCap::getData($project_id, 'array', NULL, 'send_rx_username');
+    $data = REDCap::getData($project_id, 'array', null, 'send_rx_username');
     foreach ($data as $pharmacy_id => $pharmacy_info) {
         if (empty($pharmacy_info['repeat_instances'])) {
             continue;
