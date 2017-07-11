@@ -50,14 +50,10 @@
 			return;
 		}
 
-		$config = rx_send_get_project_config($project_id, "patient");
-
-		if(empty($config)){
+		$sender = send_rx_get_sender($project_id, $redcap_event_name, $record, $username); 
+		if(empty($sender)){
 			return;
 		}
-
-
-		$sender = send_rx_get_sender($project_id, $config, $redcap_event_name, $record, $username); 
 
 		//ToDo : Additional check to call this function based on the button clicked.
 		$sender->send();
