@@ -1,6 +1,6 @@
 # Send RX
 
-Send RX is REDCap extension that helps doctors to create prescriptions and send them to the pharmacies.
+Send RX is a REDCap extension that allows users to automatically generate prescriptions on PDF format and send them to the pharmacies.
 
 ## Getting Started
 

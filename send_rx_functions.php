@@ -17,6 +17,8 @@
  *   If patient project, the object should include the following keys:
  *     - targetProjectId: Target pharmacy project ID.
  *     - senderClass: The sender class name, that extends RXSender.
+ *     - sendDefault: Flag that defines whether the prescription should be sent
+ *       by default.
  *     - lockInstruments: The instruments to be locked after the message is sent.
  *   If pharmacy project:
  *     - pdfTemplate: The PDF markup (HTML & CSS) of the prescription.
