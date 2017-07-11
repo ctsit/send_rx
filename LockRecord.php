@@ -7,7 +7,7 @@ if (!file_exists('../../redcap_connect.php')) {
     require_once '../../redcap_connect.php';
 }
 
-class lock_record {
+class LockRecord {
 	var $username;
 	var $project_id;
 	var $record_id;

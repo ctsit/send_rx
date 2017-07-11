@@ -112,7 +112,7 @@ function send_rx_generate_pdf_file($contents, $file_path) {
  * @return bool
  *   TRUE if success, FALSE otherwise.
  */
-function send_rx_update_record_field($project_id, $event_id, $record_id, $field_name, $value) {
+function send_rx_update_record_field($project_id, $event_id, $record_id, $field_name, $value, $instance = null) {
     // TODO.
 }
 
