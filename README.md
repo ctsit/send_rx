@@ -37,9 +37,9 @@ In order to activate Send RX extension, we need to create and configure two proj
 - **Patient**: Provides the patient/prescription form to the prescriber. Once submitted, the prescription is sent to the pharmacy.
 
 ### Creating Pharmacy Project
-1. Access *+ New Project* page, then import `RXSendPharmacyProjectSample.xml` file.
+1. Access **+ New Project** page, then import `RXSendPharmacyProjectSample.xml` file.
 2. Take note of your new project's ID (you should see it at the URL's `pid` parameter).
-3. Go to *Custom Project Settings* of your new project and create a config entry called `send_rx_config` as JSON string, whose keys are described as follows:
+3. Go to **Custom Project Settings** of your new project and create a config entry called `send_rx_config` as JSON string, whose keys are described as follows:
 - `type`: The project type (`pharmacy` on this case)
 - `pdfTemplate`: The PDF prescription markup (e.g. `<div>[send_rx_table]</div>`)
 - `messageSubject`: The message subject (e.g. `Test prescription`)
@@ -55,8 +55,8 @@ As you might noticed, a few wildcards have been placed on markups above. There i
 ### Creating Patient Project
 This is quite analogous to what we just did on previous section.
 
-1. Access *+ New Project* page, then import `RXSendPatientProjectSample.xml` file.
-2. Go to *Custom Project Settings* of your new project and create a config entry called `send_rx_config` as a JSON string, whose keys are described as follows:
+1. Access **+ New Project** page, then import `RXSendPatientProjectSample.xml` file.
+2. Go to **Custom Project Settings** of your new project and create a config entry called `send_rx_config` as a JSON string, whose keys are described as follows:
 - `type`: The project type (`patient` on this case)
 - `targetProjectId`: The pharmacy project ID we got from the previous step (e.g. `123`)
 - `senderClass`: The PHP class responsible to create prescription PDFs and send messages to the pharmacies. It must extend abstract class `RXSender` (this project provides a sample class called `SampleRXSender`).
@@ -71,18 +71,18 @@ Thus, the JSON contents should look like this (dont't forget to update `targetPr
 ## Sending your first test prescription
 
 ### Creating a pharmacy
-1. On pharmacy project, go to *Add / Edit records* and then click on *Add new record*.
-2. On first step (*Pharmacy Information*), make sure to set the destination email you want to use in your test.
-3. Still on *Pharmacy Information* set *Delivery method* as *Email*.
-4. On Prescribers step, assuming you are logged as admin, fill *Username* field as `site_admin`.
+1. On pharmacy project, go to **Add / Edit records** and then click on **Add new record**.
+2. On first step (**Pharmacy Information**), make sure to set the destination email you want to use in your test.
+3. Still on **Pharmacy Information** set **Delivery method** as **Email**.
+4. On **Prescribers** step, assuming you are logged as admin, fill **Username** field as `site_admin`.
 5. Complete and submit your pharmacy registration.
 
 ### Creating a prescription
-1. On patient project, go to *Add / Edit records* and then click on *Add new record*
-2. Complete all steps until the last step (*Notification History*).
-3. On *Notification* step, set *Pharmacy* field as the one created on the previous section.
-4. Set your form as complete, make sure *Send prescription on Save* checkbox is checked, then click on *Save & Stay*
-5. You should now see the notification contents you just sent at *Notification History* block.
+1. On patient project, go to **Add / Edit records** and then click on **Add new record**
+2. Complete all steps until the last step (**Notification History**).
+3. On **Notification** step, set **Pharmacy** field as the pharmacy created on the previous section.
+4. Set your form as complete, make sure **Send prescription on Save** checkbox is checked, then click on **Save & Stay**
+5. You should now see the notification contents you just sent at **Notification History** block.
 6. Check your email box.
 
 ## Templating PDFs and messages
