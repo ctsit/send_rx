@@ -5,7 +5,7 @@
  */
 
 require_once 'libraries/01-mPDF-v6.1.0/vendor/autoload.php';
-
+require_once 'LockRecord.php';
 
 /**
  * Gets Send RX config from project.
@@ -109,7 +109,7 @@ function send_rx_generate_pdf_file($contents, $file_path) {
 }
 
 /**
- * Updates a data entry field value.
+ * Checks if there is an already an entry in the table and accordingly use update or insert methods.
  *
  * @param int $project_id
  *   Data entry project ID.
@@ -125,8 +125,28 @@ function send_rx_generate_pdf_file($contents, $file_path) {
  * @return bool
  *   TRUE if success, FALSE otherwise.
  */
-function send_rx_update_record_field($project_id, $event_id, $record_id, $field_name, $value) {
-    // TODO.
+function send_rx_save_record_field($project_id, $event_id, $record_id, $field_name, $value, $instance = null) {
+    $readsql = "SELECT 1 from redcap_data where project_id = $project_id and event_id = $event_id and record = '".db_escape($record_id)."' and field_name = '".db_escape($field_name)."' " . ($instance == null ? "AND instance is null" : "AND instance = '".db_escape($instance)."'");
+
+    $q = db_query($readsql);
+    if (!$q) return false;
+
+    $record_count = db_result($q, 0);
+    if ($record_count == 0) {
+        if (isSet($instance)) {
+            $sql = "INSERT INTO redcap_data (project_id, event_id, record, field_name, value, instance) " . "VALUES ($project_id, $event_id, '".db_escape($record_id)."', '".db_escape($field_name)."', '".db_escape($value)."' , $instance)";
+        } else {
+            $sql = "INSERT INTO redcap_data (project_id, event_id, record, field_name, value) " . "VALUES ($project_id, $event_id, '".db_escape($record_id)."', '".db_escape($field_name)."', '".db_escape($value)."')";
+        }
+        $q = db_query($sql);
+        if (!$q) return false;
+        return true;
+    } else {
+        $sql = "UPDATE redcap_data set value = '".db_escape($value)."' where project_id = $project_id and event_id = $event_id and record = '".db_escape($record_id)."' and field_name = '".db_escape($field_name)."' " . ($instance == null ? "AND instance is null" : "AND instance = '".db_escape($instance)."'");
+        $q = db_query($sql);
+        if (!$q) return false;
+        return true;
+    }
 }
 
 /**
@@ -202,5 +222,10 @@ function send_rx_get_repeat_instrument_instances($project_id, $record_id, $instr
  *   TRUE if success, FALSE otherwise.
  */
 function send_rx_lock_instruments($project_id, $record_id, $instruments = NULL, $event_id = NULL) {
-    // TODO.
+    // TODO. yet to handle locking all events functionality
+    if (!isSet($event_id)) {
+        return false;
+    }
+    $lockObj = new LockRecord($username, $project_id, $record_id);
+    return $lockObj->lockEvent($event_id, $instruments);
 }
