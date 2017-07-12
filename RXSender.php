@@ -6,7 +6,7 @@
 
 include_once 'send_rx_functions.php';
 
-abstract class RXSender {
+class RXSender {
 
     /**
      * Patient project ID.
@@ -225,7 +225,7 @@ abstract class RXSender {
             return false;
         }
 
-        $data = $this->getPipingData($pdf_file_url);
+        $data = $this->getPipingData($file_id);
         $subject = send_rx_piping($this->pharmacyConfig->messageSubject, $data);
         $body = send_rx_piping($this->pharmacyConfig->messageBody, $data);
 
@@ -255,7 +255,6 @@ abstract class RXSender {
         if (!send_rx_generate_pdf_file($contents, $file_path)) {
             return false;
         }
-
         if (!$file_id = send_rx_upload_file($file_path)) {
             return false;
         }
@@ -276,6 +275,7 @@ abstract class RXSender {
      * Logs whether the message send operation was successful
      */
     protected function log($success, $emails, $subject, $body) {
+        // Appending a new entry to the log list.
         $this->logs[] = array($success, time(), $emails, $this->username, $this->getDeliveryMethod(), $subject, $body);
         $contents = json_encode($this->logs);
 
@@ -293,12 +293,16 @@ abstract class RXSender {
     /**
      * Gets data to be used as source for Piping on templates and messages.
      */
-    protected function getPipingData($pdf_file_url = '') {
-        return array(
-            'pdf_file_url' => $pdf_file_url,
+    protected function getPipingData($pdf_file_id = '') {
+        $data = array(
             'patient' => $this->getPatientData(),
             'pharmacy' => $this->getPharmacyData(),
             'prescriber' => $this->getPrescriberData(),
         );
+
+        if ($pdf_file_id) {
+            // TODO.
+            $data['pdf_file_url'] = '';
+        }
     }
 }
