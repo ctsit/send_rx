@@ -6,7 +6,7 @@
 
 include_once 'send_rx_functions.php';
 
-class RXSender {
+class RxSender {
 
     /**
      * Patient project ID.
@@ -221,20 +221,52 @@ class RXSender {
      * Sends the message to the pharmacy and returns whether the operation was successful.
      */
     function send($file_id = null, $log = true) {
-        if (!$file_id && !($file_id = $this->generatePDFFile())) {
+        if ($file_id && !($file_id = $this->generatePDFFile())) {
             return false;
         }
 
-        $data = $this->getPipingData($file_id);
+        // Checking whether file is already available for download bia Send It UI.
+        if (!$document_id = send_rx_sendit_document_exists($file_id)) {
+            $expire_time = date('Y-m-d H:i:s', '+' . $this->patientConfig->expireTime . ' days');
+            if (!$document_id = send_rx_create_sendit_docs($file_id, $expire_time, $this->username)) {
+                return false;
+            }
+        }
+
+        // Getting data to apply Piping.
+        $data = $this->getPipingData();
         $subject = send_rx_piping($this->pharmacyConfig->messageSubject, $data);
         $body = send_rx_piping($this->pharmacyConfig->messageBody, $data);
 
         switch ($this->getDeliveryMethod()) {
             case 'email':
-                $success = REDCap::email($this->pharmacyData['send_rx_emails'], $subject, $body);
-                $this->log($success, $this->pharmacyData['send_rx_emails'], $subject, $body);
+                // Validate all the email addresses.
+                $recipients = str_replace(array("\r\n","\n","\r",";"," "), array(',',',',',',',',''), $this->pharmacyData['send_rx_pharmacy_emails']);
+                $recipients = explode(',', $recipients);
 
-                return $success;
+                $all_success = TRUE;
+                foreach ($recipients as $recipient) {
+                    $recipient = trim($recipient);
+                    if ($recipient != '' && !isEmail($recipient)) {
+                        continue;
+                    }
+
+                    $key = strtoupper(substr(uniqid(sha1(mt_rand())), 0, 25));
+                    $pwd = generateRandomHash(8, false, true);
+
+                    // Allowing recipient to download the PDF file.
+                    send_rx_create_sendit_recipient($recipient, $document_id, $send_confirmation, $key, $pwd);
+
+                    // Download URL.
+                    $url = APP_PATH_WEBROOT_FULL . 'redcap_v' . $redcap_version . '/SendIt/download.php?' . $key;
+                    $body = send_rx_piping($body, array('pdf_file_url' => $url, 'pdf_file_pwd' => $pwd));
+
+                    if (!$success = REDCap::email($this->pharmacyData['send_rx_pharmacy_emails'], $subject, $body)) {
+                        $all_success = FALSE;
+                    }
+                }
+
+                return $all_success;
 
             case 'hl7':
                 // TODO: handle HL7 messages.
@@ -293,16 +325,11 @@ class RXSender {
     /**
      * Gets data to be used as source for Piping on templates and messages.
      */
-    protected function getPipingData($pdf_file_id = '') {
-        $data = array(
+    protected function getPipingData() {
+        return array(
             'patient' => $this->getPatientData(),
             'pharmacy' => $this->getPharmacyData(),
             'prescriber' => $this->getPrescriberData(),
         );
-
-        if ($pdf_file_id) {
-            // TODO.
-            $data['pdf_file_url'] = '';
-        }
     }
 }
