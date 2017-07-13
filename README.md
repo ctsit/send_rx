@@ -1,11 +1,10 @@
-# Send RX
+# Send Rx
 
-Send RX is a REDCap extension that allows users to automatically generate prescriptions on PDF format and send them to the pharmacies.
+Send Rx is a REDCap extension that allows users to automatically generate prescriptions on PDF format and send them to the pharmacies.
 
 ## Prerequisites
 
 This project depends on the following libraries to work:
-- [mPDF](https://github.com/mpdf/mpdf)
 - [REDCap Custom Project Settings Plugin](https://github.com/ctsit/custom_project_settings)
 - REDCap Linear Data Entry Workflow
 
@@ -35,40 +34,45 @@ fab instance:vagrant test_hook:redcap_data_entry_form_top,send_rx/send_rx_data_e
 
 ## Configuration
 
-In order to activate Send RX extension, we need to create and configure two projects:
+In order to activate Send Rx extension, we need to create and configure two projects:
 - **Pharmacy**: Stores pharmacies and prescribers information.
 - **Patient**: Provides the patient/prescription form to the prescriber. Once submitted, the prescription is sent to the pharmacy.
 
 ### Step 1: Creating Pharmacy Project
-1. Access **+ New Project** page, then import `RXSendPharmacyProjectSample.xml` file.
+1. Access **+ New Project** page, then import `RxSendPharmacyProjectSample.xml` file.
 2. Take note of your new project's ID (you should see it at the URL's `pid` parameter).
-3. Go to **Custom Project Settings** of your new project and create a config entry called `send_rx_config` as JSON string, whose keys are described as follows:
+3. Access **File Repository** page, then go to **Upload New File** tab
+4. Upload `SampleRxTemplate.pdf` file provided by this repository, name it as `SampleRxTemplate`, and save.
+5. Go back to **Project Setup** page, then access **Custom Project Settings**
+6. Add a config entry called `send_rx_config` as JSON string, whose keys are described as follows:
 - `type`: The project type (`pharmacy` on this case)
-- `pdfTemplate`: The PDF prescription markup (e.g. `<div>[patient][administered_drug]: [patient][daily_dosage]</div>`)
+- `pdfTemplate`: The name of PDF prescription template file you entered on step 4 (`SampleRxTemplate` on this case).
 - `messageSubject`: The message subject (e.g. `Test prescription`)
-- `messageBody`: The message body (e.g. `<div>The prescription file is available at: [pdf_file_url]</div>`)
+- `messageBody`: The message body (e.g. `The prescription file is available at: [pdf_file_url]`)
 
 Thus, the JSON contents should look like this:
 ```
-{"type":"pharmacy","pdfTemplate":"<div>[patient][administered_drug]: [patient][daily_dosage]<\/div>","messageSubject":"Test prescription","messageBody":"<div>The prescription file is available at: [pdf_file_url]<\/div>"}
+{"type":"pharmacy","pdfTemplate":"SampleRxTemplate","messageSubject":"Test prescription","messageBody":"<div>The prescription file is available at: [pdf_file_url]<\/div>"}
 ```
 
-As you might noticed, a few wildcards have been placed on markups above. There is a [full section](#templating-pdfs-and-messages) dedicated to explain PDFs and messages templating, but let's put this aside for a while and move on to the next step.
+By opening the PDF template file or looking at `messageBody` field, you might noticed that a few replacement wildcards have been used, like `[pdf_file_url]`, `[pdf_file_pwd]`, `[patient][administered_drug]` and `[patient][daily_dosage]`. There is a [full section](#templating-pdfs-and-messages) dedicated to explain PDFs and messages templating, but let's put this aside for a while and move on to the next step.
 
 ### Step 2: Creating Patient Project
 This is quite analogous to what we just did on previous section.
 
-1. Access **+ New Project** page, then import `RXSendPatientProjectSample.xml` file.
+1. Access **+ New Project** page, then import `RxSendPatientProjectSample.xml` file.
 2. Go to **Custom Project Settings** of your new project and create a config entry called `send_rx_config` as a JSON string, whose keys are described as follows:
 - `type`: The project type (`patient` on this case)
-- `targetProjectId`: The pharmacy project ID we got from the previous step (e.g. `123`)
-- _(optional)_ `senderClass`: The PHP class responsible to create prescription PDFs and send messages to the pharmacies. This option opens the possibility of extending the default send engine (`RXSender` class) in order to satisfy all project's needs. If not set, `RXSender` will be used.
-- _(optional)_ `sendDefault`: Flag that defines whether the prescription should be sent by default. Defaults to `true`.
+- `targetProjectId`: The pharmacy project ID you got from the previous step (e.g. `123`)
+- _(optional)_ `sendDefault`: This flag sets default value of "Send prescription on save" checkbox. Defaults to `true`.
+- _(optional)_ `sendConfirmation`: Enable this flag to send a notification to the prescriber everytime a prescription file is downloaded by the pharmacy. Defaults to `false`.
+- _(optional)_ `expireTime`: The number of days after which the file will no longer be accessible for download. Defaults to 90.
 - _(optional)_ `lockInstruments`: You might add some edit restrictions to the prescribers once the prescription is done. On this case, you may set a comma separated list of instruments (i.e. form steps names) to be locked after the message is sent (e.g. `lab_orders,prescriptions`).
+- _(optional)_ `senderClass`: _(For developers use)_ The PHP class responsible to create prescription PDFs and send messages to the pharmacies. This option opens the possibility of extending the default send engine (`RxSender` class) in order to satisfy all project's needs. Defaults to `RxSender`.
 
 Thus, the JSON contents should look like this (dont't forget to update `targetProjectId` value):
 ```
-{"type":"patient","targetProjectId":123,"senderClass":"RXSender","sendDefault":true,"lockInstruments":"lab_orders,prescription"}
+{"type":"patient","targetProjectId":123,"sendDefault":true,"sendConfirmation":false,"expireTime":90,"lockInstruments":"lab_orders,prescription","senderClass":"RxSender"}
 ```
 
 ## Sending your First Test Prescription
@@ -90,7 +94,7 @@ Thus, the JSON contents should look like this (dont't forget to update `targetPr
 
 ## Customizing Pharmacy and Patient projects
 
-Pharmacy and patient projects are pretty flexible. It means that you may change, add, remove and rearrange form elements and intruments/steps as much as you can. Every custom field value will be available as wildcard to build PDFs and messages (see [templating section](#templating-pdfs-and-messages)). However, there are a few restrictions that need to be observed in order to keep Send RX working properly:
+Pharmacy and patient projects are pretty flexible. It means that you may change, add, remove and rearrange form elements and intruments/steps as much as you can. Every custom field value will be available as wildcard to build PDFs and messages (see [templating section](#templating-pdfs-and-messages)). However, there are a few restrictions that need to be observed in order to keep Send Rx working properly:
 - All fields containing the machine name prefix `send_rx_` (such as `send_rx_pharmacy_name`, `send_rx_patient_id`, etc.) should not be changed or deleted.
 - On patient project, **Generate & Send prescription** form step should not be changed or removed, and must always remain as the last step.
 - On pharmacy project, **Prescribers** form step should not be changed or removed. However, there are no restrictions on managing its subfields (as long as `send_rx_username` field is not changed or removed).
@@ -98,9 +102,9 @@ Pharmacy and patient projects are pretty flexible. It means that you may change,
 ## Templating PDFs and messages
 TODO.
 
-## Further customizations
+## Developer notes
 
-If the available wildcards provided on the [previous section](#customizing-pdfs-and-messages) are not enough to satisfy your needs, you may extend the sender engine:
-1. Create an extension of `RXSender` class.
+For further customizations, it is possible to extend the sender class:
+1. Create an extension of `RxSender` class.
 2. Override and customize the methods you need.
 3. Declare your new class name on pharmacy project custom settings (by altering the config JSON described at [Creating Patient Project](#creating-patient-project) section).
