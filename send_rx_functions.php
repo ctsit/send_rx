@@ -175,6 +175,98 @@ function send_rx_upload_file($file_path) {
 }
 
 /**
+ * TODO.
+ */
+function send_rx_get_edocs_file($file_id, $username = USERID) {
+    $sql = '
+        SELECT * FROM redcap_edocs_metadata f
+            INNER JOIN redcap_user_rights u ON u.project_id = f.project_id and u.username = "' . db_escape($username) . '"
+            WHERE f.doc_id = ' . $file_id . ' LIMIT 1';
+
+    $q = db_query($sql);
+    if (!db_num_rows($q)) {
+        // The given file ID does not exist.
+        return false;
+    }
+
+    return db_fetch_assoc($q);
+}
+
+/**
+ * TODO.
+ */
+function send_rx_create_sendit_docs($file_id, $expire_time, $username = USERID) {
+    if (!$file = send_rx_get_edocs_file($file_id, $username)) {
+        return false;
+    }
+
+    // Add entry to sendit_docs table
+    $sql = '
+        INSERT INTO redcap_sendit_docs (
+            doc_name,
+            doc_orig_name,
+            doc_type,
+            doc_size,
+            send_confirmation,
+            expire_date,
+            username,
+            location,
+            docs_id,
+            date_added
+        )
+        VALUES (
+            "' . $file['stored_name'] . '",
+            "' . db_escape($row['doc_name']) . '",
+            "' . $file['doc_type'] . '",
+            "' . $row['doc_size'] . '",' .
+            $this->patientConfig->sendConfirmation . ',
+            "' . $expire_time . '",
+            "' . db_escape($this->username) .'",
+            "3",' .
+            $file_id . ',
+            "' . NOW . '"
+        );';
+
+    // Saving file into Send It documents table.
+    db_query($sql);
+    $document_id = db_insert_id();
+}
+
+/**
+ * TODO.
+ */
+function send_rx_sendit_document_exists($file_id) {
+    $sql = 'SELECT document_id FROM redcap_sendit_docs WHERE docs_id = ' . $file_id . ' ORDER BY document_id DESC LIMIT 1';
+    $q = db_query($sql);
+
+    if (!db_num_rows($q)) {
+        return false;
+    }
+
+    $result = db_fetch_assoc($q);
+    return $result['document_id'];
+}
+
+/**
+ * TODO.
+ */
+function send_rx_create_sendit_recipient($recipient, $document_id, $send_confirmation, $key, $pwd) {
+    $sql = '
+        INSERT INTO redcap_sendit_recipients (
+            email_address,
+            sent_confirmation,
+            download_date,
+            download_count,
+            document_id,
+            guid,
+            pwd
+        )
+        VALUES ("' . $recipient . '", 0, NULL, 0, ' . $document_id . ', "' . $key . '", "' . md5($pwd) . '")';
+
+    db_query($sql);
+}
+
+/**
  * Creates or updates a data entry field value.
  *
  * @param int $project_id
