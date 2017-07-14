@@ -55,7 +55,7 @@ Thus, the JSON contents should look like this:
 {"type":"pharmacy","pdfTemplate":"SampleRxTemplate","messageSubject":"Test prescription","messageBody":"<div>The prescription file is available at: [pdf_file_url]<\/div>"}
 ```
 
-By opening the PDF template file or looking at `messageBody` field, you might noticed that a few replacement wildcards have been used, like `[pdf_file_url]`, `[pdf_file_pwd]`, `[patient][administered_drug]` and `[patient][daily_dosage]`. There is a [full section](#templating-pdfs-and-messages) dedicated to explain PDFs and messages templating, but let's put this aside for a while and move on to the next step.
+By opening the PDF template file or looking at `messageBody` field, you might noticed that a few replacement wildcards have been used, like `[pdf_file_url]`, `[patient][administered_drug]` and `[patient][daily_dosage]`. There is a [full section](#templating-pdfs-and-messages) dedicated to explain PDFs and messages templating, but let's put this aside for a while and move on to the next step.
 
 ### Step 2: Creating Patient Project
 This is quite analogous to what we just did on previous section.
@@ -64,11 +64,8 @@ This is quite analogous to what we just did on previous section.
 2. Go to **Custom Project Settings** of your new project and create a config entry called `send_rx_config` as a JSON string, whose keys are described as follows:
 - `type`: The project type (`patient` on this case)
 - `targetProjectId`: The pharmacy project ID you got from the previous step (e.g. `123`)
-- _(optional)_ `sendDefault`: This flag sets default value of "Send prescription on save" checkbox. Defaults to `true`.
-- _(optional)_ `sendConfirmation`: Enable this flag to send a notification to the prescriber everytime a prescription file is downloaded by the pharmacy. Defaults to `false`.
-- _(optional)_ `expireTime`: The number of days after which the file will no longer be accessible for download. Defaults to 90.
 - _(optional)_ `lockInstruments`: You might add some edit restrictions to the prescribers once the prescription is done. On this case, you may set a comma separated list of instruments (i.e. form steps names) to be locked after the message is sent (e.g. `lab_orders,prescriptions`).
-- _(optional)_ `senderClass`: _(For developers use)_ The PHP class responsible to create prescription PDFs and send messages to the pharmacies. This option opens the possibility of extending the default send engine (`RxSender` class) in order to satisfy all project's needs. Defaults to `RxSender`.
+- _(optional) (For developers use)_ `senderClass`: The PHP class responsible to create prescription PDFs and send messages to the pharmacies. This option opens the possibility of extending the default send engine (`RxSender` class) in order to satisfy all project's needs. Defaults to `RxSender`.
 
 Thus, the JSON contents should look like this (dont't forget to update `targetProjectId` value):
 ```
@@ -79,17 +76,17 @@ Thus, the JSON contents should look like this (dont't forget to update `targetPr
 
 ### Step 1: Create a Pharmacy
 1. On pharmacy project, go to **Add / Edit records** and then click on **Add new record**.
-2. On first step (**Pharmacy Information**), make sure to set the destination email you want to use in your test.
-3. Still on **Pharmacy Information** set **Delivery method** as **Email**.
+2. Fill **Pharmacy Information** form step and submit it
+3. On **Delivery methods step**, choose `Email` as the delivery type, then fill the email address you want to use in your test, and save.
 4. On **Prescribers** step, assuming you are logged as admin, fill **Username** field as `site_admin`.
 5. Complete and submit your pharmacy registration.
 
 ### Step 2: Create a Prescription and Send it
 1. On patient project, go to **Add / Edit records** and then click on **Add new record**
 2. Complete all steps until the last step (**Generate & Send prescription**).
-3. On **Generate & Send prescription** step, set **Pharmacy** field as the pharmacy created on the previous section.
-4. Set your form as complete, make sure **Send prescription on Save** checkbox is checked, then click on **Save & Stay**
-5. You should now see the notification contents you just sent at **Notification History** block.
+3. On **Send RX Notification** step, set **Pharmacy** field as the pharmacy created on the previous section.
+4. Yet on **Send RX Notification** step, you may review the generated prescription PDF, and then click on **Send and Stay**
+5. At **Notification History** block you should now see the notification contents you just sent.
 6. Check your email box.
 
 ## Customizing Pharmacy and Patient projects
@@ -97,6 +94,7 @@ Thus, the JSON contents should look like this (dont't forget to update `targetPr
 Pharmacy and patient projects are pretty flexible. It means that you may change, add, remove and rearrange form elements and intruments/steps as much as you can. Every custom field value will be available as wildcard to build PDFs and messages (see [templating section](#templating-pdfs-and-messages)). However, there are a few restrictions that need to be observed in order to keep Send Rx working properly:
 - All fields containing the machine name prefix `send_rx_` (such as `send_rx_pharmacy_name`, `send_rx_patient_id`, etc.) should not be changed or deleted.
 - On patient project, **Generate & Send prescription** form step should not be changed or removed, and must always remain as the last step.
+- On pharmacy project, **Delivery Methods** form step should not be changed or removed.
 - On pharmacy project, **Prescribers** form step should not be changed or removed. However, there are no restrictions on managing its subfields (as long as `send_rx_username` field is not changed or removed).
 
 ## Templating PDFs and messages

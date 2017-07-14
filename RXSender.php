@@ -58,7 +58,7 @@ class RxSender {
     protected $pharmacyData;
 
     /**
-     * Username.
+     * Prescriber username.
      *
      * @var string
      */
@@ -70,6 +70,13 @@ class RxSender {
      * @var array
      */
     protected $prescriberData;
+
+    /**
+     * The delivery methods.
+     *
+     * @var array
+     */
+    protected $deliveryMethods = array();
 
     /**
      * Patient configuration data.
@@ -120,6 +127,10 @@ class RxSender {
             return;
         }
 
+        if (!empty($data['send_rx_logs']) && ($logs = send_rx_get_file_contents($data['send_rx_logs']))) {
+            $this->logs = json_decode($logs, true);
+        }
+
         $this->setPatientData($data);
         $this->pharmacyId = $this->patientData['send_rx_pharmacy_id'];
 
@@ -129,11 +140,7 @@ class RxSender {
 
         $this->setPharmacyData($data);
 
-        if (!empty($data['send_rx_logs']) && ($logs = send_rx_get_file_contents($data['send_rx_logs']))) {
-            $this->logs = json_decode($logs, true);
-        }
-
-        if (!$data = send_rx_get_repeat_instance_data($this->pharmacyProjectId, $this->pharmacyId, 'send_rx_users')) {
+        if (!$data = send_rx_get_repeat_instance_data($this->pharmacyProjectId, $this->pharmacyId, 'prescribers')) {
             return;
         }
 
@@ -142,6 +149,14 @@ class RxSender {
                 $this->setPrescriberData($value);
                 break;
             }
+        }
+
+        if (!$data = send_rx_get_repeat_instance_data($this->pharmacyProjectId, $this->pharmacyId, 'delivery_methods')) {
+            return;
+        }
+
+        foreach ($data as $value) {
+            $this->deliveryMethods[$value['send_rx_delivery_type']] = $value;
         }
     }
 
@@ -183,10 +198,10 @@ class RxSender {
     }
 
     /**
-     * Gets the delivery method.
+     * Gets a list of delivery methods.
      */
-    function getDeliveryMethod() {
-        return $this->pharmacyData['send_rx_delivery_method'];
+    function getDeliveryMethods() {
+        return $this->deliveryMethods;
     }
 
     /**
@@ -221,56 +236,40 @@ class RxSender {
      * Sends the message to the pharmacy and returns whether the operation was successful.
      */
     function send($file_id = null, $log = true) {
-        if ($file_id && !($file_id = $this->generatePDFFile())) {
-            return false;
-        }
-
-        // Checking whether file is already available for download bia Send It UI.
-        if (!$document_id = send_rx_sendit_document_exists($file_id)) {
-            $expire_time = date('Y-m-d H:i:s', '+' . $this->patientConfig->expireTime . ' days');
-            if (!$document_id = send_rx_create_sendit_docs($file_id, $expire_time, $this->username)) {
-                return false;
-            }
+        if (!$file_id) {
+            $file_id = $this->generatePDFFile();
         }
 
         // Getting data to apply Piping.
-        $data = $this->getPipingData();
-        $subject = send_rx_piping($this->pharmacyConfig->messageSubject, $data);
-        $body = send_rx_piping($this->pharmacyConfig->messageBody, $data);
+        $data = $this->getPipingData($file_id);
 
-        switch ($this->getDeliveryMethod()) {
-            case 'email':
-                // Validate all the email addresses.
-                $recipients = str_replace(array("\r\n","\n","\r",";"," "), array(',',',',',',',',''), $this->pharmacyData['send_rx_pharmacy_emails']);
-                $recipients = explode(',', $recipients);
+        foreach ($this->getDeliveryMethods() as $msg_type => $config) {
+            // Getting templates.
+            $subject = empty($config['send_rx_message_subject']) ? $this->pharmacyConfig->messageSubject : $config['send_rx_message_subject'];
+            $body = empty($config['send_rx_message_body']) ? $this->pharmacyConfig->messageBody : $config['send_rx_message_body'];
 
-                $all_success = TRUE;
-                foreach ($recipients as $recipient) {
-                    $recipient = trim($recipient);
-                    if ($recipient != '' && !isEmail($recipient)) {
-                        continue;
-                    }
+            // Replacing wildcards.
+            $subject = send_rx_piping($subject, $data);
+            $body = send_rx_piping($body, $data);
 
-                    $key = strtoupper(substr(uniqid(sha1(mt_rand())), 0, 25));
-                    $pwd = generateRandomHash(8, false, true);
+            switch ($msg_type) {
+                case 'email':
+                    $success = REDCap::email($config['send_rx_pharmacy_emails'], $subject, $body);
+                    $this->log($msg_type, $success, $this->pharmacyData['send_rx_pharmacy_emails'], $subject, $body);
 
-                    // Allowing recipient to download the PDF file.
-                    send_rx_create_sendit_recipient($recipient, $document_id, $send_confirmation, $key, $pwd);
+                    return $success;
 
-                    // Download URL.
-                    $url = APP_PATH_WEBROOT_FULL . 'redcap_v' . $redcap_version . '/SendIt/download.php?' . $key;
-                    $body = send_rx_piping($body, array('pdf_file_url' => $url, 'pdf_file_pwd' => $pwd));
+                case 'hl7':
+                    // TODO: handle HL7 messages.
+                    break;
+            }
+        }
 
-                    if (!$success = REDCap::email($this->pharmacyData['send_rx_pharmacy_emails'], $subject, $body)) {
-                        $all_success = FALSE;
-                    }
-                }
-
-                return $all_success;
-
-            case 'hl7':
-                // TODO: handle HL7 messages.
-                break;
+        if (!empty($this->patientConfig['lockInstruments'])) {
+            $locker = new LockRecord($this->username, $this->patientProjectId, $this->patientId);
+            foreach ($this->patientConfig['lockInstruments'] as $instrument) {
+                $locker->lockInstance($this->patientEventId, $instrument);
+            }
         }
 
         return false;
@@ -280,8 +279,22 @@ class RxSender {
      * Generates the prescription PDF file.
      */
     function generatePDFFile() {
+        if (!empty($this->pharmacyData['send_rx_pdf_template'])) {
+            $pdf_template = $this->pharmacyData['send_rx_pdf_template'];
+        }
+        elseif (!empty($this->pharmacyConfig->pdfTemplate)) {
+            $pdf_template = $this->pharmacyConfig->pdfTemplate;
+        }
+        else {
+            return false;
+        }
+
         $data = $this->getPipingData();
-        $contents = send_rx_piping($this->pharmacyConfig->pdfTemplate, $data);
+
+        // TODO: For now, $pdf_template contains the template contents.
+        // Later it will contain a PDF file name, located at the files repo.
+        // We will need to get this PDF contents, and apply Piping on it.
+        $contents = send_rx_piping($pdf_template, $data);
         $file_path = $this->generateTmpFilePath('pdf');
 
         if (!send_rx_generate_pdf_file($contents, $file_path)) {
@@ -304,11 +317,11 @@ class RxSender {
     }
 
     /**
-     * Logs whether the message send operation was successful
+     * Logs message send operation.
      */
-    protected function log($success, $emails, $subject, $body) {
+    protected function log($msg_type, $success, $emails, $subject, $body) {
         // Appending a new entry to the log list.
-        $this->logs[] = array($success, time(), $emails, $this->username, $this->getDeliveryMethod(), $subject, $body);
+        $this->logs[] = array($msg_type, $success, time(), $emails, $this->username, $this->getDeliveryMethod(), $subject, $body);
         $contents = json_encode($this->logs);
 
         $file_path = $this->generateTmpFilePath('json');
@@ -325,11 +338,32 @@ class RxSender {
     /**
      * Gets data to be used as source for Piping on templates and messages.
      */
-    protected function getPipingData() {
-        return array(
+    protected function getPipingData($file_id = null) {
+        $base_path = APP_PATH_WEBROOT . 'DataEntry/';
+        $data = array(
             'patient' => $this->getPatientData(),
             'pharmacy' => $this->getPharmacyData(),
             'prescriber' => $this->getPrescriberData(),
+            'patient_url' => $base_path . 'index.php?pid=' . $this->patientProjectId . '&id=' . $this->patientId . '&event_id=' . $this->patientEventId,
         );
+
+        if ($file_id) {
+            $data['pdf_file_url'] = $base_path . 'file_download.php?pid=' . $this->patientProjectId;
+            $query_params = array(
+                'record' => $this->patientId,
+                'event_id' => $this->patientEventId,
+                'instance' => 1,
+                'field_name' => 'send_rx_pdf',
+                'id' => $file_id,
+                'doc_id_hash' => Files::docIdHash($file_id),
+            );
+
+            foreach ($query_params as $key => $value) {
+                $data['pdf_file_url'] .= '&' . $key . '=' . $value;
+            }
+        }
+
+
+        return $data;
     }
 }
