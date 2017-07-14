@@ -228,11 +228,7 @@ function send_rx_save_record_field($project_id, $event_id, $record_id, $field_na
 
     $q = db_query($readsql);
     if (!$q) return false;
-<<<<<<< HEAD
 
-=======
-
->>>>>>> 4937a9828aaba06ff320903d9fd719d4d1dce140
     $record_count = db_result($q, 0);
     if ($record_count == 0) {
         if (isSet($instance)) {
