@@ -4,6 +4,8 @@
  * Helper Send RX functions.
  */
 
+
+require_once 'libraries/01-mPDF-v6.1.0/vendor/autoload.php';
 require_once 'LockRecord.php';
 
 /**
@@ -65,7 +67,7 @@ function send_rx_get_sender($project_id, $event_id, $patient_id, $username = USE
  * Example: "Hello, [first_name]!" turns into "Hello, Joe Doe!".
  *
  * @param string $subject
- *   The string be processed. 
+ *   The string be processed.
  * @param array $data
  *   An array of source data. It supports nesting values, which are mapped on the
  *   subject string as nesting square brackets (e.g. [user][first_name]).
@@ -90,13 +92,13 @@ function send_rx_piping($subject, $data) {
             }
 
             $value = $data[$wildcard];
-        }     
+        }
         else {
             $child = array_shift($parts);
             if (!isset($data[$child]) || !is_array($data[$child])) {
                 continue;
             }
- 
+
             // Wildcard with children. Call function recursively.
             $value = send_rx_piping('[' . implode('][', $parts) . ']', $data[$child]);
         }
@@ -104,7 +106,7 @@ function send_rx_piping($subject, $data) {
         // Search and replace.
         $subject = str_replace('[' . str_replace('.', '][', $wildcard) . ']', $value, $subject);
     }
-    
+
     return $subject;
 }
 
@@ -120,7 +122,17 @@ function send_rx_piping($subject, $data) {
  *   TRUE if success, FALSE otherwise.
  */
 function send_rx_generate_pdf_file($contents, $file_path) {
-    // TODO.
+
+  try {
+    $mpdf = new mPDF();
+    $mpdf->WriteHTML($contents);
+    $mpdf->Output($file_path, 'F');
+  } catch (Exception $e) {
+    return false;
+  }
+
+  return true;
+
 }
 
 /**
@@ -216,7 +228,11 @@ function send_rx_save_record_field($project_id, $event_id, $record_id, $field_na
 
     $q = db_query($readsql);
     if (!$q) return false;
-    
+<<<<<<< HEAD
+
+=======
+
+>>>>>>> 4937a9828aaba06ff320903d9fd719d4d1dce140
     $record_count = db_result($q, 0);
     if ($record_count == 0) {
         if (isSet($instance)) {
