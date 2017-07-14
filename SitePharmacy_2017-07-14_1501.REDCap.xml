@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:redcap="https://projectredcap.org" xsi:schemaLocation="http://www.cdisc.org/ns/odm/v1.3 schema/odm/ODM1-3-1.xsd" ODMVersion="1.3.1" FileOID="000-00-0000" FileType="Snapshot" Description="Site Pharmacy" AsOfDateTime="2017-07-14T14:27:37" CreationDateTime="2017-07-14T14:27:37" SourceSystem="REDCap" SourceSystemVersion="7.3.6">
+<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:redcap="https://projectredcap.org" xsi:schemaLocation="http://www.cdisc.org/ns/odm/v1.3 schema/odm/ODM1-3-1.xsd" ODMVersion="1.3.1" FileOID="000-00-0000" FileType="Snapshot" Description="Site Pharmacy" AsOfDateTime="2017-07-14T15:01:26" CreationDateTime="2017-07-14T15:01:26" SourceSystem="REDCap" SourceSystemVersion="7.3.6">
 <Study OID="Project.SitePharmacy">
 <GlobalVariables>
 	<StudyName>Site Pharmacy</StudyName>
@@ -14,12 +14,12 @@
 	<redcap:ProjectNotes></redcap:ProjectNotes>
 	<redcap:RepeatingInstrumentsAndEvents>
 		<redcap:RepeatingInstruments>
-			<redcap:RepeatingInstrument redcap:UniqueEventName="event_1_arm_1" redcap:RepeatInstrument="communication_channel" redcap:CustomLabel="[send_rx_comm_channel_type]"/>
+			<redcap:RepeatingInstrument redcap:UniqueEventName="event_1_arm_1" redcap:RepeatInstrument="delivery_methods" redcap:CustomLabel="[send_rx_delivery_type]"/>
 			<redcap:RepeatingInstrument redcap:UniqueEventName="event_1_arm_1" redcap:RepeatInstrument="prescribers" redcap:CustomLabel="[send_rx_doc_first_name] [send_rx_doc_last_name]"/>
 		</redcap:RepeatingInstruments>
 	</redcap:RepeatingInstrumentsAndEvents>
 </GlobalVariables>
-<MetaDataVersion OID="Metadata.SitePharmacy_2017-07-14_1427" Name="Site Pharmacy" redcap:RecordIdField="site_id">
+<MetaDataVersion OID="Metadata.SitePharmacy_2017-07-14_1501" Name="Site Pharmacy" redcap:RecordIdField="site_id">
 	<FormDef OID="Form.pharmacy_info" Name="Pharmacy Info" Repeating="No" redcap:FormName="pharmacy_info">
 		<ItemGroupRef ItemGroupOID="pharmacy_info.site_id" Mandatory="No"/>
 		<ItemGroupRef ItemGroupOID="pharmacy_info.pharmacy_info_complete" Mandatory="No"/>
@@ -28,9 +28,9 @@
 		<ItemGroupRef ItemGroupOID="prescribers.send_rx_doc_first_name" Mandatory="No"/>
 		<ItemGroupRef ItemGroupOID="prescribers.prescribers_complete" Mandatory="No"/>
 	</FormDef>
-	<FormDef OID="Form.communication_channel" Name="Communication Channel" Repeating="No" redcap:FormName="communication_channel">
-		<ItemGroupRef ItemGroupOID="communication_channel.send_rx_comm_channel_type" Mandatory="No"/>
-		<ItemGroupRef ItemGroupOID="communication_channel.communication_channel_complete" Mandatory="No"/>
+	<FormDef OID="Form.delivery_methods" Name="Delivery Methods" Repeating="No" redcap:FormName="delivery_methods">
+		<ItemGroupRef ItemGroupOID="delivery_methods.send_rx_delivery_type" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="delivery_methods.delivery_methods_complete" Mandatory="No"/>
 	</FormDef>
 	<ItemGroupDef OID="pharmacy_info.site_id" Name="Pharmacy Info" Repeating="No">
 		<ItemRef ItemOID="site_id" Mandatory="No" redcap:Variable="site_id"/>
@@ -45,26 +45,27 @@
 	<ItemGroupDef OID="prescribers.send_rx_doc_first_name" Name="Prescribers" Repeating="No">
 		<ItemRef ItemOID="send_rx_doc_first_name" Mandatory="No" redcap:Variable="send_rx_doc_first_name"/>
 		<ItemRef ItemOID="send_rx_doc_last_name" Mandatory="No" redcap:Variable="send_rx_doc_last_name"/>
+		<ItemRef ItemOID="send_rx_username" Mandatory="Yes" redcap:Variable="send_rx_username"/>
 		<ItemRef ItemOID="doc_email_address" Mandatory="No" redcap:Variable="doc_email_address"/>
-		<ItemRef ItemOID="send_rx_doc_physical_addr" Mandatory="No" redcap:Variable="send_rx_doc_physical_addr"/>
+		<ItemRef ItemOID="send_rx_doc_physical_addr" Mandatory="Yes" redcap:Variable="send_rx_doc_physical_addr"/>
 		<ItemRef ItemOID="doc_phone" Mandatory="No" redcap:Variable="doc_phone"/>
 		<ItemRef ItemOID="doc_specialties" Mandatory="No" redcap:Variable="doc_specialties"/>
 	</ItemGroupDef>
 	<ItemGroupDef OID="prescribers.prescribers_complete" Name="Form Status" Repeating="No">
 		<ItemRef ItemOID="prescribers_complete" Mandatory="No" redcap:Variable="prescribers_complete"/>
 	</ItemGroupDef>
-	<ItemGroupDef OID="communication_channel.send_rx_comm_channel_type" Name="Communication Channel" Repeating="No">
-		<ItemRef ItemOID="send_rx_comm_channel_type" Mandatory="Yes" redcap:Variable="send_rx_comm_channel_type"/>
+	<ItemGroupDef OID="delivery_methods.send_rx_delivery_type" Name="Delivery Methods" Repeating="No">
+		<ItemRef ItemOID="send_rx_delivery_type" Mandatory="Yes" redcap:Variable="send_rx_delivery_type"/>
 		<ItemRef ItemOID="send_rx_list_of_emails" Mandatory="No" redcap:Variable="send_rx_list_of_emails"/>
 		<ItemRef ItemOID="send_rx_end_point" Mandatory="No" redcap:Variable="send_rx_end_point"/>
 		<ItemRef ItemOID="send_rx_h17_protocol_code" Mandatory="No" redcap:Variable="send_rx_h17_protocol_code"/>
 		<ItemRef ItemOID="send_rx_public_key" Mandatory="No" redcap:Variable="send_rx_public_key"/>
-		<ItemRef ItemOID="send_rx_subject" Mandatory="No" redcap:Variable="send_rx_subject"/>
+		<ItemRef ItemOID="send_rx_message_subject" Mandatory="No" redcap:Variable="send_rx_message_subject"/>
 		<ItemRef ItemOID="send_rx_message_body" Mandatory="No" redcap:Variable="send_rx_message_body"/>
 		<ItemRef ItemOID="send_rx_template" Mandatory="No" redcap:Variable="send_rx_template"/>
 	</ItemGroupDef>
-	<ItemGroupDef OID="communication_channel.communication_channel_complete" Name="Form Status" Repeating="No">
-		<ItemRef ItemOID="communication_channel_complete" Mandatory="No" redcap:Variable="communication_channel_complete"/>
+	<ItemGroupDef OID="delivery_methods.delivery_methods_complete" Name="Form Status" Repeating="No">
+		<ItemRef ItemOID="delivery_methods_complete" Mandatory="No" redcap:Variable="delivery_methods_complete"/>
 	</ItemGroupDef>
 	<ItemDef OID="site_id" Name="site_id" DataType="text" Length="999" redcap:Variable="site_id" redcap:FieldType="text">
 		<Question><TranslatedText>Record ID</TranslatedText></Question>
@@ -91,10 +92,13 @@
 	<ItemDef OID="send_rx_doc_last_name" Name="send_rx_doc_last_name" DataType="text" Length="999" redcap:Variable="send_rx_doc_last_name" redcap:FieldType="text">
 		<Question><TranslatedText>Last name:</TranslatedText></Question>
 	</ItemDef>
+	<ItemDef OID="send_rx_username" Name="send_rx_username" DataType="text" Length="999" redcap:Variable="send_rx_username" redcap:FieldType="text" redcap:RequiredField="y">
+		<Question><TranslatedText>Username</TranslatedText></Question>
+	</ItemDef>
 	<ItemDef OID="doc_email_address" Name="doc_email_address" DataType="text" Length="999" redcap:Variable="doc_email_address" redcap:FieldType="text" redcap:TextValidationType="email">
 		<Question><TranslatedText>Email address:</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="send_rx_doc_physical_addr" Name="send_rx_doc_physical_addr" DataType="text" Length="999" redcap:Variable="send_rx_doc_physical_addr" redcap:FieldType="text">
+	<ItemDef OID="send_rx_doc_physical_addr" Name="send_rx_doc_physical_addr" DataType="text" Length="999" redcap:Variable="send_rx_doc_physical_addr" redcap:FieldType="text" redcap:RequiredField="y">
 		<Question><TranslatedText>Physical address:</TranslatedText></Question>
 	</ItemDef>
 	<ItemDef OID="doc_phone" Name="doc_phone" DataType="text" Length="999" redcap:Variable="doc_phone" redcap:FieldType="text" redcap:TextValidationType="phone">
@@ -107,34 +111,34 @@
 		<Question><TranslatedText>Complete?</TranslatedText></Question>
 		<CodeListRef CodeListOID="prescribers_complete.choices"/>
 	</ItemDef>
-	<ItemDef OID="send_rx_comm_channel_type" Name="send_rx_comm_channel_type" DataType="text" Length="15" redcap:Variable="send_rx_comm_channel_type" redcap:FieldType="select" redcap:RequiredField="y">
-		<Question><TranslatedText>Channel Type</TranslatedText></Question>
-		<CodeListRef CodeListOID="send_rx_comm_channel_type.choices"/>
+	<ItemDef OID="send_rx_delivery_type" Name="send_rx_delivery_type" DataType="text" Length="15" redcap:Variable="send_rx_delivery_type" redcap:FieldType="select" redcap:RequiredField="y">
+		<Question><TranslatedText>Delivery Type</TranslatedText></Question>
+		<CodeListRef CodeListOID="send_rx_delivery_type.choices"/>
 	</ItemDef>
-	<ItemDef OID="send_rx_list_of_emails" Name="send_rx_list_of_emails" DataType="text" Length="999" redcap:Variable="send_rx_list_of_emails" redcap:FieldType="textarea" redcap:FieldNote="(e.g., bob@gmail.com, ann@ufl.edu, cory@new.co)" redcap:BranchingLogic="[send_rx_comm_channel_type] = &#039;email&#039;">
+	<ItemDef OID="send_rx_list_of_emails" Name="send_rx_list_of_emails" DataType="text" Length="999" redcap:Variable="send_rx_list_of_emails" redcap:FieldType="textarea" redcap:FieldNote="(e.g., bob@gmail.com, ann@ufl.edu, cory@new.co)" redcap:BranchingLogic="[send_rx_delivery_type] = &#039;email&#039;">
 		<Question><TranslatedText>Site email addresses (for multiple addresses separate with a comma):Note this will need to be verified outside of RC - OR - a specific number of email entires can be made (i.e., primary email, secondary email, tertiary email, etc.) and verified by text &gt; email validation</TranslatedText><redcap:FormattedTranslatedText>Site email addresses (for multiple addresses separate with a comma):&lt;b&gt;Note&lt;/b&gt; this will need to be verified outside of RC - OR - a specific number of email entires can be made (i.e., primary email, secondary email, tertiary email, etc.) and verified by text &gt; email validation</redcap:FormattedTranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="send_rx_end_point" Name="send_rx_end_point" DataType="text" Length="999" redcap:Variable="send_rx_end_point" redcap:FieldType="text" redcap:BranchingLogic="[send_rx_comm_channel_type] = &#039;h17&#039; or [send_rx_comm_channel_type] = &#039;message_gateway&#039;">
+	<ItemDef OID="send_rx_end_point" Name="send_rx_end_point" DataType="text" Length="999" redcap:Variable="send_rx_end_point" redcap:FieldType="text" redcap:BranchingLogic="[send_rx_delivery_type] = &#039;h17&#039; or [send_rx_delivery_type] = &#039;message_gateway&#039;">
 		<Question><TranslatedText>End point</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="send_rx_h17_protocol_code" Name="send_rx_h17_protocol_code" DataType="text" Length="999" redcap:Variable="send_rx_h17_protocol_code" redcap:FieldType="text" redcap:BranchingLogic="[send_rx_comm_channel_type] = &#039;h17&#039;">
+	<ItemDef OID="send_rx_h17_protocol_code" Name="send_rx_h17_protocol_code" DataType="text" Length="999" redcap:Variable="send_rx_h17_protocol_code" redcap:FieldType="text" redcap:BranchingLogic="[send_rx_delivery_type] = &#039;h17&#039;">
 		<Question><TranslatedText>H17 Protocol Code</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="send_rx_public_key" Name="send_rx_public_key" DataType="text" Length="999" redcap:Variable="send_rx_public_key" redcap:FieldType="text" redcap:BranchingLogic="[send_rx_comm_channel_type] = &#039;message_gateway&#039;">
+	<ItemDef OID="send_rx_public_key" Name="send_rx_public_key" DataType="text" Length="999" redcap:Variable="send_rx_public_key" redcap:FieldType="text" redcap:BranchingLogic="[send_rx_delivery_type] = &#039;message_gateway&#039;">
 		<Question><TranslatedText>Public key</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="send_rx_subject" Name="send_rx_subject" DataType="text" Length="999" redcap:Variable="send_rx_subject" redcap:FieldType="textarea" redcap:BranchingLogic="[send_rx_comm_channel_type] = &#039;email&#039; or [send_rx_comm_channel_type] = &#039;h17&#039;">
-		<Question><TranslatedText>Subject</TranslatedText></Question>
+	<ItemDef OID="send_rx_message_subject" Name="send_rx_message_subject" DataType="text" Length="999" redcap:Variable="send_rx_message_subject" redcap:FieldType="textarea" redcap:BranchingLogic="[send_rx_delivery_type] = &#039;email&#039; or [send_rx_delivery_type] = &#039;h17&#039;">
+		<Question><TranslatedText>Message Subject</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="send_rx_message_body" Name="send_rx_message_body" DataType="text" Length="999" redcap:Variable="send_rx_message_body" redcap:FieldType="textarea" redcap:BranchingLogic="[send_rx_comm_channel_type] = &#039;email&#039; or [send_rx_comm_channel_type] = &#039;h17&#039; or [send_rx_comm_channel_type] = &#039;message_gateway&#039;">
+	<ItemDef OID="send_rx_message_body" Name="send_rx_message_body" DataType="text" Length="999" redcap:Variable="send_rx_message_body" redcap:FieldType="textarea" redcap:BranchingLogic="[send_rx_delivery_type] = &#039;email&#039; or [send_rx_delivery_type] = &#039;h17&#039; or [send_rx_delivery_type] = &#039;message_gateway&#039;">
 		<Question><TranslatedText>Message Body</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="send_rx_template" Name="send_rx_template" DataType="text" Length="999" redcap:Variable="send_rx_template" redcap:FieldType="textarea" redcap:BranchingLogic="[send_rx_comm_channel_type] = &#039;email&#039;">
+	<ItemDef OID="send_rx_template" Name="send_rx_template" DataType="text" Length="999" redcap:Variable="send_rx_template" redcap:FieldType="textarea" redcap:BranchingLogic="[send_rx_delivery_type] = &#039;email&#039;">
 		<Question><TranslatedText>Template</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="communication_channel_complete" Name="communication_channel_complete" DataType="text" Length="1" redcap:Variable="communication_channel_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+	<ItemDef OID="delivery_methods_complete" Name="delivery_methods_complete" DataType="text" Length="1" redcap:Variable="delivery_methods_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
 		<Question><TranslatedText>Complete?</TranslatedText></Question>
-		<CodeListRef CodeListOID="communication_channel_complete.choices"/>
+		<CodeListRef CodeListOID="delivery_methods_complete.choices"/>
 	</ItemDef>
 	<CodeList OID="pharmacy_info_complete.choices" Name="pharmacy_info_complete" DataType="text" redcap:Variable="pharmacy_info_complete">
 		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
@@ -146,12 +150,12 @@
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="send_rx_comm_channel_type.choices" Name="send_rx_comm_channel_type" DataType="text" redcap:Variable="send_rx_comm_channel_type">
+	<CodeList OID="send_rx_delivery_type.choices" Name="send_rx_delivery_type" DataType="text" redcap:Variable="send_rx_delivery_type">
 		<CodeListItem CodedValue="email"><Decode><TranslatedText>Email</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="h17"><Decode><TranslatedText>H17</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="message_gateway"><Decode><TranslatedText>Message Gateway</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="communication_channel_complete.choices" Name="communication_channel_complete" DataType="text" redcap:Variable="communication_channel_complete">
+	<CodeList OID="delivery_methods_complete.choices" Name="delivery_methods_complete" DataType="text" redcap:Variable="delivery_methods_complete">
 		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
