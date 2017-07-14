@@ -16,23 +16,49 @@ require_once 'LockRecord.php';
  * @param string $project_type
  *   The RX Send project type, which can be "patient" or "pharmacy".
  *
- * @return array|bool
- *   A keyed array containing the Send RX project configuration.
- *   If patient project, the array should include at least the following info:
- *     - pharmacy_pid: Destination pharmacy project ID.
- *     - class: The class name that extends RXSender.
- *     - lock_instruments: The instruments to be locked after the message is sent.
- *   If pharmacy project, the array should include at least the following info:
- *     - pdf_template: The PDF markup (HTML & CSS) of the prescription.
- *     - message_subject: The message subject.
+ * @return object
+ *   A keyed JSON containing the Send RX project configuration.
+ *   If patient project, the object should include the following keys:
+ *     - targetProjectId: Target pharmacy project ID.
+ *     - senderClass: The sender class name, that extends RXSender.
+ *     - sendDefault: Flag that defines whether the prescription should be sent
+ *       by default.
+ *     - lockInstruments: The instruments to be locked after the message is sent.
+ *   If pharmacy project:
+ *     - pdfTemplate: The PDF markup (HTML & CSS) of the prescription.
+ *     - messageSubject: The message subject.
  *     - message_body: The message body.
  *   Returns FALSE if the project is not configure properly.
  */
 function send_rx_get_project_config($project_id, $project_type) {
     // TODO.
-    // Obs.: the config values come from the database with the "send_rx" prefix
-    // (e.g. send_rx_pharmacy_pid). Let's cut this prefix off before returning the
-    // config arrays in order to avoid reduncancy. RXSender class already expects this.
+    // Fetches JSON from database and validates the required fields according to
+    // the project type. Example: check if sender class exists.
+}
+
+/**
+ * Creates the sender object for the given Send RX project.
+ *
+ * @param int $project_id
+ *   Data entry project ID.
+ * @param int $event_id
+ *   Data entry event ID.
+ * @param int $patient_id
+ *   Data entry record ID.
+ * @param string $username
+ *   The username. Defaults to the current one.
+ *
+ * @return object|bool
+ *   An object instance of RXSender extension for the given project, if success.
+ *   False otherwise.
+ */
+function send_rx_get_sender($project_id, $event_id, $patient_id, $username = USERID) {
+    if (!$config = send_rx_get_project_config($project_id, 'patient')) {
+        return false;
+    }
+
+    $class = $config->senderClass;
+    return new $class($project_id, $event_id, $patient_id, $username);
 }
 
 /**
@@ -51,7 +77,7 @@ function send_rx_get_project_config($project_id, $project_type) {
  */
 function send_rx_piping($subject, $data) {
     // Checking for wildcards.
-    if (!$brackets = getBracketedFields($subject, TRUE, TRUE, FALSE)) {
+    if (!$brackets = getBracketedFields($subject, true, true, false)) {
         return $subject;
     }
 
@@ -110,7 +136,76 @@ function send_rx_generate_pdf_file($contents, $file_path) {
 }
 
 /**
- * Checks if there is an already an entry in the table and accordingly use update or insert methods.
+ * Gets file contents from the given edocs file.
+ *
+ * @param int $file_id
+ *   The edocs file id.
+ *
+ * @return string
+ *   The file contents.
+ */
+function send_rx_get_file_contents($file_id) {
+    $sql = 'SELECT * FROM redcap_edocs_metadata WHERE doc_id = ' . db_escape($file_id);
+    $q = db_query($sql);
+
+    if (!db_num_rows($q)) {
+        return false;
+    }
+
+    $file = db_fetch_assoc($q);
+    $file_path = EDOC_PATH . $file['stored_name'];
+
+    if (!file_exists($file_path) || !is_file($file_path)) {
+        return false;
+    }
+
+    return file_get_contents($file_path);
+}
+
+/**
+ * Uploads an existing field to the edocs table.
+ *
+ * @param string $file_path
+ *   The location of the file to be uploaded.
+ *
+ * @return int
+ *   The edocs file ID if success, 0 otherwise.
+ */
+function send_rx_upload_file($file_path) {
+    if (!file_exists($file_path) || !is_file($file_path)) {
+        return false;
+    }
+
+    $file = array(
+        'name'=> basename($file_path),
+        'type'=> mime_content_type($file_path),
+        'size'=> filesize($file_path),
+        'tmp_name'=> $file_path,
+    );
+
+    return Files::uploadFile($file);
+}
+
+/**
+ * TODO.
+ */
+function send_rx_get_edocs_file($file_id, $username = USERID) {
+    $sql = '
+        SELECT * FROM redcap_edocs_metadata f
+            INNER JOIN redcap_user_rights u ON u.project_id = f.project_id and u.username = "' . db_escape($username) . '"
+            WHERE f.doc_id = ' . $file_id . ' LIMIT 1';
+
+    $q = db_query($sql);
+    if (!db_num_rows($q)) {
+        // The given file ID does not exist.
+        return false;
+    }
+
+    return db_fetch_assoc($q);
+}
+
+/**
+ * Creates or updates a data entry field value.
  *
  * @param int $project_id
  *   Data entry project ID.
@@ -120,8 +215,10 @@ function send_rx_generate_pdf_file($contents, $file_path) {
  *   Data entry record ID.
  * @param string $field_name
  *   Machine name of the field to be updated.
- * @param string $value
+ * @param mixed $value
  *   The value to be saved.
+ * @param int $instance
+ *   (optional) Data entry instance ID (for repeat instrument cases).
  *
  * @return bool
  *   TRUE if success, FALSE otherwise.
@@ -131,11 +228,7 @@ function send_rx_save_record_field($project_id, $event_id, $record_id, $field_na
 
     $q = db_query($readsql);
     if (!$q) return false;
-<<<<<<< HEAD
 
-=======
-
->>>>>>> 4937a9828aaba06ff320903d9fd719d4d1dce140
     $record_count = db_result($q, 0);
     if ($record_count == 0) {
         if (isSet($instance)) {
@@ -169,10 +262,10 @@ function send_rx_save_record_field($project_id, $event_id, $record_id, $field_na
  * @return array|bool
  *   Data entry record information array. FALSE if failure.
  */
-function send_rx_get_record_data($project_id, $record_id, $event_id = NULL) {
-    $data = REDCap::getData($project_id, 'array', $record_id, NULL, $event_id);
+function send_rx_get_record_data($project_id, $record_id, $event_id = null) {
+    $data = REDCap::getData($project_id, 'array', $record_id, null, $event_id);
     if (empty($data[$record_id])) {
-        return FALSE;
+        return false;
     }
 
     if ($event_id) {
@@ -197,15 +290,15 @@ function send_rx_get_record_data($project_id, $record_id, $event_id = NULL) {
  * @return array|bool
  *   Array containing repeat instrument instances information. FALSE if failure.
  */
-function send_rx_get_repeat_instrument_instances($project_id, $record_id, $instrument_name, $event_id = NULL) {
-    $data = REDCap::getData($project_id, 'array', $record_id, NULL, $event_id);
+function send_rx_get_repeat_instrument_instances($project_id, $record_id, $instrument_name, $event_id = null) {
+    $data = REDCap::getData($project_id, 'array', $record_id, null, $event_id);
     if (empty($data[$record_id]['repeat_instances'])) {
-        return FALSE;
+        return false;
     }
 
     $data = $event_id ? $data[$record_id]['repeat_instances'][$event_id] : reset($data['repeat_instances'][$record_id]);
     if (empty($data[$instrument_name])) {
-        return FALSE;
+        return false;
     }
 
     return $data[$instrument_name];
@@ -226,11 +319,65 @@ function send_rx_get_repeat_instrument_instances($project_id, $record_id, $instr
  * @return bool
  *   TRUE if success, FALSE otherwise.
  */
-function send_rx_lock_instruments($project_id, $record_id, $instruments = NULL, $event_id = NULL) {
+function send_rx_lock_instruments($project_id, $record_id, $instruments = null, $event_id = null) {
     // TODO. yet to handle locking all events functionality
     if (!isSet($event_id)) {
         return false;
     }
     $lockObj = new LockRecord($username, $project_id, $record_id);
     return $lockObj->lockEvent($event_id, $instruments);
+}
+
+/**
+ * Gets the pharmacies that the user belongs to.
+ *
+ * @param int $project_id
+ *   The patient or pharmacy project ID.
+ * @param string $username
+ *   The username. Defaults to the current one.
+ * @param string $project_type
+ *   Specifies the incoming project type: "patient" or "pharmacy".
+ *   Defaults to "patient".
+ *
+ * @return array|bool
+ *   Array of pharmacies names, keyed by pharmacy ID. False if error.
+ */
+function send_rx_get_user_pharmacies($project_id, $username = USERID, $project_type = 'patient') {
+    if ($project_type == 'patient') {
+        if (!$config = send_rx_get_project_config($project_id, $project_type)) {
+            return false;
+        }
+
+        // Gets pharmacy project from the patient project.
+        $project_id = $config->targetProjectId;
+        $project_type = 'pharmacy';
+    }
+
+    // Checking if pharmacy project is ok.
+    if (send_rx_get_project_config($project_id, $project_type)) {
+        return false;
+    }
+
+    $pharmacies = array();
+
+    $data = REDCap::getData($project_id, 'array', null, 'send_rx_username');
+    foreach ($data as $pharmacy_id => $pharmacy_info) {
+        if (empty($pharmacy_info['repeat_instances'])) {
+            continue;
+        }
+
+        if (empty($pharmacy_info['repeat_instances']['rx_send_users'])) {
+            continue;
+        }
+
+        foreach ($pharmacy_info['repeat_instances']['rx_send_users'] as $user_info) {
+            if ($username == $user_info['send_rx_username']) {
+                // The user belongs to this pharmacy.
+                $pharmacies[$pharmacy_id] = $pharmacy_info['send_rx_pharmacy_name'];
+                break;
+            }
+        }
+    }
+
+    return $pharmacies;
 }
