@@ -32,7 +32,6 @@ require_once "../plugins/custom_project_settings/cps_lib.php";
  *   Returns FALSE if the project is not configure properly.
  */
 function send_rx_get_project_config($project_id, $project_type) {
-    // TODO.
     $cpsObj = new cps_lib();
     $result = $cpsObj->getAttributeData($project_id, $project_type);
     if ($project_type == "pharmacy") {
@@ -70,7 +69,7 @@ function send_rx_get_sender($project_id, $event_id, $patient_id, $username = USE
         return false;
     }
 
-    $class = $config->senderClass;
+    $class = empty($config->senderClass) ? 'RxSender' : $config->senderClass;
     return new $class($project_id, $event_id, $patient_id, $username);
 }
 
@@ -373,20 +372,20 @@ function send_rx_get_user_pharmacies($project_id, $username = USERID, $project_t
 
     $pharmacies = array();
 
-    $data = REDCap::getData($project_id, 'array', null, 'send_rx_username');
+    $data = REDCap::getData($project_id, 'array', null, array('send_rx_pharmacy_name', 'send_rx_prescriber_id'));
     foreach ($data as $pharmacy_id => $pharmacy_info) {
         if (empty($pharmacy_info['repeat_instances'])) {
             continue;
         }
 
-        if (empty($pharmacy_info['repeat_instances']['rx_send_users'])) {
+        if (empty($pharmacy_info['repeat_instances']['prescribers'])) {
             continue;
         }
 
-        foreach ($pharmacy_info['repeat_instances']['rx_send_users'] as $user_info) {
-            if ($username == $user_info['send_rx_username']) {
+        foreach ($pharmacy_info['repeat_instances']['prescribers'] as $prescriber_info) {
+            if ($username == $prescriber_info['send_rx_prescriber_id']) {
                 // The user belongs to this pharmacy.
-                $pharmacies[$pharmacy_id] = $pharmacy_info['send_rx_pharmacy_name'];
+                $pharmacies[$pharmacy_id] = $pharmacy_info[$pharmacy_id]['pharmacy_info']['send_rx_pharmacy_name'];
                 break;
             }
         }

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:redcap="https://projectredcap.org" xsi:schemaLocation="http://www.cdisc.org/ns/odm/v1.3 schema/odm/ODM1-3-1.xsd" ODMVersion="1.3.1" FileOID="000-00-0000" FileType="Snapshot" Description="Patients sample project" AsOfDateTime="2017-06-29T02:44:26" CreationDateTime="2017-06-29T02:44:26" SourceSystem="REDCap" SourceSystemVersion="7.4.2">
-<Study OID="Project.PatientsSampleProject">
+<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:redcap="https://projectredcap.org" xsi:schemaLocation="http://www.cdisc.org/ns/odm/v1.3 schema/odm/ODM1-3-1.xsd" ODMVersion="1.3.1" FileOID="000-00-0000" FileType="Snapshot" Description="Send Rx Patient" AsOfDateTime="2017-07-17T09:43:24" CreationDateTime="2017-07-17T09:43:24" SourceSystem="REDCap" SourceSystemVersion="7.3.6">
+<Study OID="Project.SendRxPatient">
 <GlobalVariables>
-	<StudyName>Patients sample project</StudyName>
-	<StudyDescription>This file contains the metadata, events, and data for REDCap project "Patients sample project".</StudyDescription>
-	<ProtocolName>Patients sample project</ProtocolName>
+	<StudyName>Send Rx Patient</StudyName>
+	<StudyDescription>This file contains the metadata, events, and data for REDCap project "Send Rx Patient".</StudyDescription>
+	<ProtocolName>Send Rx Patient</ProtocolName>
 	<redcap:RecordAutonumberingEnabled>1</redcap:RecordAutonumberingEnabled>
 	<redcap:CustomRecordLabel></redcap:CustomRecordLabel>
 	<redcap:SecondaryUniqueField></redcap:SecondaryUniqueField>
@@ -13,13 +13,13 @@
 	<redcap:PurposeOther></redcap:PurposeOther>
 	<redcap:ProjectNotes></redcap:ProjectNotes>
 </GlobalVariables>
-<MetaDataVersion OID="Metadata.PatientsSampleProject_2017-06-29_0244" Name="Patients sample project" redcap:RecordIdField="patient_id">
+<MetaDataVersion OID="Metadata.SendRxPatient_2017-07-17_0943" Name="Send Rx Patient" redcap:RecordIdField="patient_id">
 	<FormDef OID="Form.patient_screening_info" Name="Patient Screening Info" Repeating="No" redcap:FormName="patient_screening_info">
 		<ItemGroupRef ItemGroupOID="patient_screening_info.patient_id" Mandatory="No"/>
 		<ItemGroupRef ItemGroupOID="patient_screening_info.patient_screening_info_complete" Mandatory="No"/>
 	</FormDef>
 	<FormDef OID="Form.initial_patient_consent" Name="Initial Patient Consent" Repeating="No" redcap:FormName="initial_patient_consent">
-		<ItemGroupRef ItemGroupOID="initial_patient_consent.wise_disclaimer" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="initial_patient_consent.study_disclaimer" Mandatory="No"/>
 		<ItemGroupRef ItemGroupOID="initial_patient_consent.initial_patient_consent_complete" Mandatory="No"/>
 	</FormDef>
 	<FormDef OID="Form.vh_additional_consent_form" Name="VH Additional Consent Form" Repeating="No" redcap:FormName="vh_additional_consent_form">
@@ -27,147 +27,142 @@
 		<ItemGroupRef ItemGroupOID="vh_additional_consent_form.vh_additional_consent_form_complete" Mandatory="No"/>
 	</FormDef>
 	<FormDef OID="Form.patient_demographics" Name="Patient Demographics" Repeating="No" redcap:FormName="patient_demographics">
-		<ItemGroupRef ItemGroupOID="patient_demographics.pnt_phone" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="patient_demographics.phone" Mandatory="No"/>
 		<ItemGroupRef ItemGroupOID="patient_demographics.patient_demographics_complete" Mandatory="No"/>
 	</FormDef>
 	<FormDef OID="Form.patient_biospecimens" Name="Patient BioSpecimens" Repeating="No" redcap:FormName="patient_biospecimens">
-		<ItemGroupRef ItemGroupOID="patient_biospecimens.pnt_biospecimen_date" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="patient_biospecimens.biospecimen_date" Mandatory="No"/>
 		<ItemGroupRef ItemGroupOID="patient_biospecimens.patient_biospecimens_complete" Mandatory="No"/>
 	</FormDef>
 	<FormDef OID="Form.lab_orders" Name="Lab Orders" Repeating="No" redcap:FormName="lab_orders">
-		<ItemGroupRef ItemGroupOID="lab_orders.pnt_sample_process_lab" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="lab_orders.sample_process_lab" Mandatory="No"/>
 		<ItemGroupRef ItemGroupOID="lab_orders.lab_orders_complete" Mandatory="No"/>
 	</FormDef>
 	<FormDef OID="Form.prescription" Name="Prescription" Repeating="No" redcap:FormName="prescription">
-		<ItemGroupRef ItemGroupOID="prescription.pnt_protocol" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="prescription.protocol" Mandatory="No"/>
 		<ItemGroupRef ItemGroupOID="prescription.prescription_complete" Mandatory="No"/>
 	</FormDef>
 	<FormDef OID="Form.clinic_note" Name="Clinic Note" Repeating="No" redcap:FormName="clinic_note">
-		<ItemGroupRef ItemGroupOID="clinic_note.pnt_clinic_note" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="clinic_note.clinic_note" Mandatory="No"/>
 		<ItemGroupRef ItemGroupOID="clinic_note.clinic_note_complete" Mandatory="No"/>
 	</FormDef>
-	<FormDef OID="Form.logs_and_security_token" Name="Logs and Security Token" Repeating="No" redcap:FormName="logs_and_security_token">
-		<ItemGroupRef ItemGroupOID="logs_and_security_token.pnt_logs" Mandatory="No"/>
-		<ItemGroupRef ItemGroupOID="logs_and_security_token.logs_and_security_token_complete" Mandatory="No"/>
+	<FormDef OID="Form.send_rx_review" Name="Send Rx Review" Repeating="No" redcap:FormName="send_rx_review">
+		<ItemGroupRef ItemGroupOID="send_rx_review.send_rx_logs" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="send_rx_review.send_rx_review_complete" Mandatory="No"/>
 	</FormDef>
 	<ItemGroupDef OID="patient_screening_info.patient_id" Name="Patient Screening Info" Repeating="No">
 		<ItemRef ItemOID="patient_id" Mandatory="No" redcap:Variable="patient_id"/>
-		<ItemRef ItemOID="pnt_local_site" Mandatory="No" redcap:Variable="pnt_local_site"/>
-		<ItemRef ItemOID="pnt_last_name" Mandatory="Yes" redcap:Variable="pnt_last_name"/>
-		<ItemRef ItemOID="pnt_name_first" Mandatory="Yes" redcap:Variable="pnt_name_first"/>
-		<ItemRef ItemOID="pnt_dob" Mandatory="Yes" redcap:Variable="pnt_dob"/>
-		<ItemRef ItemOID="pnt_systolic_bp" Mandatory="Yes" redcap:Variable="pnt_systolic_bp"/>
-		<ItemRef ItemOID="pnt_diastolic_bp" Mandatory="Yes" redcap:Variable="pnt_diastolic_bp"/>
-		<ItemRef ItemOID="pnt_blood_type" Mandatory="Yes" redcap:Variable="pnt_blood_type"/>
-		<ItemRef ItemOID="pnt_conditions" Mandatory="Yes" redcap:Variable="pnt_conditions"/>
-		<ItemRef ItemOID="pnt_parental_conditions" Mandatory="Yes" redcap:Variable="pnt_parental_conditions"/>
-		<ItemRef ItemOID="pnt_travel_past_10_yr" Mandatory="No" redcap:Variable="pnt_travel_past_10_yr"/>
+		<ItemRef ItemOID="first_name" Mandatory="Yes" redcap:Variable="first_name"/>
+		<ItemRef ItemOID="last_name" Mandatory="Yes" redcap:Variable="last_name"/>
+		<ItemRef ItemOID="dob" Mandatory="Yes" redcap:Variable="dob"/>
+		<ItemRef ItemOID="systolic_bp" Mandatory="Yes" redcap:Variable="systolic_bp"/>
+		<ItemRef ItemOID="diastolic_bp" Mandatory="Yes" redcap:Variable="diastolic_bp"/>
+		<ItemRef ItemOID="blood_type" Mandatory="Yes" redcap:Variable="blood_type"/>
+		<ItemRef ItemOID="conditions" Mandatory="Yes" redcap:Variable="conditions"/>
+		<ItemRef ItemOID="parental_conditions" Mandatory="Yes" redcap:Variable="parental_conditions"/>
+		<ItemRef ItemOID="travel_past_10_yr" Mandatory="No" redcap:Variable="travel_past_10_yr"/>
 	</ItemGroupDef>
 	<ItemGroupDef OID="patient_screening_info.patient_screening_info_complete" Name="Form Status" Repeating="No">
 		<ItemRef ItemOID="patient_screening_info_complete" Mandatory="No" redcap:Variable="patient_screening_info_complete"/>
 	</ItemGroupDef>
-	<ItemGroupDef OID="initial_patient_consent.wise_disclaimer" Name="Initial Patient Consent" Repeating="No">
-		<ItemRef ItemOID="wise_disclaimer" Mandatory="No" redcap:Variable="wise_disclaimer"/>
-		<ItemRef ItemOID="pnt_wise_consent" Mandatory="Yes" redcap:Variable="pnt_wise_consent"/>
-		<ItemRef ItemOID="pnt_wise_signature" Mandatory="Yes" redcap:Variable="pnt_wise_signature"/>
-		<ItemRef ItemOID="fpnt_wise_date_of_consent" Mandatory="Yes" redcap:Variable="fpnt_wise_date_of_consent"/>
+	<ItemGroupDef OID="initial_patient_consent.study_disclaimer" Name="Initial Patient Consent" Repeating="No">
+		<ItemRef ItemOID="study_disclaimer" Mandatory="No" redcap:Variable="study_disclaimer"/>
+		<ItemRef ItemOID="study_consent" Mandatory="Yes" redcap:Variable="study_consent"/>
+		<ItemRef ItemOID="study_signature" Mandatory="Yes" redcap:Variable="study_signature"/>
+		<ItemRef ItemOID="study_consent_date" Mandatory="Yes" redcap:Variable="study_consent_date"/>
 	</ItemGroupDef>
 	<ItemGroupDef OID="initial_patient_consent.initial_patient_consent_complete" Name="Form Status" Repeating="No">
 		<ItemRef ItemOID="initial_patient_consent_complete" Mandatory="No" redcap:Variable="initial_patient_consent_complete"/>
 	</ItemGroupDef>
 	<ItemGroupDef OID="vh_additional_consent_form.vh_disclaimer" Name="VH Additional Consent Form" Repeating="No">
 		<ItemRef ItemOID="vh_disclaimer" Mandatory="No" redcap:Variable="vh_disclaimer"/>
-		<ItemRef ItemOID="pnt_vh_consent" Mandatory="Yes" redcap:Variable="pnt_vh_consent"/>
+		<ItemRef ItemOID="vh_consent" Mandatory="Yes" redcap:Variable="vh_consent"/>
 		<ItemRef ItemOID="ptn_vh_signature" Mandatory="Yes" redcap:Variable="ptn_vh_signature"/>
-		<ItemRef ItemOID="pnt_vh_date_of_consent" Mandatory="Yes" redcap:Variable="pnt_vh_date_of_consent"/>
+		<ItemRef ItemOID="vh_consent_date" Mandatory="Yes" redcap:Variable="vh_consent_date"/>
 	</ItemGroupDef>
 	<ItemGroupDef OID="vh_additional_consent_form.vh_additional_consent_form_complete" Name="Form Status" Repeating="No">
 		<ItemRef ItemOID="vh_additional_consent_form_complete" Mandatory="No" redcap:Variable="vh_additional_consent_form_complete"/>
 	</ItemGroupDef>
-	<ItemGroupDef OID="patient_demographics.pnt_phone" Name="Patient Demographics" Repeating="No">
-		<ItemRef ItemOID="pnt_phone" Mandatory="Yes" redcap:Variable="pnt_phone"/>
-		<ItemRef ItemOID="pnt_address" Mandatory="Yes" redcap:Variable="pnt_address"/>
-		<ItemRef ItemOID="pnt_aparment_number" Mandatory="Yes" redcap:Variable="pnt_aparment_number"/>
-		<ItemRef ItemOID="pnt_email" Mandatory="Yes" redcap:Variable="pnt_email"/>
-		<ItemRef ItemOID="pnt_email_communication" Mandatory="Yes" redcap:Variable="pnt_email_communication"/>
-		<ItemRef ItemOID="pnt_contact_method" Mandatory="Yes" redcap:Variable="pnt_contact_method"/>
-		<ItemRef ItemOID="pnt_gender" Mandatory="Yes" redcap:Variable="pnt_gender"/>
-		<ItemRef ItemOID="pnt_sex" Mandatory="Yes" redcap:Variable="pnt_sex"/>
-		<ItemRef ItemOID="pnt_race" Mandatory="Yes" redcap:Variable="pnt_race"/>
-		<ItemRef ItemOID="pnt_ethnicity" Mandatory="Yes" redcap:Variable="pnt_ethnicity"/>
-		<ItemRef ItemOID="pnt_pregnant" Mandatory="Yes" redcap:Variable="pnt_pregnant"/>
+	<ItemGroupDef OID="patient_demographics.phone" Name="Patient Demographics" Repeating="No">
+		<ItemRef ItemOID="phone" Mandatory="Yes" redcap:Variable="phone"/>
+		<ItemRef ItemOID="address" Mandatory="Yes" redcap:Variable="address"/>
+		<ItemRef ItemOID="email" Mandatory="Yes" redcap:Variable="email"/>
+		<ItemRef ItemOID="email_is_primary" Mandatory="Yes" redcap:Variable="email_is_primary"/>
+		<ItemRef ItemOID="contact_method" Mandatory="Yes" redcap:Variable="contact_method"/>
+		<ItemRef ItemOID="gender" Mandatory="Yes" redcap:Variable="gender"/>
+		<ItemRef ItemOID="sex" Mandatory="Yes" redcap:Variable="sex"/>
+		<ItemRef ItemOID="race" Mandatory="Yes" redcap:Variable="race"/>
+		<ItemRef ItemOID="ethnicity" Mandatory="Yes" redcap:Variable="ethnicity"/>
+		<ItemRef ItemOID="pregnant" Mandatory="Yes" redcap:Variable="pregnant"/>
 	</ItemGroupDef>
 	<ItemGroupDef OID="patient_demographics.patient_demographics_complete" Name="Form Status" Repeating="No">
 		<ItemRef ItemOID="patient_demographics_complete" Mandatory="No" redcap:Variable="patient_demographics_complete"/>
 	</ItemGroupDef>
-	<ItemGroupDef OID="patient_biospecimens.pnt_biospecimen_date" Name="Patient BioSpecimens" Repeating="No">
-		<ItemRef ItemOID="pnt_biospecimen_date" Mandatory="Yes" redcap:Variable="pnt_biospecimen_date"/>
-		<ItemRef ItemOID="pat_sample_type___1" Mandatory="Yes" redcap:Variable="pat_sample_type"/>
-		<ItemRef ItemOID="pnt_blood_sample_count" Mandatory="No" redcap:Variable="pnt_blood_sample_count"/>
+	<ItemGroupDef OID="patient_biospecimens.biospecimen_date" Name="Patient BioSpecimens" Repeating="No">
+		<ItemRef ItemOID="biospecimen_date" Mandatory="Yes" redcap:Variable="biospecimen_date"/>
+		<ItemRef ItemOID="sample_type___1" Mandatory="Yes" redcap:Variable="sample_type"/>
+		<ItemRef ItemOID="blood_sample_count" Mandatory="No" redcap:Variable="blood_sample_count"/>
 	</ItemGroupDef>
 	<ItemGroupDef OID="patient_biospecimens.patient_biospecimens_complete" Name="Form Status" Repeating="No">
 		<ItemRef ItemOID="patient_biospecimens_complete" Mandatory="No" redcap:Variable="patient_biospecimens_complete"/>
 	</ItemGroupDef>
-	<ItemGroupDef OID="lab_orders.pnt_sample_process_lab" Name="Lab Orders" Repeating="No">
-		<ItemRef ItemOID="pnt_sample_process_lab" Mandatory="Yes" redcap:Variable="pnt_sample_process_lab"/>
-		<ItemRef ItemOID="pnt_blood_analyses___1" Mandatory="Yes" redcap:Variable="pnt_blood_analyses"/>
-		<ItemRef ItemOID="pnt_blood_analyses___2" Mandatory="Yes" redcap:Variable="pnt_blood_analyses"/>
-		<ItemRef ItemOID="pnt_blood_analyses___1" Mandatory="Yes" redcap:Variable="pnt_blood_analyses"/>
-		<ItemRef ItemOID="pnt_blood_analyses___2" Mandatory="Yes" redcap:Variable="pnt_blood_analyses"/>
+	<ItemGroupDef OID="lab_orders.sample_process_lab" Name="Lab Orders" Repeating="No">
+		<ItemRef ItemOID="sample_process_lab" Mandatory="Yes" redcap:Variable="sample_process_lab"/>
+		<ItemRef ItemOID="blood_analyses___1" Mandatory="Yes" redcap:Variable="blood_analyses"/>
+		<ItemRef ItemOID="blood_analyses___2" Mandatory="Yes" redcap:Variable="blood_analyses"/>
+		<ItemRef ItemOID="blood_analyses___1" Mandatory="Yes" redcap:Variable="blood_analyses"/>
+		<ItemRef ItemOID="blood_analyses___2" Mandatory="Yes" redcap:Variable="blood_analyses"/>
 		<ItemRef ItemOID="order_number" Mandatory="Yes" redcap:Variable="order_number"/>
 		<ItemRef ItemOID="order_bar_code" Mandatory="No" redcap:Variable="order_bar_code"/>
-		<ItemRef ItemOID="order_lab_a_result" Mandatory="No" redcap:Variable="order_lab_a_result"/>
-		<ItemRef ItemOID="order_lab_b_result" Mandatory="No" redcap:Variable="order_lab_b_result"/>
+		<ItemRef ItemOID="order_lab_result_white" Mandatory="No" redcap:Variable="order_lab_result_white"/>
+		<ItemRef ItemOID="order_lab_result_red" Mandatory="No" redcap:Variable="order_lab_result_red"/>
 	</ItemGroupDef>
 	<ItemGroupDef OID="lab_orders.lab_orders_complete" Name="Form Status" Repeating="No">
 		<ItemRef ItemOID="lab_orders_complete" Mandatory="No" redcap:Variable="lab_orders_complete"/>
 	</ItemGroupDef>
-	<ItemGroupDef OID="prescription.pnt_protocol" Name="Prescription" Repeating="No">
-		<ItemRef ItemOID="pnt_protocol" Mandatory="Yes" redcap:Variable="pnt_protocol"/>
-		<ItemRef ItemOID="pnt_rec_rx" Mandatory="Yes" redcap:Variable="pnt_rec_rx"/>
-		<ItemRef ItemOID="pnt_tolerance" Mandatory="Yes" redcap:Variable="pnt_tolerance"/>
-		<ItemRef ItemOID="pnt_reject_rec_rx_reason" Mandatory="Yes" redcap:Variable="pnt_reject_rec_rx_reason"/>
-		<ItemRef ItemOID="pnt_algorithm" Mandatory="Yes" redcap:Variable="pnt_algorithm"/>
-		<ItemRef ItemOID="pnt_algorithm_run_date" Mandatory="Yes" redcap:Variable="pnt_algorithm_run_date"/>
-		<ItemRef ItemOID="pnt_administered_rx" Mandatory="Yes" redcap:Variable="pnt_administered_rx"/>
-		<ItemRef ItemOID="pnt_rx_daily_dose" Mandatory="Yes" redcap:Variable="pnt_rx_daily_dose"/>
-		<ItemRef ItemOID="pnt_advisor" Mandatory="Yes" redcap:Variable="pnt_advisor"/>
-		<ItemRef ItemOID="pnt_advisor_phone" Mandatory="Yes" redcap:Variable="pnt_advisor_phone"/>
+	<ItemGroupDef OID="prescription.protocol" Name="Prescription" Repeating="No">
+		<ItemRef ItemOID="protocol" Mandatory="Yes" redcap:Variable="protocol"/>
+		<ItemRef ItemOID="recommended_rx" Mandatory="Yes" redcap:Variable="recommended_rx"/>
+		<ItemRef ItemOID="tolerance" Mandatory="Yes" redcap:Variable="tolerance"/>
+		<ItemRef ItemOID="reject_rec_rx_reason" Mandatory="Yes" redcap:Variable="reject_rec_rx_reason"/>
+		<ItemRef ItemOID="algorithm" Mandatory="Yes" redcap:Variable="algorithm"/>
+		<ItemRef ItemOID="algorithm_run_date" Mandatory="Yes" redcap:Variable="algorithm_run_date"/>
+		<ItemRef ItemOID="administered_drug" Mandatory="Yes" redcap:Variable="administered_drug"/>
+		<ItemRef ItemOID="daily_drug_dosage" Mandatory="Yes" redcap:Variable="daily_drug_dosage"/>
+		<ItemRef ItemOID="advisor" Mandatory="Yes" redcap:Variable="advisor"/>
+		<ItemRef ItemOID="advisor_phone" Mandatory="Yes" redcap:Variable="advisor_phone"/>
 	</ItemGroupDef>
 	<ItemGroupDef OID="prescription.prescription_complete" Name="Form Status" Repeating="No">
 		<ItemRef ItemOID="prescription_complete" Mandatory="No" redcap:Variable="prescription_complete"/>
 	</ItemGroupDef>
-	<ItemGroupDef OID="clinic_note.pnt_clinic_note" Name="Clinic Note" Repeating="No">
-		<ItemRef ItemOID="pnt_clinic_note" Mandatory="Yes" redcap:Variable="pnt_clinic_note"/>
+	<ItemGroupDef OID="clinic_note.clinic_note" Name="Clinic Note" Repeating="No">
+		<ItemRef ItemOID="clinic_note" Mandatory="Yes" redcap:Variable="clinic_note"/>
 	</ItemGroupDef>
 	<ItemGroupDef OID="clinic_note.clinic_note_complete" Name="Form Status" Repeating="No">
 		<ItemRef ItemOID="clinic_note_complete" Mandatory="No" redcap:Variable="clinic_note_complete"/>
 	</ItemGroupDef>
-	<ItemGroupDef OID="logs_and_security_token.pnt_logs" Name="Logs and Security Token" Repeating="No">
-		<ItemRef ItemOID="pnt_logs" Mandatory="No" redcap:Variable="pnt_logs"/>
-		<ItemRef ItemOID="pnt_security_token" Mandatory="No" redcap:Variable="pnt_security_token"/>
+	<ItemGroupDef OID="send_rx_review.send_rx_logs" Name="Send Rx Review" Repeating="No">
+		<ItemRef ItemOID="send_rx_logs" Mandatory="No" redcap:Variable="send_rx_logs"/>
+		<ItemRef ItemOID="send_rx_pharmacy_id" Mandatory="No" redcap:Variable="send_rx_pharmacy_id"/>
+		<ItemRef ItemOID="send_rx_pdf" Mandatory="No" redcap:Variable="send_rx_pdf"/>
 	</ItemGroupDef>
-	<ItemGroupDef OID="logs_and_security_token.logs_and_security_token_complete" Name="Form Status" Repeating="No">
-		<ItemRef ItemOID="logs_and_security_token_complete" Mandatory="No" redcap:Variable="logs_and_security_token_complete"/>
+	<ItemGroupDef OID="send_rx_review.send_rx_review_complete" Name="Form Status" Repeating="No">
+		<ItemRef ItemOID="send_rx_review_complete" Mandatory="No" redcap:Variable="send_rx_review_complete"/>
 	</ItemGroupDef>
 	<ItemDef OID="patient_id" Name="patient_id" DataType="text" Length="999" redcap:Variable="patient_id" redcap:FieldType="text">
 		<Question><TranslatedText>Record ID</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="pnt_local_site" Name="pnt_local_site" DataType="text" Length="1" redcap:Variable="pnt_local_site" redcap:FieldType="select">
-		<Question><TranslatedText>Patient site:</TranslatedText></Question>
-		<CodeListRef CodeListOID="pnt_local_site.choices"/>
+	<ItemDef OID="first_name" Name="first_name" DataType="text" Length="999" redcap:Variable="first_name" redcap:FieldType="text" redcap:RequiredField="y">
+		<Question><TranslatedText>First name</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="pnt_last_name" Name="pnt_last_name" DataType="text" Length="999" redcap:Variable="pnt_last_name" redcap:FieldType="text" redcap:RequiredField="y">
-		<Question><TranslatedText>Last name:</TranslatedText></Question>
+	<ItemDef OID="last_name" Name="last_name" DataType="text" Length="999" redcap:Variable="last_name" redcap:FieldType="text" redcap:RequiredField="y">
+		<Question><TranslatedText>Last name</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="pnt_name_first" Name="pnt_name_first" DataType="text" Length="999" redcap:Variable="pnt_name_first" redcap:FieldType="text" redcap:RequiredField="y">
-		<Question><TranslatedText>First name:</TranslatedText></Question>
+	<ItemDef OID="dob" Name="dob" DataType="date" Length="999" redcap:Variable="dob" redcap:FieldType="text" redcap:TextValidationType="date_mdy" redcap:RequiredField="y">
+		<Question><TranslatedText>Date of birth</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="pnt_dob" Name="pnt_dob" DataType="date" Length="999" redcap:Variable="pnt_dob" redcap:FieldType="text" redcap:TextValidationType="date_mdy" redcap:RequiredField="y">
-		<Question><TranslatedText>Date of birth:</TranslatedText></Question>
-	</ItemDef>
-	<ItemDef OID="pnt_systolic_bp" Name="pnt_systolic_bp" DataType="float" Length="999" SignificantDigits="1" redcap:Variable="pnt_systolic_bp" redcap:FieldType="text" redcap:TextValidationType="float" redcap:RequiredField="y">
-		<Question><TranslatedText>Systolic BP:</TranslatedText></Question>
+	<ItemDef OID="systolic_bp" Name="systolic_bp" DataType="float" Length="999" SignificantDigits="1" redcap:Variable="systolic_bp" redcap:FieldType="text" redcap:TextValidationType="float" redcap:RequiredField="y">
+		<Question><TranslatedText>Systolic BP</TranslatedText></Question>
 		<RangeCheck Comparator="GE" SoftHard="Soft">
 			<CheckValue>40</CheckValue>
 			<ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (40 - 300). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
@@ -177,8 +172,8 @@
 			<ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (40 - 300). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
 		</RangeCheck>
 	</ItemDef>
-	<ItemDef OID="pnt_diastolic_bp" Name="pnt_diastolic_bp" DataType="float" Length="999" SignificantDigits="1" redcap:Variable="pnt_diastolic_bp" redcap:FieldType="text" redcap:TextValidationType="float" redcap:RequiredField="y">
-		<Question><TranslatedText>Diastolic BP:</TranslatedText></Question>
+	<ItemDef OID="diastolic_bp" Name="diastolic_bp" DataType="float" Length="999" SignificantDigits="1" redcap:Variable="diastolic_bp" redcap:FieldType="text" redcap:TextValidationType="float" redcap:RequiredField="y">
+		<Question><TranslatedText>Diastolic BP</TranslatedText></Question>
 		<RangeCheck Comparator="GE" SoftHard="Soft">
 			<CheckValue>40</CheckValue>
 			<ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (40 - 300). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
@@ -188,38 +183,38 @@
 			<ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (40 - 300). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
 		</RangeCheck>
 	</ItemDef>
-	<ItemDef OID="pnt_blood_type" Name="pnt_blood_type" DataType="text" Length="1" redcap:Variable="pnt_blood_type" redcap:FieldType="radio" redcap:RequiredField="y">
-		<Question><TranslatedText>Patient Blood Type:</TranslatedText></Question>
-		<CodeListRef CodeListOID="pnt_blood_type.choices"/>
+	<ItemDef OID="blood_type" Name="blood_type" DataType="text" Length="1" redcap:Variable="blood_type" redcap:FieldType="radio" redcap:RequiredField="y">
+		<Question><TranslatedText>Blood Type</TranslatedText></Question>
+		<CodeListRef CodeListOID="blood_type.choices"/>
 	</ItemDef>
-	<ItemDef OID="pnt_conditions" Name="pnt_conditions" DataType="text" Length="2" redcap:Variable="pnt_conditions" redcap:FieldType="radio" redcap:RequiredField="y">
+	<ItemDef OID="conditions" Name="conditions" DataType="text" Length="2" redcap:Variable="conditions" redcap:FieldType="radio" redcap:RequiredField="y">
 		<Question><TranslatedText>Check all known medical conditions you have or currently have. If none apply or the conditions are unknown, do not check any.</TranslatedText></Question>
-		<CodeListRef CodeListOID="pnt_conditions.choices"/>
+		<CodeListRef CodeListOID="conditions.choices"/>
 	</ItemDef>
-	<ItemDef OID="pnt_parental_conditions" Name="pnt_parental_conditions" DataType="text" Length="2" redcap:Variable="pnt_parental_conditions" redcap:FieldType="radio" redcap:RequiredField="y">
+	<ItemDef OID="parental_conditions" Name="parental_conditions" DataType="text" Length="2" redcap:Variable="parental_conditions" redcap:FieldType="radio" redcap:RequiredField="y">
 		<Question><TranslatedText>Parental medical history: Check all known conditions that pertain to your biological mother or father. If none apply or the conditions are unknown, do not check any.</TranslatedText></Question>
-		<CodeListRef CodeListOID="pnt_parental_conditions.choices"/>
+		<CodeListRef CodeListOID="parental_conditions.choices"/>
 	</ItemDef>
-	<ItemDef OID="pnt_travel_past_10_yr" Name="pnt_travel_past_10_yr" DataType="text" Length="1" redcap:Variable="pnt_travel_past_10_yr" redcap:FieldType="radio">
+	<ItemDef OID="travel_past_10_yr" Name="travel_past_10_yr" DataType="text" Length="1" redcap:Variable="travel_past_10_yr" redcap:FieldType="radio">
 		<Question><TranslatedText>Have you traveled to any of the following countries in the last 10 years? Check all countries you have visited.</TranslatedText></Question>
-		<CodeListRef CodeListOID="pnt_travel_past_10_yr.choices"/>
+		<CodeListRef CodeListOID="travel_past_10_yr.choices"/>
 	</ItemDef>
 	<ItemDef OID="patient_screening_info_complete" Name="patient_screening_info_complete" DataType="text" Length="1" redcap:Variable="patient_screening_info_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
 		<Question><TranslatedText>Complete?</TranslatedText></Question>
 		<CodeListRef CodeListOID="patient_screening_info_complete.choices"/>
 	</ItemDef>
-	<ItemDef OID="wise_disclaimer" Name="wise_disclaimer" DataType="text" Length="999" redcap:Variable="wise_disclaimer" redcap:FieldType="descriptive">
+	<ItemDef OID="study_disclaimer" Name="study_disclaimer" DataType="text" Length="999" redcap:Variable="study_disclaimer" redcap:FieldType="descriptive">
 		<Question><TranslatedText>This study requires your consent because there are risks associated. These risks include possibility of exposure to: ipsum lorem.</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="pnt_wise_consent" Name="pnt_wise_consent" DataType="text" Length="1" redcap:Variable="pnt_wise_consent" redcap:FieldType="radio" redcap:RequiredField="y">
+	<ItemDef OID="study_consent" Name="study_consent" DataType="text" Length="1" redcap:Variable="study_consent" redcap:FieldType="radio" redcap:RequiredField="y">
 		<Question><TranslatedText>Do you wish to participate in the study?</TranslatedText></Question>
-		<CodeListRef CodeListOID="pnt_wise_consent.choices"/>
+		<CodeListRef CodeListOID="study_consent.choices"/>
 	</ItemDef>
-	<ItemDef OID="pnt_wise_signature" Name="pnt_wise_signature" DataType="text" Length="999" redcap:Variable="pnt_wise_signature" redcap:FieldType="file" redcap:TextValidationType="signature" redcap:Identifier="y" redcap:RequiredField="y" redcap:BranchingLogic="[pnt_wise_consent] = &#039;1&#039;">
-		<Question><TranslatedText>Signature:</TranslatedText></Question>
+	<ItemDef OID="study_signature" Name="study_signature" DataType="text" Length="999" redcap:Variable="study_signature" redcap:FieldType="file" redcap:TextValidationType="signature" redcap:Identifier="y" redcap:RequiredField="y" redcap:BranchingLogic="[study_consent] = &#039;1&#039;">
+		<Question><TranslatedText>Signature</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="fpnt_wise_date_of_consent" Name="fpnt_wise_date_of_consent" DataType="date" Length="999" redcap:Variable="fpnt_wise_date_of_consent" redcap:FieldType="text" redcap:TextValidationType="date_mdy" redcap:Identifier="y" redcap:RequiredField="y" redcap:BranchingLogic="[pnt_wise_consent] = &#039;1&#039;">
-		<Question><TranslatedText>Date:</TranslatedText></Question>
+	<ItemDef OID="study_consent_date" Name="study_consent_date" DataType="date" Length="999" redcap:Variable="study_consent_date" redcap:FieldType="text" redcap:TextValidationType="date_mdy" redcap:Identifier="y" redcap:RequiredField="y" redcap:BranchingLogic="[study_consent] = &#039;1&#039;">
+		<Question><TranslatedText>Date</TranslatedText></Question>
 	</ItemDef>
 	<ItemDef OID="initial_patient_consent_complete" Name="initial_patient_consent_complete" DataType="text" Length="1" redcap:Variable="initial_patient_consent_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
 		<Question><TranslatedText>Complete?</TranslatedText></Question>
@@ -228,116 +223,113 @@
 	<ItemDef OID="vh_disclaimer" Name="vh_disclaimer" DataType="text" Length="999" redcap:Variable="vh_disclaimer" redcap:FieldType="descriptive">
 		<Question><TranslatedText>Veterans Hospital wants to ensure you are aware of all possible risks associated with participating in the WISE study. The study requires certain policies and procedures be followed in the event you can no longer provide consent. These procedures may or may not lead to your ipsum lorem...</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="pnt_vh_consent" Name="pnt_vh_consent" DataType="text" Length="1" redcap:Variable="pnt_vh_consent" redcap:FieldType="radio" redcap:RequiredField="y">
-		<Question><TranslatedText>Do you consent to participate in the WISE study as outlined by the VH?</TranslatedText></Question>
-		<CodeListRef CodeListOID="pnt_vh_consent.choices"/>
+	<ItemDef OID="vh_consent" Name="vh_consent" DataType="text" Length="1" redcap:Variable="vh_consent" redcap:FieldType="radio" redcap:RequiredField="y">
+		<Question><TranslatedText>Do you consent to participate in the study as outlined by the VH?</TranslatedText></Question>
+		<CodeListRef CodeListOID="vh_consent.choices"/>
 	</ItemDef>
-	<ItemDef OID="ptn_vh_signature" Name="ptn_vh_signature" DataType="text" Length="999" redcap:Variable="ptn_vh_signature" redcap:FieldType="file" redcap:TextValidationType="signature" redcap:Identifier="y" redcap:RequiredField="y" redcap:BranchingLogic="[pnt_vh_consent] = &#039;1&#039;">
+	<ItemDef OID="ptn_vh_signature" Name="ptn_vh_signature" DataType="text" Length="999" redcap:Variable="ptn_vh_signature" redcap:FieldType="file" redcap:TextValidationType="signature" redcap:Identifier="y" redcap:RequiredField="y" redcap:BranchingLogic="[vh_consent] = &#039;1&#039;">
 		<Question><TranslatedText>Signature:</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="pnt_vh_date_of_consent" Name="pnt_vh_date_of_consent" DataType="text" Length="999" redcap:Variable="pnt_vh_date_of_consent" redcap:FieldType="text" redcap:Identifier="y" redcap:RequiredField="y" redcap:BranchingLogic="[pnt_vh_consent] = &#039;1&#039;">
+	<ItemDef OID="vh_consent_date" Name="vh_consent_date" DataType="text" Length="999" redcap:Variable="vh_consent_date" redcap:FieldType="text" redcap:Identifier="y" redcap:RequiredField="y" redcap:BranchingLogic="[vh_consent] = &#039;1&#039;">
 		<Question><TranslatedText>Date:</TranslatedText></Question>
 	</ItemDef>
 	<ItemDef OID="vh_additional_consent_form_complete" Name="vh_additional_consent_form_complete" DataType="text" Length="1" redcap:Variable="vh_additional_consent_form_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
 		<Question><TranslatedText>Complete?</TranslatedText></Question>
 		<CodeListRef CodeListOID="vh_additional_consent_form_complete.choices"/>
 	</ItemDef>
-	<ItemDef OID="pnt_phone" Name="pnt_phone" DataType="text" Length="999" redcap:Variable="pnt_phone" redcap:FieldType="text" redcap:TextValidationType="phone" redcap:Identifier="y" redcap:RequiredField="y">
-		<Question><TranslatedText>Phone number:</TranslatedText></Question>
+	<ItemDef OID="phone" Name="phone" DataType="text" Length="999" redcap:Variable="phone" redcap:FieldType="text" redcap:TextValidationType="phone" redcap:Identifier="y" redcap:RequiredField="y">
+		<Question><TranslatedText>Phone number</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="pnt_address" Name="pnt_address" DataType="text" Length="999" redcap:Variable="pnt_address" redcap:FieldType="text" redcap:Identifier="y" redcap:RequiredField="y">
-		<Question><TranslatedText>Address:</TranslatedText></Question>
+	<ItemDef OID="address" Name="address" DataType="text" Length="999" redcap:Variable="address" redcap:FieldType="textarea" redcap:Identifier="y" redcap:RequiredField="y">
+		<Question><TranslatedText>Address</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="pnt_aparment_number" Name="pnt_aparment_number" DataType="text" Length="999" redcap:Variable="pnt_aparment_number" redcap:FieldType="text" redcap:FieldNote="(optional)" redcap:Identifier="y" redcap:RequiredField="y">
-		<Question><TranslatedText>Apartment:</TranslatedText></Question>
+	<ItemDef OID="email" Name="email" DataType="text" Length="999" redcap:Variable="email" redcap:FieldType="text" redcap:TextValidationType="email" redcap:RequiredField="y">
+		<Question><TranslatedText>Email</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="pnt_email" Name="pnt_email" DataType="text" Length="999" redcap:Variable="pnt_email" redcap:FieldType="text" redcap:TextValidationType="email" redcap:RequiredField="y">
-		<Question><TranslatedText>Email:</TranslatedText></Question>
-	</ItemDef>
-	<ItemDef OID="pnt_email_communication" Name="pnt_email_communication" DataType="boolean" Length="1" redcap:Variable="pnt_email_communication" redcap:FieldType="yesno" redcap:RequiredField="y">
+	<ItemDef OID="email_is_primary" Name="email_is_primary" DataType="boolean" Length="1" redcap:Variable="email_is_primary" redcap:FieldType="yesno" redcap:RequiredField="y">
 		<Question><TranslatedText>Can we use email as the primary means of communication?</TranslatedText></Question>
-		<CodeListRef CodeListOID="pnt_email_communication.choices"/>
+		<CodeListRef CodeListOID="email_is_primary.choices"/>
 	</ItemDef>
-	<ItemDef OID="pnt_contact_method" Name="pnt_contact_method" DataType="text" Length="1" redcap:Variable="pnt_contact_method" redcap:FieldType="radio" redcap:RequiredField="y">
-		<Question><TranslatedText>Preferred method of contact:</TranslatedText></Question>
-		<CodeListRef CodeListOID="pnt_contact_method.choices"/>
+	<ItemDef OID="contact_method" Name="contact_method" DataType="text" Length="1" redcap:Variable="contact_method" redcap:FieldType="radio" redcap:RequiredField="y" redcap:BranchingLogic="email_is_primary = `1`">
+		<Question><TranslatedText>Preferred method of contact</TranslatedText></Question>
+		<CodeListRef CodeListOID="contact_method.choices"/>
 	</ItemDef>
-	<ItemDef OID="pnt_gender" Name="pnt_gender" DataType="text" Length="1" redcap:Variable="pnt_gender" redcap:FieldType="radio" redcap:RequiredField="y">
-		<Question><TranslatedText>Gender:</TranslatedText></Question>
-		<CodeListRef CodeListOID="pnt_gender.choices"/>
+	<ItemDef OID="gender" Name="gender" DataType="text" Length="1" redcap:Variable="gender" redcap:FieldType="radio" redcap:RequiredField="y">
+		<Question><TranslatedText>Gender</TranslatedText></Question>
+		<CodeListRef CodeListOID="gender.choices"/>
 	</ItemDef>
-	<ItemDef OID="pnt_sex" Name="pnt_sex" DataType="text" Length="1" redcap:Variable="pnt_sex" redcap:FieldType="radio" redcap:RequiredField="y">
-		<Question><TranslatedText>Sex:</TranslatedText></Question>
-		<CodeListRef CodeListOID="pnt_sex.choices"/>
+	<ItemDef OID="sex" Name="sex" DataType="text" Length="1" redcap:Variable="sex" redcap:FieldType="radio" redcap:RequiredField="y">
+		<Question><TranslatedText>Sex</TranslatedText></Question>
+		<CodeListRef CodeListOID="sex.choices"/>
 	</ItemDef>
-	<ItemDef OID="pnt_race" Name="pnt_race" DataType="text" Length="1" redcap:Variable="pnt_race" redcap:FieldType="radio" redcap:RequiredField="y">
-		<Question><TranslatedText>Race:</TranslatedText></Question>
-		<CodeListRef CodeListOID="pnt_race.choices"/>
+	<ItemDef OID="race" Name="race" DataType="text" Length="1" redcap:Variable="race" redcap:FieldType="radio" redcap:RequiredField="y">
+		<Question><TranslatedText>Race</TranslatedText></Question>
+		<CodeListRef CodeListOID="race.choices"/>
 	</ItemDef>
-	<ItemDef OID="pnt_ethnicity" Name="pnt_ethnicity" DataType="text" Length="1" redcap:Variable="pnt_ethnicity" redcap:FieldType="radio" redcap:RequiredField="y">
-		<Question><TranslatedText>Ethnicity:</TranslatedText></Question>
-		<CodeListRef CodeListOID="pnt_ethnicity.choices"/>
+	<ItemDef OID="ethnicity" Name="ethnicity" DataType="text" Length="1" redcap:Variable="ethnicity" redcap:FieldType="radio" redcap:RequiredField="y">
+		<Question><TranslatedText>Ethnicity</TranslatedText></Question>
+		<CodeListRef CodeListOID="ethnicity.choices"/>
 	</ItemDef>
-	<ItemDef OID="pnt_pregnant" Name="pnt_pregnant" DataType="text" Length="1" redcap:Variable="pnt_pregnant" redcap:FieldType="radio" redcap:RequiredField="y" redcap:BranchingLogic="[pnt_sex] = &#039;1&#039; and [pnt_sex] = &#039;3&#039;">
+	<ItemDef OID="pregnant" Name="pregnant" DataType="text" Length="1" redcap:Variable="pregnant" redcap:FieldType="radio" redcap:RequiredField="y" redcap:BranchingLogic="[sex] = &#039;1&#039; or [sex] = &#039;3&#039;">
 		<Question><TranslatedText>Are you currently pregnant?</TranslatedText></Question>
-		<CodeListRef CodeListOID="pnt_pregnant.choices"/>
+		<CodeListRef CodeListOID="pregnant.choices"/>
 	</ItemDef>
 	<ItemDef OID="patient_demographics_complete" Name="patient_demographics_complete" DataType="text" Length="1" redcap:Variable="patient_demographics_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
 		<Question><TranslatedText>Complete?</TranslatedText></Question>
 		<CodeListRef CodeListOID="patient_demographics_complete.choices"/>
 	</ItemDef>
-	<ItemDef OID="pnt_biospecimen_date" Name="pnt_biospecimen_date" DataType="text" Length="999" redcap:Variable="pnt_biospecimen_date" redcap:FieldType="text" redcap:Identifier="y" redcap:RequiredField="y">
-		<Question><TranslatedText>Date samples collected:</TranslatedText></Question>
+	<ItemDef OID="biospecimen_date" Name="biospecimen_date" DataType="text" Length="999" redcap:Variable="biospecimen_date" redcap:FieldType="text" redcap:Identifier="y" redcap:RequiredField="y">
+		<Question><TranslatedText>Date samples collected</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="pat_sample_type___1" Name="pat_sample_type___1" DataType="boolean" Length="1" redcap:Variable="pat_sample_type" redcap:FieldType="checkbox" redcap:RequiredField="y">
-		<Question><TranslatedText>Sample types collected:</TranslatedText></Question>
-		<CodeListRef CodeListOID="pat_sample_type___1.choices"/>
+	<ItemDef OID="sample_type___1" Name="sample_type___1" DataType="boolean" Length="1" redcap:Variable="sample_type" redcap:FieldType="checkbox" redcap:RequiredField="y">
+		<Question><TranslatedText>Sample types collected</TranslatedText></Question>
+		<CodeListRef CodeListOID="sample_type___1.choices"/>
 	</ItemDef>
-	<ItemDef OID="pnt_blood_sample_count" Name="pnt_blood_sample_count" DataType="text" Length="999" redcap:Variable="pnt_blood_sample_count" redcap:FieldType="text">
+	<ItemDef OID="blood_sample_count" Name="blood_sample_count" DataType="text" Length="999" redcap:Variable="blood_sample_count" redcap:FieldType="text">
 		<Question><TranslatedText>Number of blood samples collected:</TranslatedText></Question>
 	</ItemDef>
 	<ItemDef OID="patient_biospecimens_complete" Name="patient_biospecimens_complete" DataType="text" Length="1" redcap:Variable="patient_biospecimens_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
 		<Question><TranslatedText>Complete?</TranslatedText></Question>
 		<CodeListRef CodeListOID="patient_biospecimens_complete.choices"/>
 	</ItemDef>
-	<ItemDef OID="pnt_sample_process_lab" Name="pnt_sample_process_lab" DataType="text" Length="1" redcap:Variable="pnt_sample_process_lab" redcap:FieldType="select" redcap:RequiredField="y">
-		<Question><TranslatedText>Quest lab location:</TranslatedText></Question>
-		<CodeListRef CodeListOID="pnt_sample_process_lab.choices"/>
+	<ItemDef OID="sample_process_lab" Name="sample_process_lab" DataType="text" Length="1" redcap:Variable="sample_process_lab" redcap:FieldType="select" redcap:RequiredField="y">
+		<Question><TranslatedText>Quest lab location</TranslatedText></Question>
+		<CodeListRef CodeListOID="sample_process_lab.choices"/>
 	</ItemDef>
-	<ItemDef OID="pnt_blood_analyses___1" Name="pnt_blood_analyses___1" DataType="boolean" Length="1" redcap:Variable="pnt_blood_analyses" redcap:FieldType="checkbox" redcap:RequiredField="y">
-		<Question><TranslatedText>Blood analyses requested:</TranslatedText></Question>
-		<CodeListRef CodeListOID="pnt_blood_analyses___1.choices"/>
+	<ItemDef OID="blood_analyses___1" Name="blood_analyses___1" DataType="boolean" Length="1" redcap:Variable="blood_analyses" redcap:FieldType="checkbox" redcap:RequiredField="y">
+		<Question><TranslatedText>Blood analyses requested</TranslatedText></Question>
+		<CodeListRef CodeListOID="blood_analyses___1.choices"/>
 	</ItemDef>
-	<ItemDef OID="pnt_blood_analyses___2" Name="pnt_blood_analyses___2" DataType="boolean" Length="1" redcap:Variable="pnt_blood_analyses" redcap:FieldType="checkbox" redcap:RequiredField="y">
-		<Question><TranslatedText>Blood analyses requested:</TranslatedText></Question>
-		<CodeListRef CodeListOID="pnt_blood_analyses___2.choices"/>
+	<ItemDef OID="blood_analyses___2" Name="blood_analyses___2" DataType="boolean" Length="1" redcap:Variable="blood_analyses" redcap:FieldType="checkbox" redcap:RequiredField="y">
+		<Question><TranslatedText>Blood analyses requested</TranslatedText></Question>
+		<CodeListRef CodeListOID="blood_analyses___2.choices"/>
 	</ItemDef>
-	<ItemDef OID="pnt_blood_analyses___1" Name="pnt_blood_analyses___1" DataType="boolean" Length="1" redcap:Variable="pnt_blood_analyses" redcap:FieldType="checkbox" redcap:RequiredField="y">
-		<Question><TranslatedText>Blood analyses requested:</TranslatedText></Question>
-		<CodeListRef CodeListOID="pnt_blood_analyses___1.choices"/>
+	<ItemDef OID="blood_analyses___1" Name="blood_analyses___1" DataType="boolean" Length="1" redcap:Variable="blood_analyses" redcap:FieldType="checkbox" redcap:RequiredField="y">
+		<Question><TranslatedText>Blood analyses requested</TranslatedText></Question>
+		<CodeListRef CodeListOID="blood_analyses___1.choices"/>
 	</ItemDef>
-	<ItemDef OID="pnt_blood_analyses___2" Name="pnt_blood_analyses___2" DataType="boolean" Length="1" redcap:Variable="pnt_blood_analyses" redcap:FieldType="checkbox" redcap:RequiredField="y">
-		<Question><TranslatedText>Blood analyses requested:</TranslatedText></Question>
-		<CodeListRef CodeListOID="pnt_blood_analyses___2.choices"/>
+	<ItemDef OID="blood_analyses___2" Name="blood_analyses___2" DataType="boolean" Length="1" redcap:Variable="blood_analyses" redcap:FieldType="checkbox" redcap:RequiredField="y">
+		<Question><TranslatedText>Blood analyses requested</TranslatedText></Question>
+		<CodeListRef CodeListOID="blood_analyses___2.choices"/>
 	</ItemDef>
 	<ItemDef OID="order_number" Name="order_number" DataType="integer" Length="999" redcap:Variable="order_number" redcap:FieldType="text" redcap:TextValidationType="int" redcap:FieldNote="(automated)" redcap:RequiredField="y">
 		<Question><TranslatedText>Order number:</TranslatedText></Question>
 	</ItemDef>
 	<ItemDef OID="order_bar_code" Name="order_bar_code" DataType="text" Length="999" redcap:Variable="order_bar_code" redcap:FieldType="descriptive">
-		<Question><TranslatedText>Order Bar Code: &lt;   add embeded image&gt; (automated)</TranslatedText><redcap:FormattedTranslatedText>Order Bar Code: &lt;   add embeded image&gt; (automated)</redcap:FormattedTranslatedText></Question>
+		<Question><TranslatedText>Order Bar Code: &lt;    add embeded image&gt; (automated)</TranslatedText><redcap:FormattedTranslatedText>Order Bar Code: &lt;    add embeded image&gt; (automated)</redcap:FormattedTranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="order_lab_a_result" Name="order_lab_a_result" DataType="text" Length="999" redcap:Variable="order_lab_a_result" redcap:FieldType="descriptive" redcap:BranchingLogic="[pnt_blood_analyses(1)] = &#039;1&#039;">
-		<Question><TranslatedText>White Blood Cell Result is &lt;  fill in the value&gt; (automated)</TranslatedText><redcap:FormattedTranslatedText>White Blood Cell Result is &lt;  fill in the value&gt; (automated)</redcap:FormattedTranslatedText></Question>
+	<ItemDef OID="order_lab_result_white" Name="order_lab_result_white" DataType="text" Length="999" redcap:Variable="order_lab_result_white" redcap:FieldType="descriptive" redcap:BranchingLogic="[blood_analyses(1)] = &#039;1&#039;">
+		<Question><TranslatedText>White Blood Cell Result is  (automated)</TranslatedText><redcap:FormattedTranslatedText>White Blood Cell Result is &lt; fill in the value&gt; (automated)</redcap:FormattedTranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="order_lab_b_result" Name="order_lab_b_result" DataType="text" Length="999" redcap:Variable="order_lab_b_result" redcap:FieldType="descriptive" redcap:BranchingLogic="[pnt_blood_analyses(2)] = &#039;1&#039;">
-		<Question><TranslatedText>Red Blood Cell Result is &lt;  fill in the value&gt; (automated)</TranslatedText><redcap:FormattedTranslatedText>Red Blood Cell Result is &lt;  fill in the value&gt; (automated)</redcap:FormattedTranslatedText></Question>
+	<ItemDef OID="order_lab_result_red" Name="order_lab_result_red" DataType="text" Length="999" redcap:Variable="order_lab_result_red" redcap:FieldType="descriptive" redcap:BranchingLogic="[blood_analyses(2)] = &#039;1&#039;">
+		<Question><TranslatedText>Red Blood Cell Result is  (automated)</TranslatedText><redcap:FormattedTranslatedText>Red Blood Cell Result is &lt; fill in the value&gt; (automated)</redcap:FormattedTranslatedText></Question>
 	</ItemDef>
 	<ItemDef OID="lab_orders_complete" Name="lab_orders_complete" DataType="text" Length="1" redcap:Variable="lab_orders_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
 		<Question><TranslatedText>Complete?</TranslatedText></Question>
 		<CodeListRef CodeListOID="lab_orders_complete.choices"/>
 	</ItemDef>
-	<ItemDef OID="pnt_protocol" Name="pnt_protocol" DataType="integer" Length="999" redcap:Variable="pnt_protocol" redcap:FieldType="text" redcap:TextValidationType="int" redcap:FieldNote="(automated)" redcap:RequiredField="y">
-		<Question><TranslatedText>Protocol:</TranslatedText></Question>
+	<ItemDef OID="protocol" Name="protocol" DataType="integer" Length="999" redcap:Variable="protocol" redcap:FieldType="text" redcap:TextValidationType="int" redcap:FieldNote="(automated)" redcap:RequiredField="y">
+		<Question><TranslatedText>Protocol</TranslatedText></Question>
 		<RangeCheck Comparator="GE" SoftHard="Soft">
 			<CheckValue>0</CheckValue>
 			<ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (0 - 10). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
@@ -347,61 +339,59 @@
 			<ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (0 - 10). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
 		</RangeCheck>
 	</ItemDef>
-	<ItemDef OID="pnt_rec_rx" Name="pnt_rec_rx" DataType="text" Length="999" redcap:Variable="pnt_rec_rx" redcap:FieldType="text" redcap:FieldNote="(initially automated)" redcap:RequiredField="y">
+	<ItemDef OID="recommended_rx" Name="recommended_rx" DataType="text" Length="999" redcap:Variable="recommended_rx" redcap:FieldType="text" redcap:FieldNote="(initially automated)" redcap:RequiredField="y">
 		<Question><TranslatedText>Recommended RX:</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="pnt_tolerance" Name="pnt_tolerance" DataType="text" Length="1" redcap:Variable="pnt_tolerance" redcap:FieldType="radio" redcap:RequiredField="y">
+	<ItemDef OID="tolerance" Name="tolerance" DataType="text" Length="1" redcap:Variable="tolerance" redcap:FieldType="radio" redcap:RequiredField="y">
 		<Question><TranslatedText>Patient intolerant of recommendation?</TranslatedText></Question>
-		<CodeListRef CodeListOID="pnt_tolerance.choices"/>
+		<CodeListRef CodeListOID="tolerance.choices"/>
 	</ItemDef>
-	<ItemDef OID="pnt_reject_rec_rx_reason" Name="pnt_reject_rec_rx_reason" DataType="text" Length="999" redcap:Variable="pnt_reject_rec_rx_reason" redcap:FieldType="text" redcap:RequiredField="y" redcap:BranchingLogic="[pnt_tolerance] = &#039;2&#039; or [pnt_tolerance] = &#039;0&#039;">
-		<Question><TranslatedText>Reason to reject recommended RX:</TranslatedText></Question>
+	<ItemDef OID="reject_rec_rx_reason" Name="reject_rec_rx_reason" DataType="text" Length="999" redcap:Variable="reject_rec_rx_reason" redcap:FieldType="text" redcap:RequiredField="y" redcap:BranchingLogic="[tolerance] = &#039;2&#039; or [tolerance] = &#039;0&#039;">
+		<Question><TranslatedText>Reason to reject recommended RX</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="pnt_algorithm" Name="pnt_algorithm" DataType="text" Length="999" redcap:Variable="pnt_algorithm" redcap:FieldType="text" redcap:FieldNote="(automated)" redcap:RequiredField="y">
-		<Question><TranslatedText>Algorithm run:</TranslatedText></Question>
+	<ItemDef OID="algorithm" Name="algorithm" DataType="text" Length="999" redcap:Variable="algorithm" redcap:FieldType="text" redcap:FieldNote="(automated)" redcap:RequiredField="y">
+		<Question><TranslatedText>Algorithm run</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="pnt_algorithm_run_date" Name="pnt_algorithm_run_date" DataType="text" Length="999" redcap:Variable="pnt_algorithm_run_date" redcap:FieldType="text" redcap:RequiredField="y">
+	<ItemDef OID="algorithm_run_date" Name="algorithm_run_date" DataType="text" Length="999" redcap:Variable="algorithm_run_date" redcap:FieldType="text" redcap:RequiredField="y">
 		<Question><TranslatedText>Date algorithm run</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="pnt_administered_rx" Name="pnt_administered_rx" DataType="text" Length="999" redcap:Variable="pnt_administered_rx" redcap:FieldType="text" redcap:RequiredField="y">
-		<Question><TranslatedText>Administered RX:</TranslatedText></Question>
+	<ItemDef OID="administered_drug" Name="administered_drug" DataType="text" Length="999" redcap:Variable="administered_drug" redcap:FieldType="text" redcap:RequiredField="y">
+		<Question><TranslatedText>Administered Drug</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="pnt_rx_daily_dose" Name="pnt_rx_daily_dose" DataType="float" Length="999" SignificantDigits="1" redcap:Variable="pnt_rx_daily_dose" redcap:FieldType="text" redcap:TextValidationType="float" redcap:FieldNote="(mg/L)" redcap:RequiredField="y">
-		<Question><TranslatedText>Administered RX daily dosage:</TranslatedText></Question>
+	<ItemDef OID="daily_drug_dosage" Name="daily_drug_dosage" DataType="float" Length="999" SignificantDigits="1" redcap:Variable="daily_drug_dosage" redcap:FieldType="text" redcap:TextValidationType="float" redcap:FieldNote="(mg/L)" redcap:RequiredField="y">
+		<Question><TranslatedText>Administered Drug daily dosage</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="pnt_advisor" Name="pnt_advisor" DataType="text" Length="999" redcap:Variable="pnt_advisor" redcap:FieldType="text" redcap:Identifier="y" redcap:RequiredField="y">
-		<Question><TranslatedText>Patient Advisor:</TranslatedText></Question>
+	<ItemDef OID="advisor" Name="advisor" DataType="text" Length="999" redcap:Variable="advisor" redcap:FieldType="text" redcap:Identifier="y" redcap:RequiredField="y">
+		<Question><TranslatedText>Advisor</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="pnt_advisor_phone" Name="pnt_advisor_phone" DataType="text" Length="999" redcap:Variable="pnt_advisor_phone" redcap:FieldType="text" redcap:TextValidationType="phone" redcap:Identifier="y" redcap:RequiredField="y">
-		<Question><TranslatedText>Patient advisor phone number:</TranslatedText></Question>
+	<ItemDef OID="advisor_phone" Name="advisor_phone" DataType="text" Length="999" redcap:Variable="advisor_phone" redcap:FieldType="text" redcap:TextValidationType="phone" redcap:Identifier="y" redcap:RequiredField="y">
+		<Question><TranslatedText>Patient advisor phone number</TranslatedText></Question>
 	</ItemDef>
 	<ItemDef OID="prescription_complete" Name="prescription_complete" DataType="text" Length="1" redcap:Variable="prescription_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
 		<Question><TranslatedText>Complete?</TranslatedText></Question>
 		<CodeListRef CodeListOID="prescription_complete.choices"/>
 	</ItemDef>
-	<ItemDef OID="pnt_clinic_note" Name="pnt_clinic_note" DataType="text" Length="999" redcap:Variable="pnt_clinic_note" redcap:FieldType="text" redcap:FieldNote="(automated)" redcap:RequiredField="y">
+	<ItemDef OID="clinic_note" Name="clinic_note" DataType="text" Length="999" redcap:Variable="clinic_note" redcap:FieldType="text" redcap:FieldNote="(automated)" redcap:RequiredField="y">
 		<Question><TranslatedText>Patty is recommended a dose of 10 mg of albuterol a day.</TranslatedText></Question>
 	</ItemDef>
 	<ItemDef OID="clinic_note_complete" Name="clinic_note_complete" DataType="text" Length="1" redcap:Variable="clinic_note_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
 		<Question><TranslatedText>Complete?</TranslatedText></Question>
 		<CodeListRef CodeListOID="clinic_note_complete.choices"/>
 	</ItemDef>
-	<ItemDef OID="pnt_logs" Name="pnt_logs" DataType="text" Length="999" redcap:Variable="pnt_logs" redcap:FieldType="textarea" redcap:FieldNote="(automated... JSON)" redcap:FieldAnnotation="@HIDDEN">
-		<Question><TranslatedText>Logs for the send_rx tool</TranslatedText></Question>
+	<ItemDef OID="send_rx_logs" Name="send_rx_logs" DataType="text" Length="999" redcap:Variable="send_rx_logs" redcap:FieldType="textarea" redcap:FieldNote="(automated... JSON)" redcap:FieldAnnotation="@HIDDEN">
+		<Question><TranslatedText>Logs</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="pnt_security_token" Name="pnt_security_token" DataType="text" Length="999" redcap:Variable="pnt_security_token" redcap:FieldType="text" redcap:FieldNote="(input by cps?)" redcap:Identifier="y" redcap:FieldAnnotation="@HIDDEN">
-		<Question><TranslatedText>Security Token:</TranslatedText></Question>
+	<ItemDef OID="send_rx_pharmacy_id" Name="send_rx_pharmacy_id" DataType="text" Length="1" redcap:Variable="send_rx_pharmacy_id" redcap:FieldType="radio">
+		<Question><TranslatedText>Send prescription to</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="logs_and_security_token_complete" Name="logs_and_security_token_complete" DataType="text" Length="1" redcap:Variable="logs_and_security_token_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+	<ItemDef OID="send_rx_pdf" Name="send_rx_pdf" DataType="text" Length="999" redcap:Variable="send_rx_pdf" redcap:FieldType="file" redcap:FieldAnnotation="@READONLY">
+		<Question><TranslatedText>Prescription PDF</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="send_rx_review_complete" Name="send_rx_review_complete" DataType="text" Length="1" redcap:Variable="send_rx_review_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
 		<Question><TranslatedText>Complete?</TranslatedText></Question>
-		<CodeListRef CodeListOID="logs_and_security_token_complete.choices"/>
+		<CodeListRef CodeListOID="send_rx_review_complete.choices"/>
 	</ItemDef>
-	<CodeList OID="pnt_local_site.choices" Name="pnt_local_site" DataType="text" redcap:Variable="pnt_local_site">
-		<CodeListItem CodedValue="1"><Decode><TranslatedText>Gainesville</TranslatedText></Decode></CodeListItem>
-		<CodeListItem CodedValue="2"><Decode><TranslatedText>Miami</TranslatedText></Decode></CodeListItem>
-		<CodeListItem CodedValue="3"><Decode><TranslatedText>Jacksonville</TranslatedText></Decode></CodeListItem>
-	</CodeList>
-	<CodeList OID="pnt_blood_type.choices" Name="pnt_blood_type" DataType="text" redcap:Variable="pnt_blood_type">
+	<CodeList OID="blood_type.choices" Name="blood_type" DataType="text" redcap:Variable="blood_type">
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>A+</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="2"><Decode><TranslatedText>A-</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="3"><Decode><TranslatedText>B+</TranslatedText></Decode></CodeListItem>
@@ -409,7 +399,7 @@
 		<CodeListItem CodedValue="5"><Decode><TranslatedText>O+</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="6"><Decode><TranslatedText>O-</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="pnt_conditions.choices" Name="pnt_conditions" DataType="text" redcap:Variable="pnt_conditions">
+	<CodeList OID="conditions.choices" Name="conditions" DataType="text" redcap:Variable="conditions">
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Heart Disease</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="2"><Decode><TranslatedText>High Blood Pressure</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="3"><Decode><TranslatedText>Low Blood Pressure</TranslatedText></Decode></CodeListItem>
@@ -421,7 +411,7 @@
 		<CodeListItem CodedValue="9"><Decode><TranslatedText>Hyperthyroidism</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="10"><Decode><TranslatedText>Mental Illness</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="pnt_parental_conditions.choices" Name="pnt_parental_conditions" DataType="text" redcap:Variable="pnt_parental_conditions">
+	<CodeList OID="parental_conditions.choices" Name="parental_conditions" DataType="text" redcap:Variable="parental_conditions">
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Heart Disease</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="2"><Decode><TranslatedText>High Blood Pressure</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="3"><Decode><TranslatedText>Low Blood Pressure</TranslatedText></Decode></CodeListItem>
@@ -433,7 +423,7 @@
 		<CodeListItem CodedValue="9"><Decode><TranslatedText>Hyperthyroidism</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="10"><Decode><TranslatedText>Mental Illness</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="pnt_travel_past_10_yr.choices" Name="pnt_travel_past_10_yr" DataType="text" redcap:Variable="pnt_travel_past_10_yr">
+	<CodeList OID="travel_past_10_yr.choices" Name="travel_past_10_yr" DataType="text" redcap:Variable="travel_past_10_yr">
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>DR Congo</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="2"><Decode><TranslatedText>Liberia</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="3"><Decode><TranslatedText>Sierra Leone</TranslatedText></Decode></CodeListItem>
@@ -445,7 +435,7 @@
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="pnt_wise_consent.choices" Name="pnt_wise_consent" DataType="text" redcap:Variable="pnt_wise_consent">
+	<CodeList OID="study_consent.choices" Name="study_consent" DataType="text" redcap:Variable="study_consent">
 		<CodeListItem CodedValue="2"><Decode><TranslatedText>I do not consent</TranslatedText><redcap:FormattedTranslatedText>I &lt;u&gt;do not&lt;/u&gt; consent</redcap:FormattedTranslatedText></Decode></CodeListItem>
 	</CodeList>
 	<CodeList OID="initial_patient_consent_complete.choices" Name="initial_patient_consent_complete" DataType="text" redcap:Variable="initial_patient_consent_complete">
@@ -453,7 +443,7 @@
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="pnt_vh_consent.choices" Name="pnt_vh_consent" DataType="text" redcap:Variable="pnt_vh_consent">
+	<CodeList OID="vh_consent.choices" Name="vh_consent" DataType="text" redcap:Variable="vh_consent">
 		<CodeListItem CodedValue="2"><Decode><TranslatedText>I do not consent</TranslatedText><redcap:FormattedTranslatedText>I &lt;u&gt;do not&lt;/u&gt; consent</redcap:FormattedTranslatedText></Decode></CodeListItem>
 	</CodeList>
 	<CodeList OID="vh_additional_consent_form_complete.choices" Name="vh_additional_consent_form_complete" DataType="text" redcap:Variable="vh_additional_consent_form_complete">
@@ -461,15 +451,15 @@
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="pnt_email_communication.choices" Name="pnt_email_communication" DataType="boolean" redcap:Variable="pnt_email_communication">
+	<CodeList OID="email_is_primary.choices" Name="email_is_primary" DataType="boolean" redcap:Variable="email_is_primary">
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Yes</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="0"><Decode><TranslatedText>No</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="pnt_contact_method.choices" Name="pnt_contact_method" DataType="text" redcap:Variable="pnt_contact_method">
+	<CodeList OID="contact_method.choices" Name="contact_method" DataType="text" redcap:Variable="contact_method">
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Phone</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="2"><Decode><TranslatedText>Physical Mail</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="pnt_gender.choices" Name="pnt_gender" DataType="text" redcap:Variable="pnt_gender">
+	<CodeList OID="gender.choices" Name="gender" DataType="text" redcap:Variable="gender">
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Male</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="2"><Decode><TranslatedText>Female</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="3"><Decode><TranslatedText>Transgender Female</TranslatedText></Decode></CodeListItem>
@@ -477,12 +467,12 @@
 		<CodeListItem CodedValue="5"><Decode><TranslatedText>Androgynous</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="6"><Decode><TranslatedText>Prefer not to disclose</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="pnt_sex.choices" Name="pnt_sex" DataType="text" redcap:Variable="pnt_sex">
+	<CodeList OID="sex.choices" Name="sex" DataType="text" redcap:Variable="sex">
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Female</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="2"><Decode><TranslatedText>Male</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="3"><Decode><TranslatedText>Prefer not to disclose</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="pnt_race.choices" Name="pnt_race" DataType="text" redcap:Variable="pnt_race">
+	<CodeList OID="race.choices" Name="race" DataType="text" redcap:Variable="race">
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Asian</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="2"><Decode><TranslatedText>Black or African American</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="3"><Decode><TranslatedText>Inuit or Alaskan Native</TranslatedText></Decode></CodeListItem>
@@ -491,12 +481,12 @@
 		<CodeListItem CodedValue="6"><Decode><TranslatedText>White or Caucasian</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="7"><Decode><TranslatedText>Prefer not to disclose</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="pnt_ethnicity.choices" Name="pnt_ethnicity" DataType="text" redcap:Variable="pnt_ethnicity">
+	<CodeList OID="ethnicity.choices" Name="ethnicity" DataType="text" redcap:Variable="ethnicity">
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Hispanic</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="2"><Decode><TranslatedText>Non-Hispanic</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="3"><Decode><TranslatedText>Prefer not to disclose</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="pnt_pregnant.choices" Name="pnt_pregnant" DataType="text" redcap:Variable="pnt_pregnant">
+	<CodeList OID="pregnant.choices" Name="pregnant" DataType="text" redcap:Variable="pregnant">
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Yes</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="2"><Decode><TranslatedText>No</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="3"><Decode><TranslatedText>Prefer not to answer</TranslatedText></Decode></CodeListItem>
@@ -506,7 +496,7 @@
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="pat_sample_type___1.choices" Name="pat_sample_type___1" DataType="boolean" redcap:Variable="pat_sample_type" redcap:CheckboxChoices="1, Blood">
+	<CodeList OID="sample_type___1.choices" Name="sample_type___1" DataType="boolean" redcap:Variable="sample_type" redcap:CheckboxChoices="1, Blood">
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
 	</CodeList>
@@ -515,26 +505,26 @@
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="pnt_sample_process_lab.choices" Name="pnt_sample_process_lab" DataType="text" redcap:Variable="pnt_sample_process_lab">
+	<CodeList OID="sample_process_lab.choices" Name="sample_process_lab" DataType="text" redcap:Variable="sample_process_lab">
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>North</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="2"><Decode><TranslatedText>South</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="3"><Decode><TranslatedText>Central</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="4"><Decode><TranslatedText>West</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="5"><Decode><TranslatedText>East</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="pnt_blood_analyses___1.choices" Name="pnt_blood_analyses___1" DataType="boolean" redcap:Variable="pnt_blood_analyses" redcap:CheckboxChoices="1, White blood cell count|2, Red blood cell count">
+	<CodeList OID="blood_analyses___1.choices" Name="blood_analyses___1" DataType="boolean" redcap:Variable="blood_analyses" redcap:CheckboxChoices="1, White blood cell count | 2, Red blood cell count">
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="pnt_blood_analyses___2.choices" Name="pnt_blood_analyses___2" DataType="boolean" redcap:Variable="pnt_blood_analyses" redcap:CheckboxChoices="1, White blood cell count|2, Red blood cell count">
+	<CodeList OID="blood_analyses___2.choices" Name="blood_analyses___2" DataType="boolean" redcap:Variable="blood_analyses" redcap:CheckboxChoices="1, White blood cell count | 2, Red blood cell count">
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="pnt_blood_analyses___1.choices" Name="pnt_blood_analyses___1" DataType="boolean" redcap:Variable="pnt_blood_analyses" redcap:CheckboxChoices="1, White blood cell count|2, Red blood cell count">
+	<CodeList OID="blood_analyses___1.choices" Name="blood_analyses___1" DataType="boolean" redcap:Variable="blood_analyses" redcap:CheckboxChoices="1, White blood cell count | 2, Red blood cell count">
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="pnt_blood_analyses___2.choices" Name="pnt_blood_analyses___2" DataType="boolean" redcap:Variable="pnt_blood_analyses" redcap:CheckboxChoices="1, White blood cell count|2, Red blood cell count">
+	<CodeList OID="blood_analyses___2.choices" Name="blood_analyses___2" DataType="boolean" redcap:Variable="blood_analyses" redcap:CheckboxChoices="1, White blood cell count | 2, Red blood cell count">
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
 	</CodeList>
@@ -543,7 +533,7 @@
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="pnt_tolerance.choices" Name="pnt_tolerance" DataType="text" redcap:Variable="pnt_tolerance">
+	<CodeList OID="tolerance.choices" Name="tolerance" DataType="text" redcap:Variable="tolerance">
 		<CodeListItem CodedValue="0"><Decode><TranslatedText>No, not tolerant. The recommendation is rejected.</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Yes, tolerant. The recommendation stands.</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="2"><Decode><TranslatedText>Tolerant, but the recommendation is rejected for other reasons (specify below).</TranslatedText></Decode></CodeListItem>
@@ -558,7 +548,7 @@
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="logs_and_security_token_complete.choices" Name="logs_and_security_token_complete" DataType="text" redcap:Variable="logs_and_security_token_complete">
+	<CodeList OID="send_rx_review_complete.choices" Name="send_rx_review_complete" DataType="text" redcap:Variable="send_rx_review_complete">
 		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>

@@ -69,7 +69,7 @@ This is quite analogous to what we just did on previous section.
 
 Thus, the JSON contents should look like this (dont't forget to update `targetProjectId` value):
 ```
-{"type":"patient","targetProjectId":123,"sendDefault":true,"sendConfirmation":false,"expireTime":90,"lockInstruments":"lab_orders,prescription","senderClass":"RxSender"}
+{"type":"patient","targetProjectId":123,"lockInstruments":"lab_orders,prescription","senderClass":"RxSender"}
 ```
 
 ## Sending your First Test Prescription
