@@ -5,6 +5,7 @@
  */
 
 include_once 'send_rx_functions.php';
+include_once 'LockRecord.php';
 
 class RxSender {
 
@@ -145,7 +146,7 @@ class RxSender {
         }
 
         foreach ($data as $value) {
-            if ($value['send_rx_username'] == $username) {
+            if ($value['send_rx_prescriber_id'] == $username) {
                 $this->setPrescriberData($value);
                 break;
             }
@@ -156,7 +157,7 @@ class RxSender {
         }
 
         foreach ($data as $value) {
-            $this->deliveryMethods[$value['send_rx_delivery_type']] = $value;
+            $this->deliveryMethods[$value['send_rx_message_type']] = $value;
         }
     }
 
@@ -254,8 +255,8 @@ class RxSender {
 
             switch ($msg_type) {
                 case 'email':
-                    $success = REDCap::email($config['send_rx_pharmacy_emails'], $subject, $body);
-                    $this->log($msg_type, $success, $this->pharmacyData['send_rx_pharmacy_emails'], $subject, $body);
+                    $success = REDCap::email($config['send_rx_recipients'], $subject, $body);
+                    $this->log($msg_type, $success, $this->pharmacyData['send_rx_recipients'], $subject, $body);
 
                     return $success;
 
@@ -321,7 +322,7 @@ class RxSender {
      */
     protected function log($msg_type, $success, $emails, $subject, $body) {
         // Appending a new entry to the log list.
-        $this->logs[] = array($msg_type, $success, time(), $emails, $this->username, $this->getDeliveryMethod(), $subject, $body);
+        $this->logs[] = array($msg_type, $success, time(), $emails, $this->username, $subject, $body);
         $contents = json_encode($this->logs);
 
         $file_path = $this->generateTmpFilePath('json');
