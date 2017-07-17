@@ -31,9 +31,23 @@ require_once 'LockRecord.php';
  *   Returns FALSE if the project is not configure properly.
  */
 function send_rx_get_project_config($project_id, $project_type) {
-    // TODO.
-    // Fetches JSON from database and validates the required fields according to
-    // the project type. Example: check if sender class exists.
+    $sql = 'SELECT value FROM uf_project_id WHERE project_id = ' . db_escape($project_id) . ' AND attribute = "send_rx_config" LIMIT 1';
+    $q = db_query($sql);
+
+    if (!db_num_rows($q)) {
+        return false;
+    }
+
+    $config = db_fetch_assoc($q);
+    $config = json_decode($config['value']);
+
+    if (empty($config) || empty($config->type) || $config->type != $project_type) {
+        return false;
+    }
+
+    // TODO: additional validation checks on config.
+
+    return $config;
 }
 
 /**
@@ -57,7 +71,7 @@ function send_rx_get_sender($project_id, $event_id, $patient_id, $username = USE
         return false;
     }
 
-    $class = $config->senderClass;
+    $class = empty($config->senderClass) ? 'RxSender' : $config->senderClass;
     return new $class($project_id, $event_id, $patient_id, $username);
 }
 
@@ -360,20 +374,20 @@ function send_rx_get_user_pharmacies($project_id, $username = USERID, $project_t
 
     $pharmacies = array();
 
-    $data = REDCap::getData($project_id, 'array', null, 'send_rx_username');
+    $data = REDCap::getData($project_id, 'array', null, array('send_rx_pharmacy_name', 'send_rx_prescriber_id'));
     foreach ($data as $pharmacy_id => $pharmacy_info) {
         if (empty($pharmacy_info['repeat_instances'])) {
             continue;
         }
 
-        if (empty($pharmacy_info['repeat_instances']['rx_send_users'])) {
+        if (empty($pharmacy_info['repeat_instances']['prescribers'])) {
             continue;
         }
 
-        foreach ($pharmacy_info['repeat_instances']['rx_send_users'] as $user_info) {
-            if ($username == $user_info['send_rx_username']) {
+        foreach ($pharmacy_info['repeat_instances']['prescribers'] as $prescriber_info) {
+            if ($username == $prescriber_info['send_rx_prescriber_id']) {
                 // The user belongs to this pharmacy.
-                $pharmacies[$pharmacy_id] = $pharmacy_info['send_rx_pharmacy_name'];
+                $pharmacies[$pharmacy_id] = $pharmacy_info[$pharmacy_id]['pharmacy_info']['send_rx_pharmacy_name'];
                 break;
             }
         }
