@@ -4,9 +4,6 @@
  * Helper Send RX functions.
  */
 
-
-require_once 'libraries/01-mPDF-v6.1.0/vendor/autoload.php';
-require_once 'LockRecord.php';
 require_once "../plugins/custom_project_settings/cps_lib.php";
 
 /**
@@ -146,9 +143,11 @@ function send_rx_piping($subject, $data) {
 function send_rx_generate_pdf_file($contents, $file_path) {
 
   try {
-    $mpdf = new mPDF();
-    $mpdf->WriteHTML($contents);
-    $mpdf->Output($file_path, 'F');
+    $pdf = new FPDF_HTML();
+    $pdf->SetFont('Arial', '', 12);
+    $pdf->AddPage();
+    $pdf->WriteHTML($contents);
+    $pdf->Output($file_path, 'F');
   } catch (Exception $e) {
     return false;
   }
@@ -318,36 +317,12 @@ function send_rx_get_repeat_instrument_instances($project_id, $record_id, $instr
         return false;
     }
 
-    $data = $event_id ? $data[$record_id]['repeat_instances'][$event_id] : reset($data['repeat_instances'][$record_id]);
+    $data = $event_id ? $data[$record_id]['repeat_instances'][$event_id] : reset($data[$record_id]['repeat_instances']);
     if (empty($data[$instrument_name])) {
         return false;
     }
 
     return $data[$instrument_name];
-}
-
-/**
- * Locks for updates the given instruments of the given data entry record.
- *
- * @param int $project_id
- *   Data entry project ID.
- * @param int $record_id
- *   Data entry record ID.
- * @param int $instruments
- *   (optional) Array of instruments names. Leave blank to block all instruments.
- * @param int $event_id
- *   (optional) Data entry event ID. Leave blank to block all events.
- *
- * @return bool
- *   TRUE if success, FALSE otherwise.
- */
-function send_rx_lock_instruments($project_id, $record_id, $instruments = null, $event_id = null) {
-    // TODO. yet to handle locking all events functionality
-    if (!isSet($event_id)) {
-        return false;
-    }
-    $lockObj = new LockRecord($username, $project_id, $record_id);
-    return $lockObj->lockEvent($event_id, $instruments);
 }
 
 /**
@@ -376,7 +351,7 @@ function send_rx_get_user_pharmacies($project_id, $username = USERID, $project_t
     }
 
     // Checking if pharmacy project is ok.
-    if (send_rx_get_project_config($project_id, $project_type)) {
+    if (!send_rx_get_project_config($project_id, $project_type)) {
         return false;
     }
 
@@ -388,14 +363,15 @@ function send_rx_get_user_pharmacies($project_id, $username = USERID, $project_t
             continue;
         }
 
-        if (empty($pharmacy_info['repeat_instances']['prescribers'])) {
+        $event_id = key($pharmacy_info['repeat_instances']);
+        if (empty($pharmacy_info['repeat_instances'][$event_id]['prescribers'])) {
             continue;
         }
 
-        foreach ($pharmacy_info['repeat_instances']['prescribers'] as $prescriber_info) {
+        foreach ($pharmacy_info['repeat_instances'][$event_id]['prescribers'] as $prescriber_info) {
             if ($username == $prescriber_info['send_rx_prescriber_id']) {
                 // The user belongs to this pharmacy.
-                $pharmacies[$pharmacy_id] = $pharmacy_info[$pharmacy_id]['pharmacy_info']['send_rx_pharmacy_name'];
+                $pharmacies[$pharmacy_id] = $pharmacy_info[$event_id]['send_rx_pharmacy_name'];
                 break;
             }
         }
