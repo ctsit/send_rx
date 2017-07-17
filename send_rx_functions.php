@@ -7,6 +7,7 @@
 
 require_once 'libraries/01-mPDF-v6.1.0/vendor/autoload.php';
 require_once 'LockRecord.php';
+require_once "../plugins/custom_project_settings/cps_lib.php";
 
 /**
  * Gets Send RX config from project.
@@ -32,8 +33,20 @@ require_once 'LockRecord.php';
  */
 function send_rx_get_project_config($project_id, $project_type) {
     // TODO.
-    // Fetches JSON from database and validates the required fields according to
-    // the project type. Example: check if sender class exists.
+    $cpsObj = new cps_lib();
+    $result = $cpsObj->getAttributeData($project_id, $project_type);
+    if ($project_type == "pharmacy") {
+        $obj = json_decode($result);
+        if ($obj->type == $project_type && isSet($obj->pdfTemplate)) {
+            return $result;
+        }
+    } else if ($project_type == "patient") {
+        $obj = json_decode($result);
+        if ($obj->type == $project_type && isSet($obj->senderClass)) {
+            return $result;
+        }
+    }
+    return false;
 }
 
 /**
