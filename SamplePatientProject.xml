@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:redcap="https://projectredcap.org" xsi:schemaLocation="http://www.cdisc.org/ns/odm/v1.3 schema/odm/ODM1-3-1.xsd" ODMVersion="1.3.1" FileOID="000-00-0000" FileType="Snapshot" Description="Send Rx Patient" AsOfDateTime="2017-07-17T09:43:24" CreationDateTime="2017-07-17T09:43:24" SourceSystem="REDCap" SourceSystemVersion="7.3.6">
+<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:redcap="https://projectredcap.org" xsi:schemaLocation="http://www.cdisc.org/ns/odm/v1.3 schema/odm/ODM1-3-1.xsd" ODMVersion="1.3.1" FileOID="000-00-0000" FileType="Snapshot" Description="Send Rx Patient" AsOfDateTime="2017-07-17T14:33:19" CreationDateTime="2017-07-17T14:33:19" SourceSystem="REDCap" SourceSystemVersion="7.3.6">
 <Study OID="Project.SendRxPatient">
 <GlobalVariables>
 	<StudyName>Send Rx Patient</StudyName>
@@ -13,7 +13,7 @@
 	<redcap:PurposeOther></redcap:PurposeOther>
 	<redcap:ProjectNotes></redcap:ProjectNotes>
 </GlobalVariables>
-<MetaDataVersion OID="Metadata.SendRxPatient_2017-07-17_0943" Name="Send Rx Patient" redcap:RecordIdField="patient_id">
+<MetaDataVersion OID="Metadata.SendRxPatient_2017-07-17_1433" Name="Send Rx Patient" redcap:RecordIdField="patient_id">
 	<FormDef OID="Form.patient_screening_info" Name="Patient Screening Info" Repeating="No" redcap:FormName="patient_screening_info">
 		<ItemGroupRef ItemGroupOID="patient_screening_info.patient_id" Mandatory="No"/>
 		<ItemGroupRef ItemGroupOID="patient_screening_info.patient_screening_info_complete" Mandatory="No"/>
@@ -58,8 +58,8 @@
 		<ItemRef ItemOID="systolic_bp" Mandatory="Yes" redcap:Variable="systolic_bp"/>
 		<ItemRef ItemOID="diastolic_bp" Mandatory="Yes" redcap:Variable="diastolic_bp"/>
 		<ItemRef ItemOID="blood_type" Mandatory="Yes" redcap:Variable="blood_type"/>
-		<ItemRef ItemOID="conditions" Mandatory="Yes" redcap:Variable="conditions"/>
-		<ItemRef ItemOID="parental_conditions" Mandatory="Yes" redcap:Variable="parental_conditions"/>
+		<ItemRef ItemOID="conditions" Mandatory="No" redcap:Variable="conditions"/>
+		<ItemRef ItemOID="parental_conditions" Mandatory="No" redcap:Variable="parental_conditions"/>
 		<ItemRef ItemOID="travel_past_10_yr" Mandatory="No" redcap:Variable="travel_past_10_yr"/>
 	</ItemGroupDef>
 	<ItemGroupDef OID="patient_screening_info.patient_screening_info_complete" Name="Form Status" Repeating="No">
@@ -124,7 +124,7 @@
 		<ItemRef ItemOID="protocol" Mandatory="Yes" redcap:Variable="protocol"/>
 		<ItemRef ItemOID="recommended_rx" Mandatory="Yes" redcap:Variable="recommended_rx"/>
 		<ItemRef ItemOID="tolerance" Mandatory="Yes" redcap:Variable="tolerance"/>
-		<ItemRef ItemOID="reject_rec_rx_reason" Mandatory="Yes" redcap:Variable="reject_rec_rx_reason"/>
+		<ItemRef ItemOID="reject_rec_rx_reason" Mandatory="No" redcap:Variable="reject_rec_rx_reason"/>
 		<ItemRef ItemOID="algorithm" Mandatory="Yes" redcap:Variable="algorithm"/>
 		<ItemRef ItemOID="algorithm_run_date" Mandatory="Yes" redcap:Variable="algorithm_run_date"/>
 		<ItemRef ItemOID="administered_drug" Mandatory="Yes" redcap:Variable="administered_drug"/>
@@ -143,7 +143,7 @@
 	</ItemGroupDef>
 	<ItemGroupDef OID="send_rx_review.send_rx_logs" Name="Send Rx Review" Repeating="No">
 		<ItemRef ItemOID="send_rx_logs" Mandatory="No" redcap:Variable="send_rx_logs"/>
-		<ItemRef ItemOID="send_rx_pharmacy_id" Mandatory="No" redcap:Variable="send_rx_pharmacy_id"/>
+		<ItemRef ItemOID="send_rx_pharmacy_id" Mandatory="Yes" redcap:Variable="send_rx_pharmacy_id"/>
 		<ItemRef ItemOID="send_rx_pdf" Mandatory="No" redcap:Variable="send_rx_pdf"/>
 	</ItemGroupDef>
 	<ItemGroupDef OID="send_rx_review.send_rx_review_complete" Name="Form Status" Repeating="No">
@@ -187,11 +187,11 @@
 		<Question><TranslatedText>Blood Type</TranslatedText></Question>
 		<CodeListRef CodeListOID="blood_type.choices"/>
 	</ItemDef>
-	<ItemDef OID="conditions" Name="conditions" DataType="text" Length="2" redcap:Variable="conditions" redcap:FieldType="radio" redcap:RequiredField="y">
+	<ItemDef OID="conditions" Name="conditions" DataType="text" Length="2" redcap:Variable="conditions" redcap:FieldType="radio">
 		<Question><TranslatedText>Check all known medical conditions you have or currently have. If none apply or the conditions are unknown, do not check any.</TranslatedText></Question>
 		<CodeListRef CodeListOID="conditions.choices"/>
 	</ItemDef>
-	<ItemDef OID="parental_conditions" Name="parental_conditions" DataType="text" Length="2" redcap:Variable="parental_conditions" redcap:FieldType="radio" redcap:RequiredField="y">
+	<ItemDef OID="parental_conditions" Name="parental_conditions" DataType="text" Length="2" redcap:Variable="parental_conditions" redcap:FieldType="radio">
 		<Question><TranslatedText>Parental medical history: Check all known conditions that pertain to your biological mother or father. If none apply or the conditions are unknown, do not check any.</TranslatedText></Question>
 		<CodeListRef CodeListOID="parental_conditions.choices"/>
 	</ItemDef>
@@ -230,7 +230,7 @@
 	<ItemDef OID="ptn_vh_signature" Name="ptn_vh_signature" DataType="text" Length="999" redcap:Variable="ptn_vh_signature" redcap:FieldType="file" redcap:TextValidationType="signature" redcap:Identifier="y" redcap:RequiredField="y" redcap:BranchingLogic="[vh_consent] = &#039;1&#039;">
 		<Question><TranslatedText>Signature:</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="vh_consent_date" Name="vh_consent_date" DataType="text" Length="999" redcap:Variable="vh_consent_date" redcap:FieldType="text" redcap:Identifier="y" redcap:RequiredField="y" redcap:BranchingLogic="[vh_consent] = &#039;1&#039;">
+	<ItemDef OID="vh_consent_date" Name="vh_consent_date" DataType="date" Length="999" redcap:Variable="vh_consent_date" redcap:FieldType="text" redcap:TextValidationType="date_mdy" redcap:Identifier="y" redcap:RequiredField="y" redcap:BranchingLogic="[vh_consent] = &#039;1&#039;">
 		<Question><TranslatedText>Date:</TranslatedText></Question>
 	</ItemDef>
 	<ItemDef OID="vh_additional_consent_form_complete" Name="vh_additional_consent_form_complete" DataType="text" Length="1" redcap:Variable="vh_additional_consent_form_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
@@ -250,7 +250,7 @@
 		<Question><TranslatedText>Can we use email as the primary means of communication?</TranslatedText></Question>
 		<CodeListRef CodeListOID="email_is_primary.choices"/>
 	</ItemDef>
-	<ItemDef OID="contact_method" Name="contact_method" DataType="text" Length="1" redcap:Variable="contact_method" redcap:FieldType="radio" redcap:RequiredField="y" redcap:BranchingLogic="email_is_primary = `1`">
+	<ItemDef OID="contact_method" Name="contact_method" DataType="text" Length="1" redcap:Variable="contact_method" redcap:FieldType="radio" redcap:RequiredField="y" redcap:BranchingLogic="[email_is_primary] = &#039;0&#039;">
 		<Question><TranslatedText>Preferred method of contact</TranslatedText></Question>
 		<CodeListRef CodeListOID="contact_method.choices"/>
 	</ItemDef>
@@ -340,19 +340,19 @@
 		</RangeCheck>
 	</ItemDef>
 	<ItemDef OID="recommended_rx" Name="recommended_rx" DataType="text" Length="999" redcap:Variable="recommended_rx" redcap:FieldType="text" redcap:FieldNote="(initially automated)" redcap:RequiredField="y">
-		<Question><TranslatedText>Recommended RX:</TranslatedText></Question>
+		<Question><TranslatedText>Recommended RX</TranslatedText></Question>
 	</ItemDef>
 	<ItemDef OID="tolerance" Name="tolerance" DataType="text" Length="1" redcap:Variable="tolerance" redcap:FieldType="radio" redcap:RequiredField="y">
 		<Question><TranslatedText>Patient intolerant of recommendation?</TranslatedText></Question>
 		<CodeListRef CodeListOID="tolerance.choices"/>
 	</ItemDef>
-	<ItemDef OID="reject_rec_rx_reason" Name="reject_rec_rx_reason" DataType="text" Length="999" redcap:Variable="reject_rec_rx_reason" redcap:FieldType="text" redcap:RequiredField="y" redcap:BranchingLogic="[tolerance] = &#039;2&#039; or [tolerance] = &#039;0&#039;">
+	<ItemDef OID="reject_rec_rx_reason" Name="reject_rec_rx_reason" DataType="text" Length="999" redcap:Variable="reject_rec_rx_reason" redcap:FieldType="text" redcap:BranchingLogic="[tolerance] = &#039;2&#039; or [tolerance] = &#039;0&#039;">
 		<Question><TranslatedText>Reason to reject recommended RX</TranslatedText></Question>
 	</ItemDef>
 	<ItemDef OID="algorithm" Name="algorithm" DataType="text" Length="999" redcap:Variable="algorithm" redcap:FieldType="text" redcap:FieldNote="(automated)" redcap:RequiredField="y">
 		<Question><TranslatedText>Algorithm run</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="algorithm_run_date" Name="algorithm_run_date" DataType="text" Length="999" redcap:Variable="algorithm_run_date" redcap:FieldType="text" redcap:RequiredField="y">
+	<ItemDef OID="algorithm_run_date" Name="algorithm_run_date" DataType="date" Length="999" redcap:Variable="algorithm_run_date" redcap:FieldType="text" redcap:TextValidationType="date_mdy" redcap:RequiredField="y">
 		<Question><TranslatedText>Date algorithm run</TranslatedText></Question>
 	</ItemDef>
 	<ItemDef OID="administered_drug" Name="administered_drug" DataType="text" Length="999" redcap:Variable="administered_drug" redcap:FieldType="text" redcap:RequiredField="y">
@@ -378,13 +378,14 @@
 		<Question><TranslatedText>Complete?</TranslatedText></Question>
 		<CodeListRef CodeListOID="clinic_note_complete.choices"/>
 	</ItemDef>
-	<ItemDef OID="send_rx_logs" Name="send_rx_logs" DataType="text" Length="999" redcap:Variable="send_rx_logs" redcap:FieldType="textarea" redcap:FieldNote="(automated... JSON)" redcap:FieldAnnotation="@HIDDEN">
+	<ItemDef OID="send_rx_logs" Name="send_rx_logs" DataType="text" Length="999" redcap:Variable="send_rx_logs" redcap:FieldType="file">
 		<Question><TranslatedText>Logs</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="send_rx_pharmacy_id" Name="send_rx_pharmacy_id" DataType="text" Length="1" redcap:Variable="send_rx_pharmacy_id" redcap:FieldType="radio">
+	<ItemDef OID="send_rx_pharmacy_id" Name="send_rx_pharmacy_id" DataType="text" Length="1" redcap:Variable="send_rx_pharmacy_id" redcap:FieldType="select" redcap:RequiredField="y">
 		<Question><TranslatedText>Send prescription to</TranslatedText></Question>
+		<CodeListRef CodeListOID="send_rx_pharmacy_id.choices"/>
 	</ItemDef>
-	<ItemDef OID="send_rx_pdf" Name="send_rx_pdf" DataType="text" Length="999" redcap:Variable="send_rx_pdf" redcap:FieldType="file" redcap:FieldAnnotation="@READONLY">
+	<ItemDef OID="send_rx_pdf" Name="send_rx_pdf" DataType="text" Length="999" redcap:Variable="send_rx_pdf" redcap:FieldType="file">
 		<Question><TranslatedText>Prescription PDF</TranslatedText></Question>
 	</ItemDef>
 	<ItemDef OID="send_rx_review_complete" Name="send_rx_review_complete" DataType="text" Length="1" redcap:Variable="send_rx_review_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
@@ -444,6 +445,7 @@
 		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
 	</CodeList>
 	<CodeList OID="vh_consent.choices" Name="vh_consent" DataType="text" redcap:Variable="vh_consent">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>I consent</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="2"><Decode><TranslatedText>I do not consent</TranslatedText><redcap:FormattedTranslatedText>I &lt;u&gt;do not&lt;/u&gt; consent</redcap:FormattedTranslatedText></Decode></CodeListItem>
 	</CodeList>
 	<CodeList OID="vh_additional_consent_form_complete.choices" Name="vh_additional_consent_form_complete" DataType="text" redcap:Variable="vh_additional_consent_form_complete">
@@ -547,6 +549,9 @@
 		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="send_rx_pharmacy_id.choices" Name="send_rx_pharmacy_id" DataType="text" redcap:Variable="send_rx_pharmacy_id">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Shands</TranslatedText></Decode></CodeListItem>
 	</CodeList>
 	<CodeList OID="send_rx_review_complete.choices" Name="send_rx_review_complete" DataType="text" redcap:Variable="send_rx_review_complete">
 		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>

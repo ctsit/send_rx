@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:redcap="https://projectredcap.org" xsi:schemaLocation="http://www.cdisc.org/ns/odm/v1.3 schema/odm/ODM1-3-1.xsd" ODMVersion="1.3.1" FileOID="000-00-0000" FileType="Snapshot" Description="Send Rx Pharmacy" AsOfDateTime="2017-07-17T09:57:20" CreationDateTime="2017-07-17T09:57:20" SourceSystem="REDCap" SourceSystemVersion="7.3.6">
+<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:redcap="https://projectredcap.org" xsi:schemaLocation="http://www.cdisc.org/ns/odm/v1.3 schema/odm/ODM1-3-1.xsd" ODMVersion="1.3.1" FileOID="000-00-0000" FileType="Snapshot" Description="Send Rx Pharmacy" AsOfDateTime="2017-07-17T14:33:34" CreationDateTime="2017-07-17T14:33:34" SourceSystem="REDCap" SourceSystemVersion="7.3.6">
 <Study OID="Project.SendRxPharmacy">
 <GlobalVariables>
 	<StudyName>Send Rx Pharmacy</StudyName>
@@ -19,7 +19,7 @@
 		</redcap:RepeatingInstruments>
 	</redcap:RepeatingInstrumentsAndEvents>
 </GlobalVariables>
-<MetaDataVersion OID="Metadata.SendRxPharmacy_2017-07-17_0957" Name="Send Rx Pharmacy" redcap:RecordIdField="pharmacy_id">
+<MetaDataVersion OID="Metadata.SendRxPharmacy_2017-07-17_1433" Name="Send Rx Pharmacy" redcap:RecordIdField="pharmacy_id">
 	<FormDef OID="Form.pharmacy_info" Name="Pharmacy Info" Repeating="No" redcap:FormName="pharmacy_info">
 		<ItemGroupRef ItemGroupOID="pharmacy_info.pharmacy_id" Mandatory="No"/>
 		<ItemGroupRef ItemGroupOID="pharmacy_info.pharmacy_info_complete" Mandatory="No"/>
@@ -48,7 +48,7 @@
 		<ItemRef ItemOID="prescriber_last_name" Mandatory="Yes" redcap:Variable="prescriber_last_name"/>
 		<ItemRef ItemOID="send_rx_prescriber_id" Mandatory="Yes" redcap:Variable="send_rx_prescriber_id"/>
 		<ItemRef ItemOID="send_rx_prescriber_email" Mandatory="Yes" redcap:Variable="send_rx_prescriber_email"/>
-		<ItemRef ItemOID="send_rx_doc_physical_addr" Mandatory="Yes" redcap:Variable="send_rx_doc_physical_addr"/>
+		<ItemRef ItemOID="prescriber_address" Mandatory="Yes" redcap:Variable="prescriber_address"/>
 		<ItemRef ItemOID="prescriber_phone" Mandatory="No" redcap:Variable="prescriber_phone"/>
 		<ItemRef ItemOID="prescriber_specialties" Mandatory="No" redcap:Variable="prescriber_specialties"/>
 	</ItemGroupDef>
@@ -90,10 +90,10 @@
 		<CodeListRef CodeListOID="pharmacy_info_complete.choices"/>
 	</ItemDef>
 	<ItemDef OID="prescriber_first_name" Name="prescriber_first_name" DataType="text" Length="999" redcap:Variable="prescriber_first_name" redcap:FieldType="text" redcap:RequiredField="y">
-		<Question><TranslatedText>First name:</TranslatedText></Question>
+		<Question><TranslatedText>First name</TranslatedText></Question>
 	</ItemDef>
 	<ItemDef OID="prescriber_last_name" Name="prescriber_last_name" DataType="text" Length="999" redcap:Variable="prescriber_last_name" redcap:FieldType="text" redcap:RequiredField="y">
-		<Question><TranslatedText>Last name:</TranslatedText></Question>
+		<Question><TranslatedText>Last name</TranslatedText></Question>
 	</ItemDef>
 	<ItemDef OID="send_rx_prescriber_id" Name="send_rx_prescriber_id" DataType="text" Length="999" redcap:Variable="send_rx_prescriber_id" redcap:FieldType="text" redcap:RequiredField="y">
 		<Question><TranslatedText>Username</TranslatedText></Question>
@@ -101,7 +101,7 @@
 	<ItemDef OID="send_rx_prescriber_email" Name="send_rx_prescriber_email" DataType="text" Length="999" redcap:Variable="send_rx_prescriber_email" redcap:FieldType="text" redcap:TextValidationType="email" redcap:RequiredField="y">
 		<Question><TranslatedText>Email address</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="send_rx_doc_physical_addr" Name="send_rx_doc_physical_addr" DataType="text" Length="999" redcap:Variable="send_rx_doc_physical_addr" redcap:FieldType="textarea" redcap:RequiredField="y">
+	<ItemDef OID="prescriber_address" Name="prescriber_address" DataType="text" Length="999" redcap:Variable="prescriber_address" redcap:FieldType="textarea" redcap:RequiredField="y">
 		<Question><TranslatedText>Address</TranslatedText></Question>
 	</ItemDef>
 	<ItemDef OID="prescriber_phone" Name="prescriber_phone" DataType="text" Length="999" redcap:Variable="prescriber_phone" redcap:FieldType="text" redcap:TextValidationType="phone">

@@ -124,7 +124,7 @@ class RxSender {
 
         $this->pharmacyConfig = $config;
 
-        if (!$data = send_rx_get_record_data($project_id, $record_id, $event_id)) {
+        if (!$data = send_rx_get_record_data($project_id, $patient_id, $event_id)) {
             return;
         }
 
@@ -141,7 +141,7 @@ class RxSender {
 
         $this->setPharmacyData($data);
 
-        if (!$data = send_rx_get_repeat_instance_data($this->pharmacyProjectId, $this->pharmacyId, 'prescribers')) {
+        if (!$data = send_rx_get_repeat_instrument_instances($this->pharmacyProjectId, $this->pharmacyId, 'prescribers')) {
             return;
         }
 
@@ -152,7 +152,7 @@ class RxSender {
             }
         }
 
-        if (!$data = send_rx_get_repeat_instance_data($this->pharmacyProjectId, $this->pharmacyId, 'delivery_methods')) {
+        if (!$data = send_rx_get_repeat_instrument_instances($this->pharmacyProjectId, $this->pharmacyId, 'delivery_methods')) {
             return;
         }
 
@@ -209,7 +209,7 @@ class RxSender {
      * Sets list of logs of the current data entry record.
      */
     function getLogs() {
-        return $this->patientData['send_rx_logs'];
+        return $this->logs;
     }
 
     /**
@@ -255,8 +255,8 @@ class RxSender {
 
             switch ($msg_type) {
                 case 'email':
-                    $success = REDCap::email($config['send_rx_recipients'], $subject, $body);
-                    $this->log($msg_type, $success, $this->pharmacyData['send_rx_recipients'], $subject, $body);
+                    $success = REDCap::email($config['send_rx_recipients'], $this->prescriberData['send_rx_prescriber_email'], $subject, $body);
+                    $this->log($msg_type, $success, $config['send_rx_recipients'], $subject, $body);
 
                     return $success;
 
@@ -320,11 +320,12 @@ class RxSender {
     /**
      * Logs message send operation.
      */
-    protected function log($msg_type, $success, $emails, $subject, $body) {
+    protected function log($msg_type, $success, $recipients, $subject, $body) {
         // Appending a new entry to the log list.
-        $this->logs[] = array($msg_type, $success, time(), $emails, $this->username, $subject, $body);
+        $this->logs[] = array($msg_type, $success, time(), $recipients, $this->username, $subject, $body);
         $contents = json_encode($this->logs);
 
+        // TODO: remove old logs.
         $file_path = $this->generateTmpFilePath('json');
         if (!file_put_contents($file_path, $contents)) {
             return false;
@@ -340,12 +341,14 @@ class RxSender {
      * Gets data to be used as source for Piping on templates and messages.
      */
     protected function getPipingData($file_id = null) {
-        $base_path = APP_PATH_WEBROOT . 'DataEntry/';
+        global $redcap_version;
+
+        $base_path = APP_PATH_WEBROOT_FULL . 'redcap_v' . $redcap_version . '/DataEntry/';
         $data = array(
             'patient' => $this->getPatientData(),
             'pharmacy' => $this->getPharmacyData(),
             'prescriber' => $this->getPrescriberData(),
-            'patient_url' => $base_path . 'index.php?pid=' . $this->patientProjectId . '&id=' . $this->patientId . '&event_id=' . $this->patientEventId,
+            'patient_url' => $base_path . 'record_home.php?pid=' . $this->patientProjectId . '&id=' . $this->patientId,
         );
 
         if ($file_id) {
