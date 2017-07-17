@@ -4,6 +4,8 @@
  * Helper Send RX functions.
  */
 
+require_once "../plugins/custom_project_settings/cps_lib.php";
+
 /**
  * Gets Send RX config from project.
  *
@@ -27,23 +29,30 @@
  *   Returns FALSE if the project is not configure properly.
  */
 function send_rx_get_project_config($project_id, $project_type) {
-    $sql = 'SELECT value FROM uf_project_settings WHERE project_id = ' . db_escape($project_id) . ' AND attribute = "send_rx_config" LIMIT 1';
-    $q = db_query($sql);
-
-    if (!db_num_rows($q)) {
-        return false;
+    $cpsObj = new cps_lib();
+    $result = $cpsObj->getAttributeData($project_id, $project_type);
+    if ($project_type == "pharmacy") {
+        $obj = json_decode($result);
+        if ($obj->type == $project_type 
+                && isSet($obj->pdfTemplate)
+                && isSet($obj->messageSubject)
+                && isSet($obj->messageBody)) {
+            return $result;
+        }
+    } else if ($project_type == "patient") {
+        $obj = json_decode($result);
+        if ($obj->type == $project_type 
+                && isSet($obj->senderClass) 
+                && isSet($obj->targetProjectId)) {
+            if (isSet($obj->lockInstruments)) {
+                if (is_string($obj->lockInstruments)) {
+                    $obj->lockInstruments = preg_split(',', $obj->lockInstruments);
+                }
+            }
+            return $result;
+        }
     }
-
-    $config = db_fetch_assoc($q);
-    $config = json_decode($config['value']);
-
-    if (empty($config) || empty($config->type) || $config->type != $project_type) {
-        return false;
-    }
-
-    // TODO: additional validation checks on config.
-
-    return $config;
+    return false;
 }
 
 /**
