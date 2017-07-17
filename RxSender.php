@@ -101,6 +101,13 @@ class RxSender {
     protected $logs = array();
 
     /**
+     * Record locker object.
+     *
+     * @var LockRecord
+     */
+    protected $locker;
+
+    /**
      * Constructor.
      *
      * Sets up properties and processes data to be easily read.
@@ -110,6 +117,7 @@ class RxSender {
         $this->patientId = $patient_id;
         $this->patientEventId = $event_id;
         $this->username = $username;
+        $this->locker = new LockRecord($this->username, $this->patientProjectId, $this->patientId);
 
         if (!$config = send_rx_get_project_config($project_id, 'patient')) {
             return;
@@ -267,9 +275,8 @@ class RxSender {
         }
 
         if (!empty($this->patientConfig['lockInstruments'])) {
-            $locker = new LockRecord($this->username, $this->patientProjectId, $this->patientId);
             foreach ($this->patientConfig['lockInstruments'] as $instrument) {
-                $locker->lockInstance($this->patientEventId, $instrument);
+                $this->locker->lockInstance($this->patientEventId, $instrument);
             }
         }
 

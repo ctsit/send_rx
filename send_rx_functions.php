@@ -4,10 +4,6 @@
  * Helper Send RX functions.
  */
 
-
-require_once 'libraries/01-mPDF-v6.1.0/vendor/autoload.php';
-require_once 'LockRecord.php';
-
 /**
  * Gets Send RX config from project.
  *
@@ -138,9 +134,11 @@ function send_rx_piping($subject, $data) {
 function send_rx_generate_pdf_file($contents, $file_path) {
 
   try {
-    $mpdf = new mPDF();
-    $mpdf->WriteHTML($contents);
-    $mpdf->Output($file_path, 'F');
+    $pdf = new FPDF_HTML();
+    $pdf->SetFont('Arial', '', 12);
+    $pdf->AddPage();
+    $pdf->WriteHTML($contents);
+    $pdf->Output($file_path, 'F');
   } catch (Exception $e) {
     return false;
   }
@@ -316,30 +314,6 @@ function send_rx_get_repeat_instrument_instances($project_id, $record_id, $instr
     }
 
     return $data[$instrument_name];
-}
-
-/**
- * Locks for updates the given instruments of the given data entry record.
- *
- * @param int $project_id
- *   Data entry project ID.
- * @param int $record_id
- *   Data entry record ID.
- * @param int $instruments
- *   (optional) Array of instruments names. Leave blank to block all instruments.
- * @param int $event_id
- *   (optional) Data entry event ID. Leave blank to block all events.
- *
- * @return bool
- *   TRUE if success, FALSE otherwise.
- */
-function send_rx_lock_instruments($project_id, $record_id, $instruments = null, $event_id = null) {
-    // TODO. yet to handle locking all events functionality
-    if (!isSet($event_id)) {
-        return false;
-    }
-    $lockObj = new LockRecord($username, $project_id, $record_id);
-    return $lockObj->lockEvent($event_id, $instruments);
 }
 
 /**
