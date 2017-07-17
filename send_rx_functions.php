@@ -36,12 +36,22 @@ function send_rx_get_project_config($project_id, $project_type) {
     $result = $cpsObj->getAttributeData($project_id, $project_type);
     if ($project_type == "pharmacy") {
         $obj = json_decode($result);
-        if ($obj->type == $project_type && isSet($obj->pdfTemplate)) {
+        if ($obj->type == $project_type 
+                && isSet($obj->pdfTemplate)
+                && isSet($obj->messageSubject)
+                && isSet($obj->messageBody)) {
             return $result;
         }
     } else if ($project_type == "patient") {
         $obj = json_decode($result);
-        if ($obj->type == $project_type && isSet($obj->senderClass)) {
+        if ($obj->type == $project_type 
+                && isSet($obj->senderClass) 
+                && isSet($obj->targetProjectId)) {
+            if (isSet($obj->lockInstruments)) {
+                if (is_string($obj->lockInstruments)) {
+                    $obj->lockInstruments = preg_split(',', $obj->lockInstruments);
+                }
+            }
             return $result;
         }
     }
