@@ -4,8 +4,8 @@
  * Provides RXSender class.
  */
 
-include_once 'send_rx_functions.php';
-include_once 'LockRecord.php';
+require_once 'send_rx_functions.php';
+require_once 'LockRecord.php';
 
 class RxSender {
 
@@ -106,6 +106,31 @@ class RxSender {
      * @var LockRecord
      */
     protected $locker;
+
+    /**
+     * Creates the sender object for the given Send RX project.
+     *
+     * @param int $project_id
+     *   Data entry project ID.
+     * @param int $event_id
+     *   Data entry event ID.
+     * @param int $patient_id
+     *   Data entry record ID.
+     * @param string $username
+     *   The username. Defaults to the current one.
+     *
+     * @return object|bool
+     *   An object instance of RXSender extension for the given project, if success.
+     *   False otherwise.
+     */
+    static function getSender($project_id, $event_id, $patient_id, $username = USERID) {
+        if (!$config = send_rx_get_project_config($project_id, 'patient')) {
+            return false;
+        }
+
+        $class = empty($config->senderClass) ? 'RxSender' : $config->senderClass;
+        return new $class($project_id, $event_id, $patient_id, $username);
+    }
 
     /**
      * Constructor.

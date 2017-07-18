@@ -4,7 +4,7 @@
  * Helper Send RX functions.
  */
 
-require_once "../plugins/custom_project_settings/cps_lib.php";
+require_once "../../plugins/custom_project_settings/cps_lib.php";
 
 /**
  * Gets Send RX config from project.
@@ -37,7 +37,7 @@ function send_rx_get_project_config($project_id, $project_type) {
                 && isSet($obj->pdfTemplate)
                 && isSet($obj->messageSubject)
                 && isSet($obj->messageBody)) {
-            return $result;
+            return json_decode($result);
         }
     } else if ($project_type == "patient") {
         $obj = json_decode($result);
@@ -49,35 +49,10 @@ function send_rx_get_project_config($project_id, $project_type) {
                     $obj->lockInstruments = preg_split(',', $obj->lockInstruments);
                 }
             }
-            return $result;
+            return json_decode($result);
         }
     }
     return false;
-}
-
-/**
- * Creates the sender object for the given Send RX project.
- *
- * @param int $project_id
- *   Data entry project ID.
- * @param int $event_id
- *   Data entry event ID.
- * @param int $patient_id
- *   Data entry record ID.
- * @param string $username
- *   The username. Defaults to the current one.
- *
- * @return object|bool
- *   An object instance of RXSender extension for the given project, if success.
- *   False otherwise.
- */
-function send_rx_get_sender($project_id, $event_id, $patient_id, $username = USERID) {
-    if (!$config = send_rx_get_project_config($project_id, 'patient')) {
-        return false;
-    }
-
-    $class = empty($config->senderClass) ? 'RxSender' : $config->senderClass;
-    return new $class($project_id, $event_id, $patient_id, $username);
 }
 
 /**
