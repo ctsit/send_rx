@@ -4,8 +4,8 @@
  * Provides RXSender class.
  */
 
-include_once 'send_rx_functions.php';
-include_once 'LockRecord.php';
+require_once 'send_rx_functions.php';
+require_once 'LockRecord.php';
 
 class RxSender {
 
@@ -106,6 +106,31 @@ class RxSender {
      * @var LockRecord
      */
     protected $locker;
+
+    /**
+     * Creates the sender object for the given Send RX project.
+     *
+     * @param int $project_id
+     *   Data entry project ID.
+     * @param int $event_id
+     *   Data entry event ID.
+     * @param int $patient_id
+     *   Data entry record ID.
+     * @param string $username
+     *   The username. Defaults to the current one.
+     *
+     * @return object|bool
+     *   An object instance of RXSender extension for the given project, if success.
+     *   False otherwise.
+     */
+    static function getSender($project_id, $event_id, $patient_id, $username = USERID) {
+        if (!$config = send_rx_get_project_config($project_id, 'patient')) {
+            return false;
+        }
+
+        $class = empty($config->senderClass) ? 'RxSender' : $config->senderClass;
+        return new $class($project_id, $event_id, $patient_id, $username);
+    }
 
     /**
      * Constructor.
@@ -245,6 +270,8 @@ class RxSender {
      * Sends the message to the pharmacy and returns whether the operation was successful.
      */
     function send($file_id = null, $log = true) {
+        $success = false;
+
         if (!$file_id) {
             $file_id = $this->generatePDFFile();
         }
@@ -266,7 +293,7 @@ class RxSender {
                     $success = REDCap::email($config['send_rx_recipients'], $this->prescriberData['send_rx_prescriber_email'], $subject, $body);
                     $this->log($msg_type, $success, $config['send_rx_recipients'], $subject, $body);
 
-                    return $success;
+                    break;
 
                 case 'hl7':
                     // TODO: handle HL7 messages.
@@ -274,13 +301,11 @@ class RxSender {
             }
         }
 
-        if (!empty($this->patientConfig['lockInstruments'])) {
-            foreach ($this->patientConfig['lockInstruments'] as $instrument) {
-                $this->locker->lockInstance($this->patientEventId, $instrument);
-            }
+        if (!empty($this->patientConfig->lockInstruments)) {
+            $this->locker->lockEvent($this->patientEventId, $this->patientConfig->lockInstruments);
         }
 
-        return false;
+        return $success;
     }
 
     /**
