@@ -89,6 +89,25 @@
             echo $modals;
         }
 
+        // Getting the list of instruments of the given event.
+        $fields = array();
+        foreach (array_keys($Proj->forms) as $form_name) {
+            $fields[$form_name] = $form_name . '_complete';
+        }
+
+        // Removing current instrument from the list.
+        unset($fields[$instrument]);
+
+        // Calculating whether the event is complete or not.
+        $event_is_complete = true;
+        $data = REDCap::getData($project_id, 'array', $record, $fields, $event_id);
+        foreach ($fields as $field) {
+            if ($data[$record][$event_id][$field] != 2) {
+                $event_is_complete = false;
+                break;
+            }
+        }
+
         $data = $sender->getPatientData();
         $field_name = 'send_rx_pdf_is_updated';
         $pdf_is_updated = $data[$field_name];
@@ -97,8 +116,6 @@
             /*
                 Generate PDF.
             */
-
-            // TODO: Generate PDF before page is rendered.
             $sender->generatePDFFile();
 
             $pdf_is_generated = true;
@@ -111,7 +128,7 @@
                 */
                 $(document).ready(function() {
                     var app_path_images = '<?php echo APP_PATH_IMAGES ?>';
-                    var successMsg = '<div class="darkgreen" style="margin:8px 0 5px;"><img src="' + app_path_images + 'tick.png"> New PDF has been generated</div>';
+                    var successMsg = '<div class="darkgreen" style="margin:8px 0 5px;"><img src="' + app_path_images + 'tick.png"> A new PDF has been created. Before send it, you may download a preview on <em>Prescription PDF</em> section below.</div>';
                     $('#pdfExportDropdownDiv').parent().next().append(successMsg);
                 });
             </script>
@@ -123,7 +140,9 @@
                 All DOM modifications for the final instrument.
             */
             $(document).ready(function() {
-                var helpTxt = '<div style="color: #666;font-size: 11px;"><span></span></div>';
+                var event_is_complete = <?php echo $event_is_complete ? 'true' : 'false'; ?>;
+                var helpTxt = '<div style="color: #666;font-size: 11px;"><b>ATTENTION:</b> The prescription will be sent by submitting this form.</div>';
+
                 $(helpTxt).insertBefore($('button[name="submit-btn-cancel"]')[0]);
 
                 // Removing operation buttons on PDF file.
@@ -136,6 +155,45 @@
 
                 // Showing logs table.
                 $('#send_rx_logs-tr .data').html('<?php echo $table; ?>');
+
+                // Changing color of submit buttons.
+                var $submit_buttons = $('#submit-btn-saverecord, #submit-btn-savecontinue');
+                $submit_buttons.addClass('btn-success');
+
+                // Disables submit buttons.
+                var disableSubmit = function() {
+                    $submit_buttons.attr('disabled', 'disabled');
+                    $submit_buttons.attr('title', 'Your must complete all form steps before sending the prescription.');
+                };
+
+                // Enables submit buttons.
+                var enableSubmit = function() {
+                    $submit_buttons.attr('disabled', null);
+                    $submit_buttons.attr('title', null);
+                };
+
+                if (event_is_complete) {
+                    var $complete = $('select[name="send_rx_review_complete"]');
+                    if ($complete.val() !== '2') {
+                        // Disables submit buttons if initial state not complete.
+                        disableSubmit();
+                    }
+
+                    $complete.change(function() {
+                        if ($(this).val() === '2') {
+                            // Enables submit buttons if form becomes complete.
+                            enableSubmit();
+                        }
+                        else {
+                            // Disables submit buttons if form becomes not complete.
+                            disableSubmit();
+                        }
+                    });
+                }
+                else {
+                    // If form is not complete, submit buttons must remain disabled.
+                    disableSubmit();
+                }
             });
         </script>
         <?php
