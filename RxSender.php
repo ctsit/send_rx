@@ -270,6 +270,8 @@ class RxSender {
      * Sends the message to the pharmacy and returns whether the operation was successful.
      */
     function send($file_id = null, $log = true) {
+        $success = false;
+
         if (!$file_id) {
             $file_id = $this->generatePDFFile();
         }
@@ -291,7 +293,7 @@ class RxSender {
                     $success = REDCap::email($config['send_rx_recipients'], $this->prescriberData['send_rx_prescriber_email'], $subject, $body);
                     $this->log($msg_type, $success, $config['send_rx_recipients'], $subject, $body);
 
-                    return $success;
+                    break;
 
                 case 'hl7':
                     // TODO: handle HL7 messages.
@@ -299,13 +301,11 @@ class RxSender {
             }
         }
 
-        if (!empty($this->patientConfig['lockInstruments'])) {
-            foreach ($this->patientConfig['lockInstruments'] as $instrument) {
-                $this->locker->lockInstance($this->patientEventId, $instrument);
-            }
+        if (!empty($this->patientConfig->lockInstruments)) {
+            $this->locker->lockEvent($this->patientEventId, $this->patientConfig->lockInstruments);
         }
 
-        return false;
+        return $success;
     }
 
     /**
