@@ -1,17 +1,25 @@
 <?php
     return function($project_id, $record, $instrument, $event_id, $group_id, $survey_hash, $response_id, $repeat_instance) {
-        require_once 'send_rx_functions.php';
-        require_once 'RxSender.php';
-
         /*
             New PDF is generated based on pdf_is_updated flag.
             Reset flag once PDF is generated to avoid duplicate generation of the same PDF.
-        */
-        $last_instrument = 'send_rx_review';
-        if ($instrument != $last_instrument) {
+         */
+        require_once 'send_rx_functions.php';
+        require_once 'RxSender.php';
+
+        global $Proj;
+
+        // Checking if PDF file exists.
+        if (!isset($Proj->metadata['send_rx_pdf'])) {
             return;
         }
 
+        // Checking if we are on PDF form step.
+        if ($Proj->metadata['send_rx_pdf']['form_name'] != $instrument) {
+            return;
+        }
+
+        // Getting Rx sender to make sure we are in a patient project.
         if (!$sender = RxSender::getSender($project_id, $event_id, $record)) {
             return;
         }
