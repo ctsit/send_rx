@@ -52,7 +52,12 @@ In order to activate Send Rx extension, we need to create and configure two proj
 
 Thus, the JSON contents should look like this:
 ```
-{"type":"pharmacy","pdfTemplate":"SampleRxTemplate","messageSubject":"Test prescription","messageBody":"<div>The prescription file is available at: [pdf_file_url]<\/div>"}
+{
+    "type": "pharmacy",
+    "pdfTemplate": "Test prescription<br><br>Administered Drug: [patient][administered_drug]<br>Dosage: [patient][daily_drug_dosage] mg/L.",
+    "messageSubject": "Test prescription",
+    "messageBody": "<div>The prescription file is available at: [pdf_file_url]</div>"
+}
 ```
 
 By opening the PDF template file or looking at `messageBody` field, you might noticed that a few replacement wildcards have been used, like `[pdf_file_url]`, `[patient][administered_drug]` and `[patient][daily_dosage]`. There is a [full section](#templating-pdfs-and-messages) dedicated to explain PDFs and messages templating, but let's put this aside for a while and move on to the next step.
@@ -69,7 +74,12 @@ This is quite analogous to what we just did on previous section.
 
 Thus, the JSON contents should look like this (dont't forget to update `targetProjectId` value):
 ```
-{"type":"patient","targetProjectId":123,"lockInstruments":"lab_orders,prescription","senderClass":"RxSender"}
+{
+    "type": "patient",
+    "targetProjectId": 123,
+    "lockInstruments": "patient_demographics,prescription",
+    "senderClass": "RxSender"
+}
 ```
 
 ## Sending your First Test Prescription
