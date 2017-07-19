@@ -46,8 +46,8 @@ function send_rx_get_project_config($project_id, $project_type) {
     }
 
     $req_fields = array(
-        'patient' => array('pdfTemplate', 'messageSubject', 'messageBody'),
-        'pharmacy' => array('targetProjectId'),
+        'patient' => array('targetProjectId'),
+        'pharmacy' => array('pdfTemplate', 'messageSubject', 'messageBody'),
     );
 
     // Validating required config fields.

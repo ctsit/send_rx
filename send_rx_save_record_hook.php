@@ -16,9 +16,9 @@
 
         /*
             New PDF needs to be generated as changes are made to form after PDF is created.
-            Reset is_pdf_generated flag to generate new PDF.
+            Reset pdf_is_updated flag to generate new PDF.
         */
-        $field_name = 'send_rx_is_pdf_updated';
+        $field_name = 'send_rx_pdf_is_updated';
         send_rx_save_record_field($project_id, $event_id, $record, $field_name, false, $repeat_instance);
     };
 ?>

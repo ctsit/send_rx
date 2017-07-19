@@ -4,7 +4,7 @@
         require_once 'RxSender.php';
 
         /*
-            New PDF is generated based on is_pdf_generated flag.
+            New PDF is generated based on pdf_is_updated flag.
             Reset flag once PDF is generated to avoid duplicate generation of the same PDF.
         */
         $last_instrument = 'send_rx_review';
@@ -82,17 +82,19 @@
         }
 
         $data = $sender->getPatientData();
-        $field_name = 'send_rx_is_pdf_updated';
-        $is_pdf_updated = $data[$field_name];
+        $field_name = 'send_rx_pdf_is_updated';
+        $pdf_is_updated = $data[$field_name];
 
-        if (!$is_pdf_updated) {
+        if (!$pdf_is_updated) {
             /*
                 Generate PDF.
             */
-            //$sender->generatePDFFile();
 
-            $is_pdf_generated = true;
-            send_rx_save_record_field($project_id, $event_id, $record, $field_name, $is_pdf_generated, $repeat_instance);
+            // TODO: Generate PDF before page is rendered.
+            $sender->generatePDFFile();
+
+            $pdf_is_generated = true;
+            send_rx_save_record_field($project_id, $event_id, $record, $field_name, $pdf_is_generated, $repeat_instance);
 
             ?>
             <script type="text/javascript">
