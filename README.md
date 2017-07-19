@@ -16,12 +16,12 @@ If you are deploying the extension using UF CTS-IT's [redcap_deployment](https:/
 
 ```
 fab instance:vagrant activate_hook:redcap_save_record,send_rx_save_record_hook.php
-fab instance:vagrant activate_hook:redcap_data_entry_form,send_rx_data_entry_form_hook.php
+fab instance:vagrant activate_hook:redcap_data_entry_form_top,send_rx_data_entry_form_top_hook.php
 ```
 
 ### Option 2: Other Environments
 
-The `send_rx_save_record_hook` and `send_rx_data_entry_form_hook` hooks are designed to be activated as `redcap_save_record` and `redcap_data_entry_form` hook functions, respectively. The hooks are dependent on a framework that calls _anonymous_ PHP functions such as UF CTS-IT's [Extensible REDCap Hooks](https://github.com/ctsit/extensible-redcap-hooks) ([https://github.com/ctsit/extensible-redcap-hooks](https://github.com/ctsit/extensible-redcap-hooks)). If you are not using such a framework, the hook will need to be edited by changing `return function($project_id)` to `function redcap_every_page_top($project_id)`.
+The `send_rx_save_record_hook` and `send_rx_data_entry_form_top_hook` hooks are designed to be activated as `redcap_save_record` and `redcap_data_entry_form` hook functions, respectively. The hooks are dependent on a framework that calls _anonymous_ PHP functions such as UF CTS-IT's [Extensible REDCap Hooks](https://github.com/ctsit/extensible-redcap-hooks) ([https://github.com/ctsit/extensible-redcap-hooks](https://github.com/ctsit/extensible-redcap-hooks)). If you are not using such a framework, the hook will need to be edited by changing `return function($project_id)` to `function redcap_every_page_top($project_id)`.
 
 ### Developer Notes
 
@@ -29,7 +29,7 @@ When using the local test environment provided by UF CTS-IT's [redcap_deployment
 
 ```
 fab instance:vagrant test_hook:redcap_save_record,send_rx_save_record_hook.php
-fab instance:vagrant test_hook:redcap_data_entry_form,send_rx_data_entry_form_hook.php
+fab instance:vagrant test_hook:redcap_data_entry_form_top,send_rx_data_entry_form_top_hook.php
 ```
 
 ## Configuration
