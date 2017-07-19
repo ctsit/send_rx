@@ -54,7 +54,7 @@ Thus, the JSON contents should look like this:
 ```
 {
     "type": "pharmacy",
-    "pdfTemplate": "Administered Drug: [patient][administered_drug]<br>Dosage: [patient][drug_dosage] mg/L.",
+    "pdfTemplate": "Test prescription<br><br>Administered Drug: [patient][administered_drug]<br>Dosage: [patient][daily_drug_dosage] mg/L.",
     "messageSubject": "Test prescription",
     "messageBody": "<div>The prescription file is available at: [pdf_file_url]</div>"
 }
