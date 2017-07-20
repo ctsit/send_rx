@@ -5,7 +5,7 @@
  */
 
 require_once 'send_rx_functions.php';
-require_once 'LockRecord.php';
+require_once 'LockUtil.php';
 
 class RxSender {
 
@@ -142,7 +142,7 @@ class RxSender {
         $this->patientId = $patient_id;
         $this->patientEventId = $event_id;
         $this->username = $username;
-        $this->locker = new LockRecord($this->username, $this->patientProjectId, $this->patientId);
+        $this->locker = new LockUtil($this->username, $this->patientProjectId, $this->patientId);
 
         if (!$config = send_rx_get_project_config($project_id, 'patient')) {
             return;
