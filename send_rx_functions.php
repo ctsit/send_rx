@@ -373,3 +373,62 @@ function send_rx_get_user_pharmacies($project_id, $username = USERID, $project_t
 
     return $pharmacies;
 }
+
+function send_rx_get_pharmacy_users($project_id, $pharmacy_id, $role = null, $project_type = 'patient') {
+    if($project_type == 'patient'){
+        if(!$config = send_rx_get_project_config($project_id, $project_type)) {
+            return false;
+        }
+
+        // Gets pharmacy project from the patient project.
+        $project_id = $config->targetProjectId;
+        $project_type = 'pharmacy';
+    }
+
+    // Checking if pharmacy project is ok.
+    if (!send_rx_get_project_config($project_id, $project_type)) {
+        return false;
+    }
+
+    $users = array();
+
+    // ToDo: Get 'send_rx_person_role' field for each user.
+    $data = REDCap::getData($project_id, 'array', null, null);
+    foreach ($data as $pharmacy_id => $pharmacy_info){
+        if (empty($pharmacy_info['repeat_instances'])) {
+            continue;
+        }
+
+        $event_id = key($pharmacy_info['repeat_instances']);
+        if (empty($pharmacy_info['repeat_instances'][$event_id]['prescribers'])) {
+            continue;
+        }
+
+        if(!empty($role)){
+            foreach ($pharmacy_info['repeat_instances'][$event_id]['prescribers'] as $prescriber_info) {
+                if($prescriber_info['send_rx_person_role'] == $role){
+                    $users[] = $prescriber_info;
+                }
+            }
+            return $users;
+        }
+
+        $users[] = $pharmacy_info['repeat_instances'][$event_id]['prescribers'];
+    }
+
+    return $users;
+}
+
+function get_pharmacy_id_by_dag($record){
+    $parts = explode('_', $record);
+    $dag = $parts[0];
+
+    $sql = "SELECT value FROM redcap_data WHERE field_name='pharmacy_id' AND event_id IN (SELECT event_id FROM redcap_cap WHERE send_rx_remote_dag = $dag)";
+    $query = $db_query($sql);
+
+    if(!$query){
+        return false;
+    }
+    
+    return $query;
+}
