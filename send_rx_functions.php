@@ -5,6 +5,7 @@
  */
 
 require_once '../../plugins/custom_project_settings/cps_lib.php';
+require_once 'libraries/mpdf/vendor/autoload.php';
 
 /**
  * Gets Send RX config from project.
@@ -137,11 +138,9 @@ function send_rx_piping($subject, $data) {
 function send_rx_generate_pdf_file($contents, $file_path) {
 
   try {
-    $pdf = new FPDF_HTML();
-    $pdf->SetFont('Arial', '', 12);
-    $pdf->AddPage();
-    $pdf->WriteHTML($contents);
-    $pdf->Output($file_path, 'F');
+    $mpdf = new mPDF();
+    $mpdf->WriteHTML($contents);
+    $mpdf->Output($file_path, 'F');
   } catch (Exception $e) {
     return false;
   }
@@ -151,16 +150,16 @@ function send_rx_generate_pdf_file($contents, $file_path) {
 }
 
 /**
- * Gets file contents from the given edocs file.
+ * Gets path of the given edoc file.
  *
  * @param int $file_id
- *   The edocs file id.
+ *   The edoc file id.
  *
  * @return string
- *   The file contents.
+ *   The file path.
  */
-function send_rx_get_file_contents($file_id) {
-    $sql = 'SELECT * FROM redcap_edocs_metadata WHERE doc_id = ' . db_escape($file_id);
+function send_rx_get_edoc_file_path($file_id) {
+    $sql = 'SELECT stored_name FROM redcap_edocs_metadata WHERE doc_id = ' . db_escape($file_id);
     $q = db_query($sql);
 
     if (!db_num_rows($q)) {
@@ -174,6 +173,23 @@ function send_rx_get_file_contents($file_id) {
         return false;
     }
 
+    return $file_path;
+}
+
+/**
+ * Gets file contents from the given edoc file.
+ *
+ * @param int $file_id
+ *   The edoc file id.
+ *
+ * @return string
+ *   The file contents.
+ */
+function send_rx_get_edoc_file_contents($file_id) {
+    if (!$file_path = send_rx_get_edoc_file_path($file_id)) {
+        return false;
+    }
+
     return file_get_contents($file_path);
 }
 
@@ -184,7 +200,7 @@ function send_rx_get_file_contents($file_id) {
  *   The location of the file to be uploaded.
  *
  * @return int
- *   The edocs file ID if success, 0 otherwise.
+ *   The edoc file ID if success, 0 otherwise.
  */
 function send_rx_upload_file($file_path) {
     if (!file_exists($file_path) || !is_file($file_path)) {
@@ -202,9 +218,31 @@ function send_rx_upload_file($file_path) {
 }
 
 /**
+ * Deletes EDOC file.
+ *
+ * @param int $file_id
+ *   The edoc file id.
+ *
+ * @return bool
+ *   TRUE if success, FALSE otherwise.
+ */
+function send_rx_edoc_file_delete($file_id) {
+    if (!$file_path = send_rx_get_edoc_file_path($file_id)) {
+        return false;
+    }
+
+    if (!db_query('DELETE FROM redcap_edocs_metadata WHERE doc_id = ' . db_escape($file_id))) {
+        return false;
+    }
+
+    // Deleting file.
+    return unlink($file_path);
+}
+
+/**
  * TODO.
  */
-function send_rx_get_edocs_file($file_id, $username = USERID) {
+function send_rx_get_edoc_file($file_id, $username = USERID) {
     $sql = '
         SELECT * FROM redcap_edocs_metadata f
             INNER JOIN redcap_user_rights u ON u.project_id = f.project_id and u.username = "' . db_escape($username) . '"
@@ -265,7 +303,7 @@ function send_rx_save_record_field($project_id, $event_id, $record_id, $field_na
 /**
  * Gets data entry record information.
  *
- * If more than one event is fetched, it returns the first one.
+ * If no event is specified, return all events.
  *
  * @param int $project_id
  *   Data entry project ID.
@@ -287,7 +325,7 @@ function send_rx_get_record_data($project_id, $record_id, $event_id = null) {
         return $data[$record_id][$event_id];
     }
 
-    return reset($data[$record_id]);
+    return $data[$record_id];
 }
 
 /**
