@@ -24,6 +24,7 @@
             return;
         }
 
+        $table = '<div class="info">This prescription has not been sent yet.</div>';
         if ($logs = $sender->getLogs()) {
             // Message types.
             $types = array(
@@ -128,7 +129,7 @@
                 */
                 $(document).ready(function() {
                     var app_path_images = '<?php echo APP_PATH_IMAGES ?>';
-                    var successMsg = '<div class="darkgreen" style="margin:8px 0 5px;"><img src="' + app_path_images + 'tick.png"> A new PDF has been created. Before send it, you may download a preview on <em>Prescription PDF</em> section below.</div>';
+                    var successMsg = '<div class="darkgreen" style="margin:8px 0 5px;"><img src="' + app_path_images + 'tick.png"> A new prescription PDF preview has been created.';
                     $('#pdfExportDropdownDiv').parent().next().append(successMsg);
                 });
             </script>
