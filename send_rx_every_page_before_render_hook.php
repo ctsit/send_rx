@@ -2,18 +2,18 @@
 	return function($project_id){
         parse_str($_SERVER['QUERY_STRING'], $qs_params);
      
-        if($qs_params['page'] == 'patient_screening_info'){
-        	require_once 'send_rx_functions.php';
-        	require_once 'RxSender.php';
+	    if($qs_params['page'] == 'patient_screening_info'){
+	    	require_once 'send_rx_functions.php';
+	    	require_once 'RxSender.php';
 
 			global $Proj;
 
 			parse_str($_SERVER['QUERY_STRING'], $qs_params);
 			$record = $qs_params['id'];
-        	$parts = explode('_', $record);
-    		$dag = $parts[0];
-        	$pharmacy_id = send_rx_get_site_id_from_dag($project_id, $dag);
-        	//$pharmacy_id = get_pharmacy_id_by_dag("1248_1");
+	    	$parts = explode('_', $record);
+			$dag = $parts[0];
+	    	$pharmacy_id = send_rx_get_site_id_from_dag($project_id, $dag);
+	    	//$pharmacy_id = get_pharmacy_id_by_dag("1248_1");
 
 			$users = send_rx_get_pharmacy_users($project_id, $pharmacy_id, 'prescriber', 'patient');
 	        if(empty($qs_params['msg'])){
@@ -47,6 +47,6 @@
 	            </script>
 	            <?php
 	        }
-        }
+	    }
 	};
 ?>
