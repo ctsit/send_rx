@@ -113,7 +113,7 @@
         $field_name = 'send_rx_pdf_is_updated';
         $pdf_is_updated = $data[$field_name];
 
-        if (!$pdf_is_updated) {
+        if ($pdf_is_updated == "0") {
             /*
                 Generate PDF.
             */

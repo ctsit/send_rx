@@ -18,7 +18,7 @@
         // Checking if we are on PDF form step.
         if ($Proj->metadata['send_rx_pdf']['form_name'] == $instrument) {
             // Send prescription.
-            $sender->send();
+            $sender->send(false);
             return;
         }
 
