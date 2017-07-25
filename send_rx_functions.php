@@ -375,8 +375,8 @@ function send_rx_get_user_pharmacies($project_id, $username = USERID, $project_t
 }
 
 function send_rx_get_pharmacy_users($project_id, $pharmacy_id, $role = null, $project_type = 'patient') {
-    if($project_type == 'patient'){
-        if(!$config = send_rx_get_project_config($project_id, $project_type)) {
+    if ($project_type == 'patient') {
+        if (!$config = send_rx_get_project_config($project_id, $project_type)) {
             return false;
         }
 
@@ -394,18 +394,20 @@ function send_rx_get_pharmacy_users($project_id, $pharmacy_id, $role = null, $pr
 
     // ToDo: Get 'send_rx_person_role' field for each user.
     $data = REDCap::getData($project_id, 'array', null, null);
+    print_r($data);
     foreach ($data as $pharmacy_id => $pharmacy_info){
         if (empty($pharmacy_info['repeat_instances'])) {
             continue;
         }
 
         $event_id = key($pharmacy_info['repeat_instances']);
-        if (empty($pharmacy_info['repeat_instances'][$event_id]['prescribers'])) {
+        $form = $Proj->metadata['send_rx_prescriber_id']['form_name'];
+        if (empty($pharmacy_info['repeat_instances'][$event_id][$form])) {
             continue;
         }
 
-        if(!empty($role)){
-            foreach ($pharmacy_info['repeat_instances'][$event_id]['prescribers'] as $prescriber_info) {
+        if (!empty($role)) {
+            foreach ($pharmacy_info['repeat_instances'][$event_id][$form] as $prescriber_info) {
                 if($prescriber_info['send_rx_person_role'] == $role){
                     $users[] = $prescriber_info;
                 }
@@ -413,7 +415,7 @@ function send_rx_get_pharmacy_users($project_id, $pharmacy_id, $role = null, $pr
             return $users;
         }
 
-        $users[] = $pharmacy_info['repeat_instances'][$event_id]['prescribers'];
+        $users[] = $pharmacy_info['repeat_instances'][$event_id][$form];
     }
 
     return $users;
