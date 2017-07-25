@@ -9,31 +9,6 @@
 
         global $Proj;
 
-        //$ldata = REDCap::getData($project_id, 'array', null, null);
-        //print_r($ldata);
-
-        // Get Pharmacy Id based on DAG.
-       
-        //$pharmacy_id = get_pharmacy_id_by_dag($record);
-
-        /*
-            ToDo: Do not return for first instrument. Do the following for 1st instrument.Get site details.
-            1. Get site details
-            2. Option to set prescriber/user value.
-        */
-        $users = send_rx_get_pharmacy_users($project_id, $pharmacy_id, null, 'patient');
-        foreach ($users as $key => $value) {
-            if($value['send_rx_prescriber_id'] == USERID){
-                if($value['send_rx_person_role'] == 'prescriber'){
-                    //ToDo: Dropdown with just one value. Hide the dropdown.
-                } else{
-                    $users = send_rx_get_pharmacy_users($project_id, $pharmacy_id, 'prescriber', 'patient');
-                    //ToDo: Dropdown with values of all prescribers.
-                }
-                break;
-            }
-        }
-        
         // Checking if PDF file exists.
         if (!isset($Proj->metadata['send_rx_pdf'])) {
             return;

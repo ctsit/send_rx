@@ -419,16 +419,3 @@ function send_rx_get_pharmacy_users($project_id, $pharmacy_id, $role = null, $pr
     return $users;
 }
 
-function get_pharmacy_id_by_dag($record){
-    $parts = explode('_', $record);
-    $dag = $parts[0];
-
-    $sql = "SELECT value FROM redcap_data WHERE field_name='pharmacy_id' AND event_id IN (SELECT event_id FROM redcap_cap WHERE send_rx_remote_dag = $dag)";
-    $query = $db_query($sql);
-
-    if(!$query){
-        return false;
-    }
-    
-    return $query;
-}
