@@ -394,7 +394,6 @@ function send_rx_get_pharmacy_users($project_id, $pharmacy_id, $role = null, $pr
 
     // ToDo: Get 'send_rx_person_role' field for each user.
     $data = REDCap::getData($project_id, 'array', null, null);
-    print_r($data);
     foreach ($data as $pharmacy_id => $pharmacy_info){
         if (empty($pharmacy_info['repeat_instances'])) {
             continue;
