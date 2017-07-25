@@ -402,12 +402,4 @@ class RxSender {
 
         return $data;
     }
-
-    /**
-     * Gets pharmacy id based on DAG 
-    */
-    // protected function getPharmacyIdByDAG($record) {
-    //     $pharmacy_id = get_pharmacy_id_by_dag($record)
-    //     return $pharmacy_id;
-    // }
 }
