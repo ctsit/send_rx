@@ -119,7 +119,7 @@
             */
             $sender->generatePDFFile();
 
-            $pdf_is_generated = true;
+            $pdf_is_generated = "1";
             send_rx_save_record_field($project_id, $event_id, $record, $field_name, $pdf_is_generated, $repeat_instance);
 
             ?>
