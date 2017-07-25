@@ -28,8 +28,8 @@ The `send_rx_save_record_hook` and `send_rx_data_entry_form_top_hook` hooks are 
 When using the local test environment provided by UF CTS-IT's [redcap_deployment](https://github.com/ctsit/redcap_deployment) tools ([https://github.com/ctsit/redcap_deployment](https://github.com/ctsit/redcap_deployment)), you can use the deployment tools to configure the extension for testing in the local VM. If you clone this repo as a child of the `redcap_deployment` repo, you can activate the hook and plugin for testing from the root of the `redcap_deployment` repo like this:
 
 ```
-fab instance:vagrant test_hook:redcap_save_record,send_rx_save_record_hook.php
-fab instance:vagrant test_hook:redcap_data_entry_form_top,send_rx_data_entry_form_top_hook.php
+fab instance:vagrant test_hook:redcap_save_record,send_rx/send_rx_save_record_hook.php
+fab instance:vagrant test_hook:redcap_data_entry_form_top,send_rx/send_rx_data_entry_form_top_hook.php
 ```
 
 ## Configuration
