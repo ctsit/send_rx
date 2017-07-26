@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:redcap="https://projectredcap.org" xsi:schemaLocation="http://www.cdisc.org/ns/odm/v1.3 schema/odm/ODM1-3-1.xsd" ODMVersion="1.3.1" FileOID="000-00-0000" FileType="Snapshot" Description="Send Rx Patient" AsOfDateTime="2017-07-17T14:33:19" CreationDateTime="2017-07-17T14:33:19" SourceSystem="REDCap" SourceSystemVersion="7.3.6">
-<Study OID="Project.SendRxPatient">
+<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:redcap="https://projectredcap.org" xsi:schemaLocation="http://www.cdisc.org/ns/odm/v1.3 schema/odm/ODM1-3-1.xsd" ODMVersion="1.3.1" FileOID="000-00-0000" FileType="Snapshot" Description="Sample Patient Project" AsOfDateTime="2017-07-26T10:35:15" CreationDateTime="2017-07-26T10:35:15" SourceSystem="REDCap" SourceSystemVersion="7.5.1">
+<Study OID="Project.SamplePatientProject">
 <GlobalVariables>
-	<StudyName>Send Rx Patient</StudyName>
-	<StudyDescription>This file contains the metadata, events, and data for REDCap project "Send Rx Patient".</StudyDescription>
-	<ProtocolName>Send Rx Patient</ProtocolName>
+	<StudyName>Sample Patient Project</StudyName>
+	<StudyDescription>This file contains the metadata, events, and data for REDCap project "Sample Patient Project".</StudyDescription>
+	<ProtocolName>Sample Patient Project</ProtocolName>
 	<redcap:RecordAutonumberingEnabled>1</redcap:RecordAutonumberingEnabled>
 	<redcap:CustomRecordLabel></redcap:CustomRecordLabel>
 	<redcap:SecondaryUniqueField></redcap:SecondaryUniqueField>
@@ -13,7 +13,69 @@
 	<redcap:PurposeOther></redcap:PurposeOther>
 	<redcap:ProjectNotes></redcap:ProjectNotes>
 </GlobalVariables>
-<MetaDataVersion OID="Metadata.SendRxPatient_2017-07-17_1433" Name="Send Rx Patient" redcap:RecordIdField="patient_id">
+<MetaDataVersion OID="Metadata.SamplePatientProject_2017-07-26_1035" Name="Sample Patient Project" redcap:RecordIdField="patient_id">
+	<Protocol>
+		<StudyEventRef StudyEventOID="Event.eligibility_arm_1" OrderNumber="1" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.baseline_arm_2" OrderNumber="2" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.followup_month_3_arm_2" OrderNumber="3" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.followup_month_6_arm_2" OrderNumber="4" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.followup_month_12_arm_2" OrderNumber="5" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.followup_month_18_arm_2" OrderNumber="6" Mandatory="No"/>
+		<StudyEventRef StudyEventOID="Event.followup_month_24_arm_2" OrderNumber="7" Mandatory="No"/>
+	</Protocol>
+	<StudyEventDef OID="Event.eligibility_arm_1" Name="Eligibility (Arm 1: Eligibility/Randomization)" Type="Common" Repeating="No" redcap:EventName="Eligibility" redcap:CustomEventLabel="" redcap:UniqueEventName="eligibility_arm_1" redcap:ArmNum="1" redcap:ArmName="Eligibility/Randomization" redcap:DayOffset="1" redcap:OffsetMin="0" redcap:OffsetMax="0">
+		<FormRef FormOID="Form.patient_screening_info" OrderNumber="1" Mandatory="No" redcap:FormName="patient_screening_info"/>
+		<FormRef FormOID="Form.initial_patient_consent" OrderNumber="2" Mandatory="No" redcap:FormName="initial_patient_consent"/>
+		<FormRef FormOID="Form.vh_additional_consent_form" OrderNumber="3" Mandatory="No" redcap:FormName="vh_additional_consent_form"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.baseline_arm_2" Name="Baseline (Arm 2: Intensive Medical Therapy)" Type="Common" Repeating="No" redcap:EventName="Baseline" redcap:CustomEventLabel="" redcap:UniqueEventName="baseline_arm_2" redcap:ArmNum="2" redcap:ArmName="Intensive Medical Therapy" redcap:DayOffset="1" redcap:OffsetMin="0" redcap:OffsetMax="0">
+		<FormRef FormOID="Form.patient_demographics" OrderNumber="1" Mandatory="No" redcap:FormName="patient_demographics"/>
+		<FormRef FormOID="Form.patient_biospecimens" OrderNumber="2" Mandatory="No" redcap:FormName="patient_biospecimens"/>
+		<FormRef FormOID="Form.lab_orders" OrderNumber="3" Mandatory="No" redcap:FormName="lab_orders"/>
+		<FormRef FormOID="Form.prescription_form" OrderNumber="4" Mandatory="No" redcap:FormName="prescription_form"/>
+		<FormRef FormOID="Form.clinic_note" OrderNumber="5" Mandatory="No" redcap:FormName="clinic_note"/>
+		<FormRef FormOID="Form.send_rx_review" OrderNumber="6" Mandatory="No" redcap:FormName="send_rx_review"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.followup_month_3_arm_2" Name="Follow-up Month 3 (Arm 2: Intensive Medical Therapy)" Type="Common" Repeating="No" redcap:EventName="Follow-up Month 3" redcap:CustomEventLabel="" redcap:UniqueEventName="followup_month_3_arm_2" redcap:ArmNum="2" redcap:ArmName="Intensive Medical Therapy" redcap:DayOffset="2" redcap:OffsetMin="0" redcap:OffsetMax="0">
+		<FormRef FormOID="Form.patient_demographics" OrderNumber="1" Mandatory="No" redcap:FormName="patient_demographics"/>
+		<FormRef FormOID="Form.patient_biospecimens" OrderNumber="2" Mandatory="No" redcap:FormName="patient_biospecimens"/>
+		<FormRef FormOID="Form.lab_orders" OrderNumber="3" Mandatory="No" redcap:FormName="lab_orders"/>
+		<FormRef FormOID="Form.prescription_form" OrderNumber="4" Mandatory="No" redcap:FormName="prescription_form"/>
+		<FormRef FormOID="Form.clinic_note" OrderNumber="5" Mandatory="No" redcap:FormName="clinic_note"/>
+		<FormRef FormOID="Form.send_rx_review" OrderNumber="6" Mandatory="No" redcap:FormName="send_rx_review"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.followup_month_6_arm_2" Name="Follow-up Month 6 (Arm 2: Intensive Medical Therapy)" Type="Common" Repeating="No" redcap:EventName="Follow-up Month 6" redcap:CustomEventLabel="" redcap:UniqueEventName="followup_month_6_arm_2" redcap:ArmNum="2" redcap:ArmName="Intensive Medical Therapy" redcap:DayOffset="3" redcap:OffsetMin="0" redcap:OffsetMax="0">
+		<FormRef FormOID="Form.patient_demographics" OrderNumber="1" Mandatory="No" redcap:FormName="patient_demographics"/>
+		<FormRef FormOID="Form.patient_biospecimens" OrderNumber="2" Mandatory="No" redcap:FormName="patient_biospecimens"/>
+		<FormRef FormOID="Form.lab_orders" OrderNumber="3" Mandatory="No" redcap:FormName="lab_orders"/>
+		<FormRef FormOID="Form.prescription_form" OrderNumber="4" Mandatory="No" redcap:FormName="prescription_form"/>
+		<FormRef FormOID="Form.clinic_note" OrderNumber="5" Mandatory="No" redcap:FormName="clinic_note"/>
+		<FormRef FormOID="Form.send_rx_review" OrderNumber="6" Mandatory="No" redcap:FormName="send_rx_review"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.followup_month_12_arm_2" Name="Follow-up Month 12 (Arm 2: Intensive Medical Therapy)" Type="Common" Repeating="No" redcap:EventName="Follow-up Month 12" redcap:CustomEventLabel="" redcap:UniqueEventName="followup_month_12_arm_2" redcap:ArmNum="2" redcap:ArmName="Intensive Medical Therapy" redcap:DayOffset="4" redcap:OffsetMin="0" redcap:OffsetMax="0">
+		<FormRef FormOID="Form.patient_demographics" OrderNumber="1" Mandatory="No" redcap:FormName="patient_demographics"/>
+		<FormRef FormOID="Form.patient_biospecimens" OrderNumber="2" Mandatory="No" redcap:FormName="patient_biospecimens"/>
+		<FormRef FormOID="Form.lab_orders" OrderNumber="3" Mandatory="No" redcap:FormName="lab_orders"/>
+		<FormRef FormOID="Form.prescription_form" OrderNumber="4" Mandatory="No" redcap:FormName="prescription_form"/>
+		<FormRef FormOID="Form.clinic_note" OrderNumber="5" Mandatory="No" redcap:FormName="clinic_note"/>
+		<FormRef FormOID="Form.send_rx_review" OrderNumber="6" Mandatory="No" redcap:FormName="send_rx_review"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.followup_month_18_arm_2" Name="Follow-up Month 18 (Arm 2: Intensive Medical Therapy)" Type="Common" Repeating="No" redcap:EventName="Follow-up Month 18" redcap:CustomEventLabel="" redcap:UniqueEventName="followup_month_18_arm_2" redcap:ArmNum="2" redcap:ArmName="Intensive Medical Therapy" redcap:DayOffset="5" redcap:OffsetMin="0" redcap:OffsetMax="0">
+		<FormRef FormOID="Form.patient_demographics" OrderNumber="1" Mandatory="No" redcap:FormName="patient_demographics"/>
+		<FormRef FormOID="Form.patient_biospecimens" OrderNumber="2" Mandatory="No" redcap:FormName="patient_biospecimens"/>
+		<FormRef FormOID="Form.lab_orders" OrderNumber="3" Mandatory="No" redcap:FormName="lab_orders"/>
+		<FormRef FormOID="Form.prescription_form" OrderNumber="4" Mandatory="No" redcap:FormName="prescription_form"/>
+		<FormRef FormOID="Form.clinic_note" OrderNumber="5" Mandatory="No" redcap:FormName="clinic_note"/>
+		<FormRef FormOID="Form.send_rx_review" OrderNumber="6" Mandatory="No" redcap:FormName="send_rx_review"/>
+	</StudyEventDef>
+	<StudyEventDef OID="Event.followup_month_24_arm_2" Name="Follow-up Month 24 (Arm 2: Intensive Medical Therapy)" Type="Common" Repeating="No" redcap:EventName="Follow-up Month 24" redcap:CustomEventLabel="" redcap:UniqueEventName="followup_month_24_arm_2" redcap:ArmNum="2" redcap:ArmName="Intensive Medical Therapy" redcap:DayOffset="6" redcap:OffsetMin="0" redcap:OffsetMax="0">
+		<FormRef FormOID="Form.patient_demographics" OrderNumber="1" Mandatory="No" redcap:FormName="patient_demographics"/>
+		<FormRef FormOID="Form.patient_biospecimens" OrderNumber="2" Mandatory="No" redcap:FormName="patient_biospecimens"/>
+		<FormRef FormOID="Form.lab_orders" OrderNumber="3" Mandatory="No" redcap:FormName="lab_orders"/>
+		<FormRef FormOID="Form.prescription_form" OrderNumber="4" Mandatory="No" redcap:FormName="prescription_form"/>
+		<FormRef FormOID="Form.clinic_note" OrderNumber="5" Mandatory="No" redcap:FormName="clinic_note"/>
+		<FormRef FormOID="Form.send_rx_review" OrderNumber="6" Mandatory="No" redcap:FormName="send_rx_review"/>
+	</StudyEventDef>
 	<FormDef OID="Form.patient_screening_info" Name="Patient Screening Info" Repeating="No" redcap:FormName="patient_screening_info">
 		<ItemGroupRef ItemGroupOID="patient_screening_info.patient_id" Mandatory="No"/>
 		<ItemGroupRef ItemGroupOID="patient_screening_info.patient_screening_info_complete" Mandatory="No"/>
@@ -38,9 +100,12 @@
 		<ItemGroupRef ItemGroupOID="lab_orders.sample_process_lab" Mandatory="No"/>
 		<ItemGroupRef ItemGroupOID="lab_orders.lab_orders_complete" Mandatory="No"/>
 	</FormDef>
-	<FormDef OID="Form.prescription" Name="Prescription" Repeating="No" redcap:FormName="prescription">
-		<ItemGroupRef ItemGroupOID="prescription.protocol" Mandatory="No"/>
-		<ItemGroupRef ItemGroupOID="prescription.prescription_complete" Mandatory="No"/>
+	<FormDef OID="Form.prescription_form" Name="Prescription Form" Repeating="No" redcap:FormName="prescription_form">
+		<ItemGroupRef ItemGroupOID="prescription_form.pres_first_name" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="prescription_form.pres_last_name" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="prescription_form.pres_dop" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="prescription_form.pres_drug_name_1" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="prescription_form.prescription_form_complete" Mandatory="No"/>
 	</FormDef>
 	<FormDef OID="Form.clinic_note" Name="Clinic Note" Repeating="No" redcap:FormName="clinic_note">
 		<ItemGroupRef ItemGroupOID="clinic_note.clinic_note" Mandatory="No"/>
@@ -120,20 +185,42 @@
 	<ItemGroupDef OID="lab_orders.lab_orders_complete" Name="Form Status" Repeating="No">
 		<ItemRef ItemOID="lab_orders_complete" Mandatory="No" redcap:Variable="lab_orders_complete"/>
 	</ItemGroupDef>
-	<ItemGroupDef OID="prescription.protocol" Name="Prescription" Repeating="No">
-		<ItemRef ItemOID="protocol" Mandatory="Yes" redcap:Variable="protocol"/>
-		<ItemRef ItemOID="recommended_rx" Mandatory="Yes" redcap:Variable="recommended_rx"/>
-		<ItemRef ItemOID="tolerance" Mandatory="Yes" redcap:Variable="tolerance"/>
-		<ItemRef ItemOID="reject_rec_rx_reason" Mandatory="No" redcap:Variable="reject_rec_rx_reason"/>
-		<ItemRef ItemOID="algorithm" Mandatory="Yes" redcap:Variable="algorithm"/>
-		<ItemRef ItemOID="algorithm_run_date" Mandatory="Yes" redcap:Variable="algorithm_run_date"/>
-		<ItemRef ItemOID="administered_drug" Mandatory="Yes" redcap:Variable="administered_drug"/>
-		<ItemRef ItemOID="daily_drug_dosage" Mandatory="Yes" redcap:Variable="daily_drug_dosage"/>
-		<ItemRef ItemOID="advisor" Mandatory="Yes" redcap:Variable="advisor"/>
-		<ItemRef ItemOID="advisor_phone" Mandatory="Yes" redcap:Variable="advisor_phone"/>
+	<ItemGroupDef OID="prescription_form.pres_first_name" Name="Patient information/Address to send prescription" Repeating="No">
+		<ItemRef ItemOID="pres_first_name" Mandatory="Yes" redcap:Variable="pres_first_name"/>
 	</ItemGroupDef>
-	<ItemGroupDef OID="prescription.prescription_complete" Name="Form Status" Repeating="No">
-		<ItemRef ItemOID="prescription_complete" Mandatory="No" redcap:Variable="prescription_complete"/>
+	<ItemGroupDef OID="prescription_form.pres_last_name" Name="Prescription Form" Repeating="No">
+		<ItemRef ItemOID="pres_last_name" Mandatory="Yes" redcap:Variable="pres_last_name"/>
+		<ItemRef ItemOID="pres_street_address" Mandatory="Yes" redcap:Variable="pres_street_address"/>
+		<ItemRef ItemOID="pres_city" Mandatory="Yes" redcap:Variable="pres_city"/>
+		<ItemRef ItemOID="pres_state" Mandatory="Yes" redcap:Variable="pres_state"/>
+		<ItemRef ItemOID="pres_zipcode" Mandatory="Yes" redcap:Variable="pres_zipcode"/>
+		<ItemRef ItemOID="pres_country" Mandatory="No" redcap:Variable="pres_country"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="prescription_form.pres_dop" Name="Prescriptions to send" Repeating="No">
+		<ItemRef ItemOID="pres_dop" Mandatory="Yes" redcap:Variable="pres_dop"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="prescription_form.pres_drug_name_1" Name="Prescription Form" Repeating="No">
+		<ItemRef ItemOID="pres_drug_name_1" Mandatory="Yes" redcap:Variable="pres_drug_name_1"/>
+		<ItemRef ItemOID="pres_atorvastatin_dose" Mandatory="Yes" redcap:Variable="pres_atorvastatin_dose"/>
+		<ItemRef ItemOID="pres_rosuvastatin_dose" Mandatory="Yes" redcap:Variable="pres_rosuvastatin_dose"/>
+		<ItemRef ItemOID="pres_drug_route_1" Mandatory="Yes" redcap:Variable="pres_drug_route_1"/>
+		<ItemRef ItemOID="pres_drug_supply_1" Mandatory="Yes" redcap:Variable="pres_drug_supply_1"/>
+		<ItemRef ItemOID="pres_strength_dose_1" Mandatory="No" redcap:Variable="pres_strength_dose_1"/>
+		<ItemRef ItemOID="pres_drug_name_2" Mandatory="No" redcap:Variable="pres_drug_name_2"/>
+		<ItemRef ItemOID="pres_lisinopril_dose" Mandatory="Yes" redcap:Variable="pres_lisinopril_dose"/>
+		<ItemRef ItemOID="pres_losartan_dose" Mandatory="Yes" redcap:Variable="pres_losartan_dose"/>
+		<ItemRef ItemOID="pres_strength_dose_2" Mandatory="No" redcap:Variable="pres_strength_dose_2"/>
+		<ItemRef ItemOID="pres_drug_route_2" Mandatory="Yes" redcap:Variable="pres_drug_route_2"/>
+		<ItemRef ItemOID="pres_drug_supply_2" Mandatory="Yes" redcap:Variable="pres_drug_supply_2"/>
+		<ItemRef ItemOID="pres_drug_name_3" Mandatory="No" redcap:Variable="pres_drug_name_3"/>
+		<ItemRef ItemOID="pres_repatha_dose" Mandatory="Yes" redcap:Variable="pres_repatha_dose"/>
+		<ItemRef ItemOID="pres_strength_dose_3" Mandatory="No" redcap:Variable="pres_strength_dose_3"/>
+		<ItemRef ItemOID="pred_repatha_route" Mandatory="Yes" redcap:Variable="pred_repatha_route"/>
+		<ItemRef ItemOID="pres_repatha_supply" Mandatory="Yes" redcap:Variable="pres_repatha_supply"/>
+		<ItemRef ItemOID="rx_confirmed" Mandatory="No" redcap:Variable="rx_confirmed"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="prescription_form.prescription_form_complete" Name="Form Status" Repeating="No">
+		<ItemRef ItemOID="prescription_form_complete" Mandatory="No" redcap:Variable="prescription_form_complete"/>
 	</ItemGroupDef>
 	<ItemGroupDef OID="clinic_note.clinic_note" Name="Clinic Note" Repeating="No">
 		<ItemRef ItemOID="clinic_note" Mandatory="Yes" redcap:Variable="clinic_note"/>
@@ -316,60 +403,142 @@
 		<Question><TranslatedText>Order number:</TranslatedText></Question>
 	</ItemDef>
 	<ItemDef OID="order_bar_code" Name="order_bar_code" DataType="text" Length="999" redcap:Variable="order_bar_code" redcap:FieldType="descriptive">
-		<Question><TranslatedText>Order Bar Code: &lt;    add embeded image&gt; (automated)</TranslatedText><redcap:FormattedTranslatedText>Order Bar Code: &lt;    add embeded image&gt; (automated)</redcap:FormattedTranslatedText></Question>
+		<Question><TranslatedText>Order Bar Code: &lt;     add embeded image&gt; (automated)</TranslatedText><redcap:FormattedTranslatedText>Order Bar Code: &lt;     add embeded image&gt; (automated)</redcap:FormattedTranslatedText></Question>
 	</ItemDef>
 	<ItemDef OID="order_lab_result_white" Name="order_lab_result_white" DataType="text" Length="999" redcap:Variable="order_lab_result_white" redcap:FieldType="descriptive" redcap:BranchingLogic="[blood_analyses(1)] = &#039;1&#039;">
-		<Question><TranslatedText>White Blood Cell Result is  (automated)</TranslatedText><redcap:FormattedTranslatedText>White Blood Cell Result is &lt; fill in the value&gt; (automated)</redcap:FormattedTranslatedText></Question>
+		<Question><TranslatedText>White Blood Cell Result is &lt;  fill in the value&gt; (automated)</TranslatedText><redcap:FormattedTranslatedText>White Blood Cell Result is &lt;  fill in the value&gt; (automated)</redcap:FormattedTranslatedText></Question>
 	</ItemDef>
 	<ItemDef OID="order_lab_result_red" Name="order_lab_result_red" DataType="text" Length="999" redcap:Variable="order_lab_result_red" redcap:FieldType="descriptive" redcap:BranchingLogic="[blood_analyses(2)] = &#039;1&#039;">
-		<Question><TranslatedText>Red Blood Cell Result is  (automated)</TranslatedText><redcap:FormattedTranslatedText>Red Blood Cell Result is &lt; fill in the value&gt; (automated)</redcap:FormattedTranslatedText></Question>
+		<Question><TranslatedText>Red Blood Cell Result is &lt;  fill in the value&gt; (automated)</TranslatedText><redcap:FormattedTranslatedText>Red Blood Cell Result is &lt;  fill in the value&gt; (automated)</redcap:FormattedTranslatedText></Question>
 	</ItemDef>
 	<ItemDef OID="lab_orders_complete" Name="lab_orders_complete" DataType="text" Length="1" redcap:Variable="lab_orders_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
 		<Question><TranslatedText>Complete?</TranslatedText></Question>
 		<CodeListRef CodeListOID="lab_orders_complete.choices"/>
 	</ItemDef>
-	<ItemDef OID="protocol" Name="protocol" DataType="integer" Length="999" redcap:Variable="protocol" redcap:FieldType="text" redcap:TextValidationType="int" redcap:FieldNote="(automated)" redcap:RequiredField="y">
-		<Question><TranslatedText>Protocol</TranslatedText></Question>
+	<ItemDef OID="pres_first_name" Name="pres_first_name" DataType="text" Length="999" redcap:Variable="pres_first_name" redcap:FieldType="text" redcap:SectionHeader="Patient information/Address to send prescription" redcap:Identifier="y" redcap:RequiredField="y">
+		<Question><TranslatedText>Patient First name</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="pres_last_name" Name="pres_last_name" DataType="text" Length="999" redcap:Variable="pres_last_name" redcap:FieldType="text" redcap:Identifier="y" redcap:RequiredField="y">
+		<Question><TranslatedText>Patient Last name</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="pres_street_address" Name="pres_street_address" DataType="text" Length="999" redcap:Variable="pres_street_address" redcap:FieldType="text" redcap:FieldNote="Street Address (include unit/apartment number, if applicable)" redcap:Identifier="y" redcap:RequiredField="y">
+		<Question><TranslatedText>Patient&#039;s street address</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="pres_city" Name="pres_city" DataType="text" Length="999" redcap:Variable="pres_city" redcap:FieldType="text" redcap:Identifier="y" redcap:RequiredField="y">
+		<Question><TranslatedText>City</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="pres_state" Name="pres_state" DataType="text" Length="999" redcap:Variable="pres_state" redcap:FieldType="text" redcap:Identifier="y" redcap:RequiredField="y">
+		<Question><TranslatedText>State</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="pres_zipcode" Name="pres_zipcode" DataType="float" Length="999" SignificantDigits="1" redcap:Variable="pres_zipcode" redcap:FieldType="text" redcap:TextValidationType="float" redcap:FieldNote="Numbers only" redcap:Identifier="y" redcap:RequiredField="y">
+		<Question><TranslatedText>Zip Code</TranslatedText></Question>
 		<RangeCheck Comparator="GE" SoftHard="Soft">
-			<CheckValue>0</CheckValue>
-			<ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (0 - 10). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
+			<CheckValue>10000</CheckValue>
+			<ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (10000 - 100000). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
 		</RangeCheck>
 		<RangeCheck Comparator="LE" SoftHard="Soft">
-			<CheckValue>10</CheckValue>
-			<ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (0 - 10). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
+			<CheckValue>100000</CheckValue>
+			<ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (10000 - 100000). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
 		</RangeCheck>
 	</ItemDef>
-	<ItemDef OID="recommended_rx" Name="recommended_rx" DataType="text" Length="999" redcap:Variable="recommended_rx" redcap:FieldType="text" redcap:FieldNote="(initially automated)" redcap:RequiredField="y">
-		<Question><TranslatedText>Recommended RX</TranslatedText></Question>
+	<ItemDef OID="pres_country" Name="pres_country" DataType="text" Length="999" redcap:Variable="pres_country" redcap:FieldType="text" redcap:TextValidationType="alpha_only" redcap:FieldNote="provide only if not in USA">
+		<Question><TranslatedText>Country (if not in USA)</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="tolerance" Name="tolerance" DataType="text" Length="1" redcap:Variable="tolerance" redcap:FieldType="radio" redcap:RequiredField="y">
-		<Question><TranslatedText>Patient intolerant of recommendation?</TranslatedText></Question>
-		<CodeListRef CodeListOID="tolerance.choices"/>
+	<ItemDef OID="pres_dop" Name="pres_dop" DataType="date" Length="999" redcap:Variable="pres_dop" redcap:FieldType="text" redcap:TextValidationType="date_mdy" redcap:FieldNote="Date (MM-DD-YYYY)" redcap:SectionHeader="Prescriptions to send" redcap:RequiredField="y">
+		<Question><TranslatedText>Date of prescription</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="reject_rec_rx_reason" Name="reject_rec_rx_reason" DataType="text" Length="999" redcap:Variable="reject_rec_rx_reason" redcap:FieldType="text" redcap:BranchingLogic="[tolerance] = &#039;2&#039; or [tolerance] = &#039;0&#039;">
-		<Question><TranslatedText>Reason to reject recommended RX</TranslatedText></Question>
+	<ItemDef OID="pres_drug_name_1" Name="pres_drug_name_1" DataType="text" Length="12" redcap:Variable="pres_drug_name_1" redcap:FieldType="radio" redcap:FieldNote="Select a statin to prescribe" redcap:RequiredField="y">
+		<Question><TranslatedText>Statin to Prescribe</TranslatedText></Question>
+		<CodeListRef CodeListOID="pres_drug_name_1.choices"/>
 	</ItemDef>
-	<ItemDef OID="algorithm" Name="algorithm" DataType="text" Length="999" redcap:Variable="algorithm" redcap:FieldType="text" redcap:FieldNote="(automated)" redcap:RequiredField="y">
-		<Question><TranslatedText>Algorithm run</TranslatedText></Question>
+	<ItemDef OID="pres_atorvastatin_dose" Name="pres_atorvastatin_dose" DataType="text" Length="2" redcap:Variable="pres_atorvastatin_dose" redcap:FieldType="radio" redcap:RequiredField="y" redcap:BranchingLogic="[pres_drug_name_1] = &#039;Atorvastatin&#039;">
+		<Question><TranslatedText>Prescription selection of Atorvastatin</TranslatedText></Question>
+		<CodeListRef CodeListOID="pres_atorvastatin_dose.choices"/>
 	</ItemDef>
-	<ItemDef OID="algorithm_run_date" Name="algorithm_run_date" DataType="date" Length="999" redcap:Variable="algorithm_run_date" redcap:FieldType="text" redcap:TextValidationType="date_mdy" redcap:RequiredField="y">
-		<Question><TranslatedText>Date algorithm run</TranslatedText></Question>
+	<ItemDef OID="pres_rosuvastatin_dose" Name="pres_rosuvastatin_dose" DataType="text" Length="2" redcap:Variable="pres_rosuvastatin_dose" redcap:FieldType="radio" redcap:RequiredField="y" redcap:BranchingLogic="[pres_drug_name_1] = &#039;Rosuvastatin&#039;">
+		<Question><TranslatedText>Prescription selection of Rosuvastatin</TranslatedText></Question>
+		<CodeListRef CodeListOID="pres_rosuvastatin_dose.choices"/>
 	</ItemDef>
-	<ItemDef OID="administered_drug" Name="administered_drug" DataType="text" Length="999" redcap:Variable="administered_drug" redcap:FieldType="text" redcap:RequiredField="y">
-		<Question><TranslatedText>Administered Drug</TranslatedText></Question>
+	<ItemDef OID="pres_drug_route_1" Name="pres_drug_route_1" DataType="text" Length="2" redcap:Variable="pres_drug_route_1" redcap:FieldType="radio" redcap:RequiredField="y" redcap:FieldAnnotation="@HIDDEN-FORM @DEFAULT=&quot;PO&quot;">
+		<Question><TranslatedText>Statin Route</TranslatedText></Question>
+		<CodeListRef CodeListOID="pres_drug_route_1.choices"/>
 	</ItemDef>
-	<ItemDef OID="daily_drug_dosage" Name="daily_drug_dosage" DataType="float" Length="999" SignificantDigits="1" redcap:Variable="daily_drug_dosage" redcap:FieldType="text" redcap:TextValidationType="float" redcap:FieldNote="(mg/L)" redcap:RequiredField="y">
-		<Question><TranslatedText>Administered Drug daily dosage</TranslatedText></Question>
+	<ItemDef OID="pres_drug_supply_1" Name="pres_drug_supply_1" DataType="integer" Length="999" redcap:Variable="pres_drug_supply_1" redcap:FieldType="text" redcap:TextValidationType="int" redcap:FieldNote="Number only" redcap:RequiredField="y" redcap:FieldAnnotation="@DEFAULT=&quot;180&quot;">
+		<Question><TranslatedText>Statin Supply (days)</TranslatedText></Question>
+		<RangeCheck Comparator="GE" SoftHard="Soft">
+			<CheckValue>30</CheckValue>
+			<ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (30 - 180). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
+		</RangeCheck>
+		<RangeCheck Comparator="LE" SoftHard="Soft">
+			<CheckValue>180</CheckValue>
+			<ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (30 - 180). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
+		</RangeCheck>
 	</ItemDef>
-	<ItemDef OID="advisor" Name="advisor" DataType="text" Length="999" redcap:Variable="advisor" redcap:FieldType="text" redcap:Identifier="y" redcap:RequiredField="y">
-		<Question><TranslatedText>Advisor</TranslatedText></Question>
+	<ItemDef OID="pres_strength_dose_1" Name="pres_strength_dose_1" DataType="text" Length="999" redcap:Variable="pres_strength_dose_1" redcap:FieldType="text" redcap:FieldNote="copy labels from [pres_rosuvastatin_dose] [pres_atorvastatin_dose]" redcap:FieldAnnotation="@HIDDEN-FORM">
+		<Question><TranslatedText>[pres_rosuvastatin_dose] [pres_atorvastatin_dose]</TranslatedText></Question>
 	</ItemDef>
-	<ItemDef OID="advisor_phone" Name="advisor_phone" DataType="text" Length="999" redcap:Variable="advisor_phone" redcap:FieldType="text" redcap:TextValidationType="phone" redcap:Identifier="y" redcap:RequiredField="y">
-		<Question><TranslatedText>Patient advisor phone number</TranslatedText></Question>
+	<ItemDef OID="pres_drug_name_2" Name="pres_drug_name_2" DataType="text" Length="10" redcap:Variable="pres_drug_name_2" redcap:FieldType="radio" redcap:FieldNote="Select drug to prescribe">
+		<Question><TranslatedText>ACE Inhibitor / ARB to prescribe</TranslatedText></Question>
+		<CodeListRef CodeListOID="pres_drug_name_2.choices"/>
 	</ItemDef>
-	<ItemDef OID="prescription_complete" Name="prescription_complete" DataType="text" Length="1" redcap:Variable="prescription_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+	<ItemDef OID="pres_lisinopril_dose" Name="pres_lisinopril_dose" DataType="text" Length="2" redcap:Variable="pres_lisinopril_dose" redcap:FieldType="radio" redcap:RequiredField="y" redcap:BranchingLogic="[pres_drug_name_2] = &#039;Lisinopril&#039;" redcap:FieldAnnotation="@DEFAULT=&quot;40&quot;">
+		<Question><TranslatedText>Prescription selection of Lisinopril</TranslatedText></Question>
+		<CodeListRef CodeListOID="pres_lisinopril_dose.choices"/>
+	</ItemDef>
+	<ItemDef OID="pres_losartan_dose" Name="pres_losartan_dose" DataType="text" Length="3" redcap:Variable="pres_losartan_dose" redcap:FieldType="radio" redcap:RequiredField="y" redcap:BranchingLogic="[pres_drug_name_2] = &#039;Losartan&#039;" redcap:FieldAnnotation="@DEFAULT=&quot;100&quot;">
+		<Question><TranslatedText>Prescription selection of Losartan</TranslatedText></Question>
+		<CodeListRef CodeListOID="pres_losartan_dose.choices"/>
+	</ItemDef>
+	<ItemDef OID="pres_strength_dose_2" Name="pres_strength_dose_2" DataType="text" Length="999" redcap:Variable="pres_strength_dose_2" redcap:FieldType="text" redcap:FieldNote="copy labels from [pres_lisinopril_dose] [pres_losartan_dose]" redcap:FieldAnnotation="@HIDDEN-FORM">
+		<Question><TranslatedText>[pres_lisinopril_dose] [pres_losartan_dose]</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="pres_drug_route_2" Name="pres_drug_route_2" DataType="text" Length="2" redcap:Variable="pres_drug_route_2" redcap:FieldType="radio" redcap:RequiredField="y" redcap:FieldAnnotation="@HIDDEN-FORM @DEFAULT=&quot;PO&quot;">
+		<Question><TranslatedText>ACE/ARB Route</TranslatedText></Question>
+		<CodeListRef CodeListOID="pres_drug_route_2.choices"/>
+	</ItemDef>
+	<ItemDef OID="pres_drug_supply_2" Name="pres_drug_supply_2" DataType="integer" Length="999" redcap:Variable="pres_drug_supply_2" redcap:FieldType="text" redcap:TextValidationType="int" redcap:FieldNote="Number only" redcap:RequiredField="y" redcap:FieldAnnotation="@DEFAULT=&quot;180&quot;">
+		<Question><TranslatedText>ACE/ARB Supply (days)</TranslatedText></Question>
+		<RangeCheck Comparator="GE" SoftHard="Soft">
+			<CheckValue>30</CheckValue>
+			<ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (30 - 180). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
+		</RangeCheck>
+		<RangeCheck Comparator="LE" SoftHard="Soft">
+			<CheckValue>180</CheckValue>
+			<ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (30 - 180). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
+		</RangeCheck>
+	</ItemDef>
+	<ItemDef OID="pres_drug_name_3" Name="pres_drug_name_3" DataType="text" Length="7" redcap:Variable="pres_drug_name_3" redcap:FieldType="radio" redcap:FieldAnnotation="@HIDDEN-FORM @DEFAULT=&quot;Repatha&quot;">
+		<Question><TranslatedText>Select 3rd prescription</TranslatedText></Question>
+		<CodeListRef CodeListOID="pres_drug_name_3.choices"/>
+	</ItemDef>
+	<ItemDef OID="pres_repatha_dose" Name="pres_repatha_dose" DataType="text" Length="3" redcap:Variable="pres_repatha_dose" redcap:FieldType="radio" redcap:RequiredField="y">
+		<Question><TranslatedText>Prescription selection of Repatha</TranslatedText></Question>
+		<CodeListRef CodeListOID="pres_repatha_dose.choices"/>
+	</ItemDef>
+	<ItemDef OID="pres_strength_dose_3" Name="pres_strength_dose_3" DataType="text" Length="999" redcap:Variable="pres_strength_dose_3" redcap:FieldType="text" redcap:FieldNote="copy labels from [pres_repatha_dose]" redcap:FieldAnnotation="@HIDDEN-FORM">
+		<Question><TranslatedText>[pres_repatha_dose]</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="pred_repatha_route" Name="pred_repatha_route" DataType="text" Length="3" redcap:Variable="pred_repatha_route" redcap:FieldType="radio" redcap:RequiredField="y" redcap:FieldAnnotation="@HIDDEN-FORM @DEFAULT=&quot;INJ&quot;">
+		<Question><TranslatedText>Repatha route</TranslatedText></Question>
+		<CodeListRef CodeListOID="pred_repatha_route.choices"/>
+	</ItemDef>
+	<ItemDef OID="pres_repatha_supply" Name="pres_repatha_supply" DataType="integer" Length="999" redcap:Variable="pres_repatha_supply" redcap:FieldType="text" redcap:TextValidationType="int" redcap:FieldNote="Number only" redcap:RequiredField="y" redcap:FieldAnnotation="@DEFAULT=&quot;180&quot;">
+		<Question><TranslatedText>Repatha Supply (days)</TranslatedText></Question>
+		<RangeCheck Comparator="GE" SoftHard="Soft">
+			<CheckValue>30</CheckValue>
+			<ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (30 - 180). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
+		</RangeCheck>
+		<RangeCheck Comparator="LE" SoftHard="Soft">
+			<CheckValue>180</CheckValue>
+			<ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (30 - 180). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
+		</RangeCheck>
+	</ItemDef>
+	<ItemDef OID="rx_confirmed" Name="rx_confirmed" DataType="text" Length="999" redcap:Variable="rx_confirmed" redcap:FieldType="textarea">
+		<Question><TranslatedText>Generate RX to be confirmed.</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="prescription_form_complete" Name="prescription_form_complete" DataType="text" Length="1" redcap:Variable="prescription_form_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
 		<Question><TranslatedText>Complete?</TranslatedText></Question>
-		<CodeListRef CodeListOID="prescription_complete.choices"/>
+		<CodeListRef CodeListOID="prescription_form_complete.choices"/>
 	</ItemDef>
 	<ItemDef OID="clinic_note" Name="clinic_note" DataType="text" Length="999" redcap:Variable="clinic_note" redcap:FieldType="text" redcap:FieldNote="(automated)" redcap:RequiredField="y">
 		<Question><TranslatedText>Patty is recommended a dose of 10 mg of albuterol a day.</TranslatedText></Question>
@@ -514,19 +683,19 @@
 		<CodeListItem CodedValue="4"><Decode><TranslatedText>West</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="5"><Decode><TranslatedText>East</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="blood_analyses___1.choices" Name="blood_analyses___1" DataType="boolean" redcap:Variable="blood_analyses" redcap:CheckboxChoices="1, White blood cell count | 2, Red blood cell count">
+	<CodeList OID="blood_analyses___1.choices" Name="blood_analyses___1" DataType="boolean" redcap:Variable="blood_analyses" redcap:CheckboxChoices="1, White blood cell count|2, Red blood cell count">
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="blood_analyses___2.choices" Name="blood_analyses___2" DataType="boolean" redcap:Variable="blood_analyses" redcap:CheckboxChoices="1, White blood cell count | 2, Red blood cell count">
+	<CodeList OID="blood_analyses___2.choices" Name="blood_analyses___2" DataType="boolean" redcap:Variable="blood_analyses" redcap:CheckboxChoices="1, White blood cell count|2, Red blood cell count">
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="blood_analyses___1.choices" Name="blood_analyses___1" DataType="boolean" redcap:Variable="blood_analyses" redcap:CheckboxChoices="1, White blood cell count | 2, Red blood cell count">
+	<CodeList OID="blood_analyses___1.choices" Name="blood_analyses___1" DataType="boolean" redcap:Variable="blood_analyses" redcap:CheckboxChoices="1, White blood cell count|2, Red blood cell count">
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="blood_analyses___2.choices" Name="blood_analyses___2" DataType="boolean" redcap:Variable="blood_analyses" redcap:CheckboxChoices="1, White blood cell count | 2, Red blood cell count">
+	<CodeList OID="blood_analyses___2.choices" Name="blood_analyses___2" DataType="boolean" redcap:Variable="blood_analyses" redcap:CheckboxChoices="1, White blood cell count|2, Red blood cell count">
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
 	</CodeList>
@@ -535,12 +704,49 @@
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="tolerance.choices" Name="tolerance" DataType="text" redcap:Variable="tolerance">
-		<CodeListItem CodedValue="0"><Decode><TranslatedText>No, not tolerant. The recommendation is rejected.</TranslatedText></Decode></CodeListItem>
-		<CodeListItem CodedValue="1"><Decode><TranslatedText>Yes, tolerant. The recommendation stands.</TranslatedText></Decode></CodeListItem>
-		<CodeListItem CodedValue="2"><Decode><TranslatedText>Tolerant, but the recommendation is rejected for other reasons (specify below).</TranslatedText></Decode></CodeListItem>
+	<CodeList OID="pres_drug_name_1.choices" Name="pres_drug_name_1" DataType="text" redcap:Variable="pres_drug_name_1">
+		<CodeListItem CodedValue="Atorvastatin"><Decode><TranslatedText>Atorvastatin</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="Rosuvastatin"><Decode><TranslatedText>Rosuvastatin</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="prescription_complete.choices" Name="prescription_complete" DataType="text" redcap:Variable="prescription_complete">
+	<CodeList OID="pres_atorvastatin_dose.choices" Name="pres_atorvastatin_dose" DataType="text" redcap:Variable="pres_atorvastatin_dose">
+		<CodeListItem CodedValue="20"><Decode><TranslatedText>20mg HS</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="40"><Decode><TranslatedText>40mg HS</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="80"><Decode><TranslatedText>80mg HS</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="pres_rosuvastatin_dose.choices" Name="pres_rosuvastatin_dose" DataType="text" redcap:Variable="pres_rosuvastatin_dose">
+		<CodeListItem CodedValue="20"><Decode><TranslatedText>20mg HS</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="40"><Decode><TranslatedText>40mg HS</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="pres_drug_route_1.choices" Name="pres_drug_route_1" DataType="text" redcap:Variable="pres_drug_route_1">
+		<CodeListItem CodedValue="PO"><Decode><TranslatedText>PO</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="pres_drug_name_2.choices" Name="pres_drug_name_2" DataType="text" redcap:Variable="pres_drug_name_2">
+		<CodeListItem CodedValue="Lisinopril"><Decode><TranslatedText>Lisinopril</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="Losartan"><Decode><TranslatedText>Losartan</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="pres_lisinopril_dose.choices" Name="pres_lisinopril_dose" DataType="text" redcap:Variable="pres_lisinopril_dose">
+		<CodeListItem CodedValue="10"><Decode><TranslatedText>10mg QD</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="20"><Decode><TranslatedText>20mg QD</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="40"><Decode><TranslatedText>40mg QD</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="pres_losartan_dose.choices" Name="pres_losartan_dose" DataType="text" redcap:Variable="pres_losartan_dose">
+		<CodeListItem CodedValue="50"><Decode><TranslatedText>50mg QD</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="100"><Decode><TranslatedText>100mg QD</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="pres_drug_route_2.choices" Name="pres_drug_route_2" DataType="text" redcap:Variable="pres_drug_route_2">
+		<CodeListItem CodedValue="PO"><Decode><TranslatedText>PO</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="pres_drug_name_3.choices" Name="pres_drug_name_3" DataType="text" redcap:Variable="pres_drug_name_3">
+		<CodeListItem CodedValue="Repatha"><Decode><TranslatedText>Repatha</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="pres_repatha_dose.choices" Name="pres_repatha_dose" DataType="text" redcap:Variable="pres_repatha_dose">
+		<CodeListItem CodedValue="140"><Decode><TranslatedText>140mg q 2 weeks</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="420"><Decode><TranslatedText>420mg q month</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="pred_repatha_route.choices" Name="pred_repatha_route" DataType="text" redcap:Variable="pred_repatha_route">
+		<CodeListItem CodedValue="INJ"><Decode><TranslatedText>INJ</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="prescription_form_complete.choices" Name="prescription_form_complete" DataType="text" redcap:Variable="prescription_form_complete">
 		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>

@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:redcap="https://projectredcap.org" xsi:schemaLocation="http://www.cdisc.org/ns/odm/v1.3 schema/odm/ODM1-3-1.xsd" ODMVersion="1.3.1" FileOID="000-00-0000" FileType="Snapshot" Description="ISCHEMIA-IMT Sites" AsOfDateTime="2017-07-26T11:02:24" CreationDateTime="2017-07-26T11:02:24" SourceSystem="REDCap" SourceSystemVersion="7.5.1">
+<Study OID="Project.ISCHEMIAIMTSites">
+<GlobalVariables>
+	<StudyName>ISCHEMIA-IMT Sites</StudyName>
+	<StudyDescription>This file contains the metadata, events, and data for REDCap project "ISCHEMIA-IMT Sites".</StudyDescription>
+	<ProtocolName>ISCHEMIA-IMT Sites</ProtocolName>
+	<redcap:RecordAutonumberingEnabled>1</redcap:RecordAutonumberingEnabled>
+	<redcap:CustomRecordLabel></redcap:CustomRecordLabel>
+	<redcap:SecondaryUniqueField></redcap:SecondaryUniqueField>
+	<redcap:SchedulingEnabled>0</redcap:SchedulingEnabled>
+	<redcap:Purpose>0</redcap:Purpose>
+	<redcap:PurposeOther></redcap:PurposeOther>
+	<redcap:ProjectNotes></redcap:ProjectNotes>
+	<redcap:RepeatingInstrumentsAndEvents>
+		<redcap:RepeatingInstruments>
+			<redcap:RepeatingInstrument redcap:UniqueEventName="event_1_arm_1" redcap:RepeatInstrument="site_staff" redcap:CustomLabel="[first_name] [last_name]"/>
+		</redcap:RepeatingInstruments>
+	</redcap:RepeatingInstrumentsAndEvents>
+</GlobalVariables>
+<MetaDataVersion OID="Metadata.ISCHEMIAIMTSites_2017-07-26_1102" Name="ISCHEMIA-IMT Sites" redcap:RecordIdField="site_id">
+	<FormDef OID="Form.site_information" Name="Site Information" Repeating="No" redcap:FormName="site_information">
+		<ItemGroupRef ItemGroupOID="site_information.site_id" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="site_information.site_information_complete" Mandatory="No"/>
+	</FormDef>
+	<FormDef OID="Form.pharmacy_information" Name="Pharmacy Information" Repeating="No" redcap:FormName="pharmacy_information">
+		<ItemGroupRef ItemGroupOID="pharmacy_information.send_rx_message_type" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="pharmacy_information.pharmacy_information_complete" Mandatory="No"/>
+	</FormDef>
+	<FormDef OID="Form.site_staff" Name="Site Staff" Repeating="No" redcap:FormName="site_staff">
+		<ItemGroupRef ItemGroupOID="site_staff.first_name" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="site_staff.last_name" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="site_staff.site_staff_complete" Mandatory="No"/>
+	</FormDef>
+	<ItemGroupDef OID="site_information.site_id" Name="Site Information" Repeating="No">
+		<ItemRef ItemOID="site_id" Mandatory="No" redcap:Variable="site_id"/>
+		<ItemRef ItemOID="site_name" Mandatory="Yes" redcap:Variable="site_name"/>
+		<ItemRef ItemOID="send_rx_dag_id" Mandatory="No" redcap:Variable="send_rx_dag_id"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="site_information.site_information_complete" Name="Form Status" Repeating="No">
+		<ItemRef ItemOID="site_information_complete" Mandatory="No" redcap:Variable="site_information_complete"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="pharmacy_information.send_rx_message_type" Name="Pharmacy Information" Repeating="No">
+		<ItemRef ItemOID="send_rx_message_type" Mandatory="Yes" redcap:Variable="send_rx_message_type"/>
+		<ItemRef ItemOID="send_rx_recipients" Mandatory="Yes" redcap:Variable="send_rx_recipients"/>
+		<ItemRef ItemOID="send_rx_message_subject" Mandatory="Yes" redcap:Variable="send_rx_message_subject"/>
+		<ItemRef ItemOID="send_rx_message_body" Mandatory="Yes" redcap:Variable="send_rx_message_body"/>
+		<ItemRef ItemOID="send_rx_endpoint" Mandatory="No" redcap:Variable="send_rx_endpoint"/>
+		<ItemRef ItemOID="send_rx_h17_protocol_code" Mandatory="No" redcap:Variable="send_rx_h17_protocol_code"/>
+		<ItemRef ItemOID="send_rx_public_key" Mandatory="No" redcap:Variable="send_rx_public_key"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="pharmacy_information.pharmacy_information_complete" Name="Form Status" Repeating="No">
+		<ItemRef ItemOID="pharmacy_information_complete" Mandatory="No" redcap:Variable="pharmacy_information_complete"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="site_staff.first_name" Name="Use this form to enter the details about study staff at each site. Prescribers must be described here for Send RX to generate the prescriptions they sign." Repeating="No">
+		<ItemRef ItemOID="first_name" Mandatory="Yes" redcap:Variable="first_name"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="site_staff.last_name" Name="Site Staff" Repeating="No">
+		<ItemRef ItemOID="last_name" Mandatory="Yes" redcap:Variable="last_name"/>
+		<ItemRef ItemOID="send_rx_redcap_username" Mandatory="Yes" redcap:Variable="send_rx_redcap_username"/>
+		<ItemRef ItemOID="send_rx_person_role" Mandatory="Yes" redcap:Variable="send_rx_person_role"/>
+		<ItemRef ItemOID="send_rx_person_email" Mandatory="Yes" redcap:Variable="send_rx_person_email"/>
+		<ItemRef ItemOID="person_address" Mandatory="Yes" redcap:Variable="person_address"/>
+		<ItemRef ItemOID="person_phone" Mandatory="Yes" redcap:Variable="person_phone"/>
+		<ItemRef ItemOID="dea_number" Mandatory="No" redcap:Variable="dea_number"/>
+		<ItemRef ItemOID="license_number" Mandatory="No" redcap:Variable="license_number"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="site_staff.site_staff_complete" Name="Form Status" Repeating="No">
+		<ItemRef ItemOID="site_staff_complete" Mandatory="No" redcap:Variable="site_staff_complete"/>
+	</ItemGroupDef>
+	<ItemDef OID="site_id" Name="site_id" DataType="text" Length="999" redcap:Variable="site_id" redcap:FieldType="text">
+		<Question><TranslatedText>Site ID</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="site_name" Name="site_name" DataType="text" Length="999" redcap:Variable="site_name" redcap:FieldType="text" redcap:RequiredField="y">
+		<Question><TranslatedText>Site Name</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="send_rx_dag_id" Name="send_rx_dag_id" DataType="integer" Length="999" redcap:Variable="send_rx_dag_id" redcap:FieldType="text" redcap:TextValidationType="int">
+		<Question><TranslatedText>Data Access Group (DAG) ID</TranslatedText></Question>
+		<RangeCheck Comparator="GE" SoftHard="Soft">
+			<CheckValue>0</CheckValue>
+			<ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (0 - 100000). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
+		</RangeCheck>
+		<RangeCheck Comparator="LE" SoftHard="Soft">
+			<CheckValue>100000</CheckValue>
+			<ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (0 - 100000). This value is admissible, but you may wish to verify.</TranslatedText></ErrorMessage>
+		</RangeCheck>
+	</ItemDef>
+	<ItemDef OID="site_information_complete" Name="site_information_complete" DataType="text" Length="1" redcap:Variable="site_information_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+		<Question><TranslatedText>Complete?</TranslatedText></Question>
+		<CodeListRef CodeListOID="site_information_complete.choices"/>
+	</ItemDef>
+	<ItemDef OID="send_rx_message_type" Name="send_rx_message_type" DataType="text" Length="15" redcap:Variable="send_rx_message_type" redcap:FieldType="select" redcap:FieldNote="By what means will prescriptions be delivered to this site&#039;s pharmacy?" redcap:RequiredField="y" redcap:FieldAnnotation="@DEFAULT=&quot;email&quot;">
+		<Question><TranslatedText>Message Type</TranslatedText></Question>
+		<CodeListRef CodeListOID="send_rx_message_type.choices"/>
+	</ItemDef>
+	<ItemDef OID="send_rx_recipients" Name="send_rx_recipients" DataType="text" Length="999" redcap:Variable="send_rx_recipients" redcap:FieldType="textarea" redcap:FieldNote="For multiple emails, separate with a comma (e.g. bob@gmail.com,ann@ufl.edu,cory@new.co)." redcap:RequiredField="y" redcap:BranchingLogic="[send_rx_message_type] = &#039;email&#039;">
+		<Question><TranslatedText>Email recipients at the pharmacy</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="send_rx_message_subject" Name="send_rx_message_subject" DataType="text" Length="999" redcap:Variable="send_rx_message_subject" redcap:FieldType="textarea" redcap:FieldNote="Enter the text that should appear in the subject line of the email." redcap:RequiredField="y" redcap:BranchingLogic="[send_rx_message_type] = &#039;email&#039; or [send_rx_message_type] = &#039;h17&#039;" redcap:FieldAnnotation="@DEFAULT=&quot;New prescription for ISCHEMIA-IMT study&quot;">
+		<Question><TranslatedText>Email Message Subject</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="send_rx_message_body" Name="send_rx_message_body" DataType="text" Length="999" redcap:Variable="send_rx_message_body" redcap:FieldType="textarea" redcap:FieldNote="Enter the text that should appear in the body of the email to this site&#039;s pharmacists." redcap:RequiredField="y" redcap:BranchingLogic="[send_rx_message_type] = &#039;email&#039; or [send_rx_message_type] = &#039;h17&#039; or [send_rx_message_type] = &#039;message_gateway&#039;" redcap:FieldAnnotation="@DEFAULT=&quot;A research subject on the ISCHEMIA-IMT study needs a prescription filled. You can access that new prescription at **URL_TO_PDF__OF_PRESCRIPTION**&quot;">
+		<Question><TranslatedText>Email Message Body</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="send_rx_endpoint" Name="send_rx_endpoint" DataType="text" Length="999" redcap:Variable="send_rx_endpoint" redcap:FieldType="text" redcap:BranchingLogic="[send_rx_message_type] = &#039;h17&#039; or [send_rx_message_type] = &#039;message_gateway&#039;">
+		<Question><TranslatedText>End point</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="send_rx_h17_protocol_code" Name="send_rx_h17_protocol_code" DataType="text" Length="999" redcap:Variable="send_rx_h17_protocol_code" redcap:FieldType="text" redcap:BranchingLogic="[send_rx_message_type] = &#039;h17&#039;">
+		<Question><TranslatedText>H17 Protocol Code</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="send_rx_public_key" Name="send_rx_public_key" DataType="text" Length="999" redcap:Variable="send_rx_public_key" redcap:FieldType="text" redcap:BranchingLogic="[send_rx_message_type] = &#039;message_gateway&#039;">
+		<Question><TranslatedText>Public key</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="pharmacy_information_complete" Name="pharmacy_information_complete" DataType="text" Length="1" redcap:Variable="pharmacy_information_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+		<Question><TranslatedText>Complete?</TranslatedText></Question>
+		<CodeListRef CodeListOID="pharmacy_information_complete.choices"/>
+	</ItemDef>
+	<ItemDef OID="first_name" Name="first_name" DataType="text" Length="999" redcap:Variable="first_name" redcap:FieldType="text" redcap:SectionHeader="Use this form to enter the details about study staff at each site. Prescribers must be described here for Send RX to generate the prescriptions they sign." redcap:RequiredField="y">
+		<Question><TranslatedText>First name</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="last_name" Name="last_name" DataType="text" Length="999" redcap:Variable="last_name" redcap:FieldType="text" redcap:RequiredField="y">
+		<Question><TranslatedText>Last name</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="send_rx_redcap_username" Name="send_rx_redcap_username" DataType="text" Length="999" redcap:Variable="send_rx_redcap_username" redcap:FieldType="text" redcap:RequiredField="y">
+		<Question><TranslatedText>REDCap Username</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="send_rx_person_role" Name="send_rx_person_role" DataType="text" Length="17" redcap:Variable="send_rx_person_role" redcap:FieldType="select" redcap:TextValidationType="autocomplete" redcap:RequiredField="y">
+		<Question><TranslatedText>Role in Study</TranslatedText></Question>
+		<CodeListRef CodeListOID="send_rx_person_role.choices"/>
+	</ItemDef>
+	<ItemDef OID="send_rx_person_email" Name="send_rx_person_email" DataType="text" Length="999" redcap:Variable="send_rx_person_email" redcap:FieldType="text" redcap:TextValidationType="email" redcap:RequiredField="y" redcap:BranchingLogic="[send_rx_person_role] = &#039;prescriber&#039;">
+		<Question><TranslatedText>Email address</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="person_address" Name="person_address" DataType="text" Length="999" redcap:Variable="person_address" redcap:FieldType="textarea" redcap:RequiredField="y" redcap:BranchingLogic="[send_rx_person_role] = &#039;prescriber&#039;">
+		<Question><TranslatedText>Address</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="person_phone" Name="person_phone" DataType="text" Length="999" redcap:Variable="person_phone" redcap:FieldType="text" redcap:TextValidationType="phone" redcap:RequiredField="y" redcap:BranchingLogic="[send_rx_person_role] = &#039;prescriber&#039;">
+		<Question><TranslatedText>Phone</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="dea_number" Name="dea_number" DataType="text" Length="999" redcap:Variable="dea_number" redcap:FieldType="text" redcap:BranchingLogic="[send_rx_person_role] = &#039;prescriber&#039;">
+		<Question><TranslatedText>DEA Number</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="license_number" Name="license_number" DataType="text" Length="999" redcap:Variable="license_number" redcap:FieldType="text" redcap:BranchingLogic="[send_rx_person_role] = &#039;prescriber&#039;">
+		<Question><TranslatedText>Medical License Number</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="site_staff_complete" Name="site_staff_complete" DataType="text" Length="1" redcap:Variable="site_staff_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+		<Question><TranslatedText>Complete?</TranslatedText></Question>
+		<CodeListRef CodeListOID="site_staff_complete.choices"/>
+	</ItemDef>
+	<CodeList OID="site_information_complete.choices" Name="site_information_complete" DataType="text" redcap:Variable="site_information_complete">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="send_rx_message_type.choices" Name="send_rx_message_type" DataType="text" redcap:Variable="send_rx_message_type">
+		<CodeListItem CodedValue="email"><Decode><TranslatedText>Email</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="h17"><Decode><TranslatedText>H17</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="message_gateway"><Decode><TranslatedText>Message Gateway</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="pharmacy_information_complete.choices" Name="pharmacy_information_complete" DataType="text" redcap:Variable="pharmacy_information_complete">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="send_rx_person_role.choices" Name="send_rx_person_role" DataType="text" redcap:Variable="send_rx_person_role">
+		<CodeListItem CodedValue="prescriber"><Decode><TranslatedText>Prescriber</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="study_coordinator"><Decode><TranslatedText>Study Coordinator</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="cec"><Decode><TranslatedText>Member of the Clinical Endpoint Committee</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="site_staff_complete.choices" Name="site_staff_complete" DataType="text" redcap:Variable="site_staff_complete">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+</MetaDataVersion>
+</Study>
+<ClinicalData StudyOID="Project.ISCHEMIAIMTSites" MetaDataVersionOID="Metadata.ISCHEMIAIMTSites_2017-07-26_1102">
+	<SubjectData SubjectKey="1" redcap:RecordIdField="site_id">
+			<FormData FormOID="Form.site_information" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="site_information.site_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="site_id" Value="1"/>
+					<ItemData ItemOID="site_name" Value="UF HEalth"/>
+					<ItemData ItemOID="send_rx_dag_id" Value="1324"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="site_information.site_information_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="site_information_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.pharmacy_information" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="pharmacy_information.send_rx_message_type" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="send_rx_message_type" Value="email"/>
+					<ItemData ItemOID="send_rx_recipients" Value="pbc@ufl.edu"/>
+					<ItemData ItemOID="send_rx_message_subject" Value="New prescription for ISCHEMIA-IMT study"/>
+					<ItemData ItemOID="send_rx_message_body" Value="A research subject on the ISCHEMIA-IMT study needs a prescription filled. You can access that new prescription at **URL_TO_PDF__OF_PRESCRIPTION**"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="pharmacy_information.pharmacy_information_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="pharmacy_information_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.site_staff" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="site_staff.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="Carl"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="site_staff.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Pepine"/>
+					<ItemData ItemOID="send_rx_redcap_username" Value="cpepine"/>
+					<ItemData ItemOID="send_rx_person_role" Value="prescriber"/>
+					<ItemData ItemOID="send_rx_person_email" Value="cpepine@ufl.edu"/>
+					<ItemData ItemOID="person_address" Value="4430 NW 13th Ave
+Gainesville, FL 32605"/>
+					<ItemData ItemOID="person_phone" Value="(352) 555-5555"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="site_staff.site_staff_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="site_staff_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.site_staff" FormRepeatKey="2">
+				<ItemGroupData ItemGroupOID="site_staff.first_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="first_name" Value="John"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="site_staff.last_name" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="last_name" Value="Smith"/>
+					<ItemData ItemOID="send_rx_redcap_username" Value="jsmith"/>
+					<ItemData ItemOID="send_rx_person_role" Value="study_coordinator"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="site_staff.site_staff_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="site_staff_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+	</SubjectData>
+</ClinicalData>
+</ODM>
