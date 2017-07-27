@@ -109,18 +109,30 @@
             }
         }
 
-        $data = $sender->getPatientData();
-        $field_name = 'send_rx_pdf_is_updated';
-        $pdf_is_updated = $data[$field_name];
+        $sql = '
+            SELECT value FROM redcap_data
+            WHERE
+                field_name = "send_rx_pdf_is_updated" AND
+                project_id = ' . db_escape($project_id) . ' AND
+                event_id = ' . db_escape($event_id) . ' AND
+                record = ' . db_escape($record) . '
+            LIMIT 1';
 
-        if ($pdf_is_updated == "0") {
+        $q = db_query($sql);
+
+        $pdf_is_updated = false;
+        if (db_num_rows($q)) {
+            $result = db_fetch_assoc($q);
+            $pdf_is_updated = $result['value'];
+        }
+
+        // Checking if PDF needs to be generated.
+        if (!$pdf_is_updated && $sender->getPrescriberData()) {
             /*
                 Generate PDF.
             */
             $sender->generatePDFFile();
-
-            $pdf_is_generated = "1";
-            send_rx_save_record_field($project_id, $event_id, $record, $field_name, $pdf_is_generated, $repeat_instance);
+            send_rx_save_record_field($project_id, $event_id, $record, $field_name, '1', $repeat_instance);
 
             ?>
             <script type="text/javascript">
@@ -142,6 +154,7 @@
             */
             $(document).ready(function() {
                 var event_is_complete = <?php echo $event_is_complete ? 'true' : 'false'; ?>;
+                var instrument_name = '<?php echo $instrument; ?>';
                 var helpTxt = '<div style="color: #666;font-size: 11px;"><b>ATTENTION:</b> The prescription will be sent by submitting this form.</div>';
 
                 $(helpTxt).insertBefore($('button[name="submit-btn-cancel"]')[0]);
@@ -174,7 +187,7 @@
                 };
 
                 if (event_is_complete) {
-                    var $complete = $('select[name="send_rx_review_complete"]');
+                    var $complete = $('select[name="' + instrument_name + '_complete"]');
                     if ($complete.val() !== '2') {
                         // Disables submit buttons if initial state not complete.
                         disableSubmit();
