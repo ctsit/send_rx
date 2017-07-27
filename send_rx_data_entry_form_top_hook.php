@@ -9,6 +9,34 @@
 
         global $Proj;
 
+        /*
+            Delete DAG from patients project when site is deleted from site project.
+        */
+        if (!$config = send_rx_get_project_config($project_id, 'pharmacy')) {
+            return;
+        }
+        if (isset($Proj->metadata['send_rx_pharmacy_name']) && $Proj->metadata['send_rx_pharmacy_name']['form_name'] == $instrument) {
+            ?>
+            <script type="text/javascript">
+                $(document).ready(function() {
+                    var app_path_webroot = '<?php echo APP_PATH_WEBROOT; ?>';
+                    var pid = '<?php echo $project_id; ?>';
+                    var group_id = $('[name="send_rx_dag_id"]').val();
+                    $('button[name="submit-btn-deleteform"]')[0].onclick = null;
+                    $('button[name="submit-btn-deleteform"]').on('click', function(){
+                        simpleDialog('<div style=\'margin:10px 0;font-size:13px;\'>Are you sure you wish to PERMANENTLY delete this record\'s data on THIS INSTRUMENT ONLY?<div style="margin-top:15px;color:#C00000;font-weight:bold;">This process is permanent and CANNOT BE REVERSED.</div> </div>','DELETE ALL DATA ON THIS FORM FOR RECORD "2"?',null,600,null,'Cancel',function(){ dataEntrySubmit( document.getElementsByName('submit-btn-deleteform')[0] );return false; },'Delete data for THIS FORM only');
+                        $.get(app_path_webroot+"DataAccessGroups/data_access_groups_ajax.php?pid="+pid+"&action=delete&item="+group_id,{ }, function(data){
+                            if(data){
+                                return;
+                            }
+                        });
+                        return false;
+                    });
+                });
+            </script>
+            <?php
+        }
+        
         // Checking if PDF file exists.
         if (!isset($Proj->metadata['send_rx_pdf'])) {
             return;
