@@ -421,6 +421,8 @@ function send_rx_get_site_users($project_id, $site_id, $user_role = null) {
  *   Array of users info, keyed by username. Returns FALSE if failure.
  */
 function send_rx_get_group_members($project_id, $group_id, $user_role = null) {
+    $users = array();
+
     $sql = 'SELECT u.username FROM redcap_user_rights u';
     if ($user_role) {
         $sql .= ' INNER JOIN redcap_user_roles r ON u.role_id = r.role_id AND r.role_name = "' . db_escape($user_role) . '"';
@@ -429,13 +431,10 @@ function send_rx_get_group_members($project_id, $group_id, $user_role = null) {
     $sql .= ' WHERE u.project_id = ' . db_escape($project_id) . ' AND u.group_id = ' . db_escape($group_id);
 
     $q = db_query($sql);
-    if (!db_num_rows($q)) {
-        return false;
-    }
-
-    $users = array();
-    while ($result = db_fetch_assoc($q)) {
-        $users[$result['username']] = User::getUserInfo($result['username']);
+    if (db_num_rows($q)) {
+        while ($result = db_fetch_assoc($q)) {
+            $users[$result['username']] = User::getUserInfo($result['username']);
+        }
     }
 
     return $users;
@@ -451,4 +450,38 @@ function send_rx_access_denied() {
     print RCView::div(array('style' => 'margin-top:20px;'), RCView::a(array('href' => APP_PATH_WEBROOT_FULL . 'index.php?action=myprojects'), $lang['bottom_69']));
 
     exit;
+}
+
+function send_rx_event_is_complete($project_id, $record, $event_id, $exclude = array()) {
+    $proj = new Project($project_id);
+
+    // Getting the list of instruments of the given event.
+    $fields = array();
+    foreach (array_keys($proj->forms) as $form_name) {
+        $fields[$form_name] = $form_name . '_complete';
+    }
+
+    foreach ($exclude as $form_name) {
+        // Removing instruments from the list.
+        unset($fields[$form_name]);
+    }
+
+    // Calculating whether the event is complete or not.
+    $event_is_complete = true;
+    $data = REDCap::getData($project_id, 'array', $record, $fields, $event_id);
+    foreach ($fields as $form_name => $field) {
+        if (isset($data[$record]['repeat_instances'][$event_id][$form_name])) {
+            foreach ($data[$record]['repeat_instances'][$event_id][$form_name] as $form_data) {
+                if ($form_data[$field] != 2) {
+                    return false;
+                }
+            }
+        }
+        elseif ($data[$record][$event_id][$field] != 2) {
+            return false;
+        }
+    }
+
+
+    return true;
 }
