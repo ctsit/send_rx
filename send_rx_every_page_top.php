@@ -1,69 +1,112 @@
 <?php
-    return function ($project_id){
-        $url = $_SERVER['REQUEST_URI'];
-        parse_str($_SERVER['QUERY_STRING'], $qs_params);
-        $event_id = $qs_params['event_id'];
-        $record = $qs_params['id'];
-        
+    return function ($project_id) {
         /*
             Hook needs to be loaded on edit records page.
-        */
-        if(preg_match('/DataEntry\/record_home/', $url) != 1 && !empty($record)){
-            return;
-        }
-        if(preg_match('/DataEntry\/record_home/', $url) == 1 && empty($record)){
+         */
+        if (PAGE != 'DataEntry/record_home.php' || empty($_GET['id'])) {
             return;
         }
 
-        global $Proj;
+        require_once 'send_rx_functions.php';
 
-        if (!$config = send_rx_get_project_config($project_id, 'pharmacy')) {
+        if (!$config = send_rx_get_project_config($project_id, 'site')) {
             return;
         }
-        
-        $patient_project_id = $config->targetProjectId;
-        $data = REDCap::getData($project_id, 'array', null, null);
-        $dag_id = $data[$record][$event_id]['send_rx_dag_id'];
 
-        // Create a list of users to be added to DAG.
-        $users_in_dag = array();
-        $users_formname = $Proj->metadata['send_rx_pharmacy_name']['form_name'];
-        $proj_users = $data[$record]['repeat_instances'][$event_id][$form_name];
-        foreach ($proj_users as $key => $item) {
-            $users_in_dag[] = $item['send_rx_prescriber_id'];
+        $record = $_GET['id'];
+        $data = send_rx_get_record_data($project_id, $record);
+        reset($data);
+        $event_id = key($data);
+        $data = $data[$event_id];
+
+        if (empty($data['send_rx_dag_id'])) {
+            return;
         }
-        $encoded_users_in_dag = json_encode($users_in_dag);
+
+        $buttons = '<button class="btn btn-success send-rx-access-btn" id="send-rx-rebuild-access-btn" style="margin-right:5px;">Rebuild staff permissions</button>';
+        $buttons .= '<button class="btn btn-danger send-rx-access-btn" id="send-rx-revoke-access-btn">Revoke staff permissions</button>';
+        $buttons = '<div id="access-btns">' . $buttons . '</div>';
+
+        if ($buttons_enabled = send_rx_event_is_complete($project_id, $record, $event_id)) {
+            global $Proj;
+
+            $form_name = $Proj->metadata['send_rx_user_id']['form_name'];
+            if ($staff = send_rx_get_repeat_instrument_instances($project_id, $record, $form_name, $event_id)) {
+                $db = new RedCapDB();
+
+                // Create a list of users to be added to DAG.
+                $input_members = array();
+                foreach ($staff as $member) {
+                    if ($db->usernameExists($member['send_rx_user_id'])) {
+                        $input_members[] = $member['send_rx_user_id'];
+                    }
+                }
+
+                $group_id = $data['send_rx_dag_id'];
+
+                $curr_members = send_rx_get_group_members($config->targetProjectId, $group_id);
+                $curr_members = array_keys($curr_members);
+
+                $members_to_add = array_diff($input_members, $curr_members);
+                $members_to_del = array_diff($curr_members, $input_members);
+            }
+        }
+
         ?>
         <script type="text/javascript">
             $(document).ready(function() {
-                var app_path_webroot = '<?php echo APP_PATH_WEBROOT; ?>';
-                var pid = '<?php echo $patient_project_id; ?>';
-                var group_id = '<?php echo $dag_id; ?>';
-                var usersInDag = '<?php echo $encoded_users_in_dag; ?>';
+                $('#repeating_forms_table_parent').after('<?php echo $buttons; ?>');
 
-                // Assign users to DAG
-                $('#assign_access_btn').on('click', function(){
-                    // Add each user to DAG
-                    for(var i=0;i<usersInDag.length;i++){
-                        $.get(app_path_webroot+'DataAccessGroups/data_access_groups_ajax.php?pid='+pid+'&action=add_user&user='+usersInDag[i]['username']+'&group_id='+group_id,{ },function(data){
-                            if(data){
-                                return;
-                            }
-                        });
-                    }
-                });
+                var buttons_enabled = <?php echo $buttons_enabled ? 'true' : 'false'; ?>;
+                if (!buttons_enabled) {
+                    $('send-rx-access-btn').attr('disabled', 'disabled');
+                    return;
+                }
 
-                // Revoke access to users from DAG
-                $('#revoke_access_btn').on('click', function(){
-                    // Remove each user to DAG
-                    for(var i=0;i<usersInDag.length;i++){
-                        $.get(app_path_webroot+'DataAccessGroups/data_access_groups_ajax.php?pid='+pid+'&action=add_user&user='+usersInDag[i]['username']+'&group_id=""',{ },function(data){
-                            if(data){
-                                return;
-                            }
-                        });
-                    }
-                });
+                var $rebuild_button = $('#send-rx-rebuild-access-btn');
+                var $revoke_button = $('#send-rx-revoke-access-btn');
+                var pid = '<?php echo $config->targetProjectId; ?>';
+                var group_id = '<?php echo $group_id; ?>';
+                var curr_members = <?php echo json_encode($curr_members); ?>;
+                var members_to_add = <?php echo json_encode($members_to_add); ?>;
+                var members_to_del = <?php echo json_encode($members_to_del); ?>;
+
+                var grantGroupAccessToStaff = function(users, group_id = '') {
+                    // Remove each user to DAG.
+                    $.each(users, function(key, value) {
+                        $.get(app_path_webroot + 'DataAccessGroups/data_access_groups_ajax.php?pid=' + pid + '&action=add_user&user=' + user + '&group_id=' + group_id);
+                        // TODO: if errors, display an alert.
+                    });
+                }
+
+                if ($.isEmptyObject(members_to_add) && $.isEmptyObject(members_to_del)) {
+                    $rebuild_button.attr('disabled', 'disabled');
+                }
+                else {
+                    $rebuild_button.on('click', function() {
+                        // Rebuilding, part 1: Revoke access.
+                        grantGroupAccessToStaff(users_to_del);
+
+                        // Rebuilding, part 2: Grant access..
+                        grantGroupAccessToStaff(users_to_add, group_id);
+
+                        // Reloading page.
+                        location.reload();
+                    });
+                }
+
+                if ($.isEmptyObject(curr_members)) {
+                    $revoke_button.attr('disabled', 'disabled');
+                }
+                else {
+                    $revoke_button.on('click', function() {
+                        // Revoke group access from users.
+                        grantGroupAccessToStaff(curr_members);
+
+                        // Reloading page.
+                        location.reload();
+                    });
+                }
             });
         </script>
         <?php

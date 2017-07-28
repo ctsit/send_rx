@@ -90,32 +90,13 @@
             echo $modals;
         }
 
-        // Getting the list of instruments of the given event.
-        $fields = array();
-        foreach (array_keys($Proj->forms) as $form_name) {
-            $fields[$form_name] = $form_name . '_complete';
-        }
-
-        // Removing current instrument from the list.
-        unset($fields[$instrument]);
-
-        // Calculating whether the event is complete or not.
-        $event_is_complete = true;
-        $data = REDCap::getData($project_id, 'array', $record, $fields, $event_id);
-        foreach ($fields as $field) {
-            if ($data[$record][$event_id][$field] != 2) {
-                $event_is_complete = false;
-                break;
-            }
-        }
-
         $sql = '
             SELECT value FROM redcap_data
             WHERE
                 field_name = "send_rx_pdf_is_updated" AND
                 project_id = ' . db_escape($project_id) . ' AND
                 event_id = ' . db_escape($event_id) . ' AND
-                record = ' . db_escape($record) . '
+                record = "' . db_escape($record) . '"
             LIMIT 1';
 
         $q = db_query($sql);
@@ -147,6 +128,10 @@
             </script>
             <?php
         }
+
+        // Checking if event is complete.
+        $event_is_complete = send_rx_event_is_complete($project_id, $record, $event_id, array($instrument));
+
         ?>
         <script type="text/javascript">
             /*

@@ -30,15 +30,11 @@
         }
 
         $prescribers = send_rx_get_group_members($project_id, $group_id, 'prescriber');
-        if (isset($prescribers[USERID])) {
-            global $super_user;
-
-            if (!$super_user) {
-                $data = send_rx_get_record_data($project_id, $record, $_GET['event_id']);
-                if (!empty($data) && !empty($data['send_rx_prescriber_id']) && $data['send_rx_prescriber_id'] != USERID) {
-                    // Prescribers cannot access prescriptions that do not belong to them.
-                    send_rx_access_denied();
-                }
+        if (isset($prescribers[USERID]) && !SUPER_USER && !ACCOUNT_MANAGER) {
+            $data = send_rx_get_record_data($project_id, $record, $_GET['event_id']);
+            if (!empty($data) && !empty($data['send_rx_prescriber_id']) && $data['send_rx_prescriber_id'] != USERID) {
+                // Prescribers cannot access prescriptions that do not belong to them.
+                send_rx_access_denied();
             }
         }
 
