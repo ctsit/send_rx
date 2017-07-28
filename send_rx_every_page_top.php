@@ -33,9 +33,19 @@
             $users_in_dag[] = $item['send_rx_prescriber_id'];
         }
         $encoded_users_in_dag = json_encode($users_in_dag);
+
+        //ToDo : Check if all forms are complete
         ?>
+
         <script type="text/javascript">
             $(document).ready(function() {
+                // ToDo: The button functionality should only work after forms are complete
+                var btns = '<div id="access_btns" style="margin:5px 0;">'+
+                            '<button class="btn btn-primary" id="assign_access_btn" name="assign_access_btn" style="margin-bottom:2px;font-size:13px !important;padding:6px 8px;" tabindex="8">Assign User Access</button>&nbsp;'+
+                            '<button class="btn btn-primary" id="revoke_access_btn" name="revoke_access_btn" style="margin-bottom:2px;font-size:13px !important;padding:6px 8px;" tabindex="8">Revoke User Access</button>'+
+                            '</div>';
+                $('#event_grid_table').after(btns);
+
                 var app_path_webroot = '<?php echo APP_PATH_WEBROOT; ?>';
                 var pid = '<?php echo $patient_project_id; ?>';
                 var group_id = '<?php echo $dag_id; ?>';
