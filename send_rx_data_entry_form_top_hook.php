@@ -160,7 +160,7 @@
                 Generate PDF.
             */
             $sender->generatePDFFile();
-            send_rx_save_record_field($project_id, $event_id, $record, $field_name, '1', $repeat_instance);
+            send_rx_save_record_field($project_id, $event_id, $record, "send_rx_pdf_is_updated", '1', $repeat_instance);
 
             ?>
             <script type="text/javascript">
