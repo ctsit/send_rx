@@ -38,32 +38,32 @@ class RxSender {
     protected $patientData;
 
     /**
-     * Pharmacy project ID.
+     * Site project ID.
      *
      * @var int
      */
-    protected $pharmacyProjectId;
+    protected $siteProjectId;
 
     /**
-     * Pharmacy event ID.
+     * Site event ID.
      *
      * @var int
      */
-    protected $pharmacyEventId;
+    protected $siteEventId;
 
     /**
-     * Pharmacy record ID.
+     * Site record ID.
      *
      * @var int
      */
-    protected $pharmacyId;
+    protected $siteId;
 
     /**
-     * Pharmacy record data.
+     * Site record data.
      *
      * @var array
      */
-    protected $pharmacyData;
+    protected $siteData;
 
     /**
      * Prescriber username.
@@ -94,11 +94,11 @@ class RxSender {
     protected $patientConfig;
 
     /**
-     * Pharmacy configuration data.
+     * Site configuration data.
      *
      * @var object
      */
-    protected $pharmacyConfig;
+    protected $siteConfig;
 
     /**
      * Sent messages log.
@@ -122,11 +122,11 @@ class RxSender {
     protected $patientProj;
 
     /**
-     * Pharmacy project metadata.
+     * Site project metadata.
      *
      * @var Project.
      */
-    protected $pharmacyProj;
+    protected $siteProj;
 
     /**
      * Creates the sender object for the given Send RX project.
@@ -144,28 +144,38 @@ class RxSender {
      *   An object instance of RXSender extension for the given project, if success.
      *   False otherwise.
      */
-    static function getSender($project_id, $event_id, $patient_id, $username = USERID) {
+    static function getSender($project_id, $event_id, $patient_id) {
         if (!$config = send_rx_get_project_config($project_id, 'patient')) {
             return false;
         }
 
-        $class = empty($config->senderClass) ? 'RxSender' : $config->senderClass;
-        return new $class($project_id, $event_id, $patient_id, $username);
+        if (empty($config->senderClass)) {
+            $class = 'RxSender';
+        }
+        elseif (class_exists($config->senderClass)) {
+            $class = $this->senderClass;
+        }
+        else {
+            return false;
+        }
+
+        return new $class($project_id, $event_id, $patient_id);
     }
 
     /**
      * Constructor.
      *
      * Sets up properties and processes data to be easily read.
+     *
+     * TODO: refactor constructor.
      */
-    function __construct($project_id, $event_id, $patient_id, $username = USERID) {
+    function __construct($project_id, $event_id, $patient_id) {
         $this->patientProjectId = $project_id;
         $this->patientProj = new Project($this->patientProjectId);
         $this->patientId = $patient_id;
         $this->patientEventId = $event_id;
 
-        $this->username = $username;
-        $this->locker = new LockUtil($this->username, $this->patientProjectId, $this->patientId);
+        $this->locker = new LockUtil(USERID, $this->patientProjectId, $this->patientId);
 
         // Getting patient project config.
         if (!$config = send_rx_get_project_config($project_id, 'patient')) {
@@ -173,15 +183,15 @@ class RxSender {
         }
 
         $this->patientConfig = $config;
-        $this->pharmacyProjectId = $config->targetProjectId;
-        $this->pharmacyProj = new Project($this->pharmacyProjectId);
+        $this->siteProjectId = $config->targetProjectId;
+        $this->siteProj = new Project($this->siteProjectId);
 
-        // Getting pharmacy project config.
-        if (!$config = send_rx_get_project_config($this->pharmacyProjectId, 'pharmacy')) {
+        // Getting site project config.
+        if (!$config = send_rx_get_project_config($this->siteProjectId, 'site')) {
             return;
         }
 
-        $this->pharmacyConfig = $config;
+        $this->siteConfig = $config;
 
         // Getting patient data.
         if (!$data = send_rx_get_record_data($this->patientProjectId, $this->patientId, $this->patientEventId)) {
@@ -189,43 +199,49 @@ class RxSender {
         }
 
         $this->setPatientData($data);
+        $this->username = $this->patientData['send_rx_prescriber_id'];
 
         // Getting logs.
-        if (!empty($data['send_rx_logs']) && ($logs = send_rx_get_edoc_file_contents($data['send_rx_logs']))) {
+        if (!empty($this->patientData['send_rx_logs']) && ($logs = send_rx_get_edoc_file_contents($this->patientData['send_rx_logs']))) {
             $this->logs = json_decode($logs, true);
         }
 
-        $this->pharmacyId = $this->patientData['send_rx_pharmacy_id'];
+        // Getting DAG.
+        if (!$group_id = Records::getRecordGroupId($this->patientProjectId, $this->patientId)) {
+            $parts = explode('_', $this->patientId);
 
-        // Getting pharmacy data.
-        if (!$data = send_rx_get_record_data($this->pharmacyProjectId, $this->pharmacyId)) {
+            if (count($parts) != 2) {
+                return false;
+            }
+
+            $group_id = $parts[0];
+        }
+
+        // Getting site ID.
+        if (!$this->siteId = send_rx_get_site_id_from_dag($this->siteProjectId, $group_id)) {
             return;
         }
 
-        $this->pharmacyEventId = key($data);
-        $this->setPharmacyData($data[$this->pharmacyEventId]);
+        // Getting site data.
+        if (!$data = send_rx_get_record_data($this->siteProjectId, $this->siteId)) {
+            return;
+        }
 
-        $instrument = $this->pharmacyProj->metadata['send_rx_prescriber_id']['form_name'];
-        if (!$data = send_rx_get_repeat_instrument_instances($this->pharmacyProjectId, $this->pharmacyId, $instrument)) {
+        reset($data);
+        $this->siteEventId = key($data);
+        $this->setSiteData($data[$this->siteEventId]);
+
+        $instrument = $this->siteProj->metadata['send_rx_user_id']['form_name'];
+        if (!$data = send_rx_get_repeat_instrument_instances($this->siteProjectId, $this->siteId, $instrument)) {
             return;
         }
 
         // Setting up prescriber data.
         foreach ($data as $value) {
-            if ($value['send_rx_prescriber_id'] == $username) {
+            if ($value['send_rx_user_id'] == $this->username) {
                 $this->setPrescriberData($value);
                 break;
             }
-        }
-
-        $instrument = $this->pharmacyProj->metadata['send_rx_message_type']['form_name'];
-        if (!$data = send_rx_get_repeat_instrument_instances($this->pharmacyProjectId, $this->pharmacyId, $instrument)) {
-            return;
-        }
-
-        // Setting up delivery methods.
-        foreach ($data as $value) {
-            $this->deliveryMethods[$value['send_rx_message_type']] = $value;
         }
     }
 
@@ -237,10 +253,10 @@ class RxSender {
     }
 
     /**
-     * Gets the pharmacy data.
+     * Gets the site data.
      */
-    function getPharmacyData() {
-        return $this->pharmacyData;
+    function getSiteData() {
+        return $this->siteData;
     }
 
     /**
@@ -258,19 +274,12 @@ class RxSender {
     }
 
     /**
-     * Gets the pharmacy configuration array.
+     * Gets the site configuration array.
      *
      * Contains important settings to build the message and PDF contents.
      */
-    function getPharmacyConfig() {
-        return $this->pharmacyConfig;
-    }
-
-    /**
-     * Gets a list of delivery methods.
-     */
-    function getDeliveryMethods() {
-        return $this->deliveryMethods;
+    function getSiteConfig() {
+        return $this->siteConfig;
     }
 
     /**
@@ -288,10 +297,10 @@ class RxSender {
     }
 
     /**
-     * Sets pharmacy data.
+     * Sets site data.
      */
-    protected function setPharmacyData($data) {
-        $this->pharmacyData = $data;
+    protected function setSiteData($data) {
+        $this->siteData = $data;
     }
 
     /**
@@ -305,16 +314,16 @@ class RxSender {
      * Gets PDF template contents.
      */
     protected function getPDFTemplate() {
-        $pdf_template = $this->pharmacyConfig->pdfTemplate;
-        if (!empty($this->pharmacyData['send_rx_pdf_template'])) {
-            $pdf_template = $this->pharmacyData['send_rx_pdf_template'];
+        $pdf_template = $this->siteConfig->pdfTemplate;
+        if (!empty($this->siteData['send_rx_pdf_template'])) {
+            $pdf_template = $this->siteData['send_rx_pdf_template'];
         }
 
         $sql = '
             SELECT e.doc_id FROM redcap_docs_to_edocs e
             INNER JOIN redcap_docs d ON
                 d.docs_id = e.docs_id AND
-                d.project_id = "' . db_escape($this->pharmacyProjectId) . '" AND
+                d.project_id = "' . db_escape($this->siteProjectId) . '" AND
                 d.docs_comment = "' . db_escape($pdf_template) . '"
             ORDER BY d.docs_id DESC
             LIMIT 1';
@@ -332,7 +341,7 @@ class RxSender {
      * Auxiliar function that preprocesses files fields before setting them up.
      */
     protected function preprocessData($data, $proj) {
-        $project_type = isset($proj->metadata['patient_id']) ? 'patient' : 'pharmacy';
+        $project_type = isset($proj->metadata['patient_id']) ? 'patient' : 'site';
         foreach ($data as $field_name => $value) {
             if (!isset($proj->metadata[$field_name]) || $proj->metadata[$field_name]['element_type'] != 'file' || empty($value)) {
                 continue;
@@ -358,7 +367,7 @@ class RxSender {
     }
 
     /**
-     * Sends the message to the pharmacy and returns whether the operation was successful.
+     * Sends the message to the site and returns whether the operation was successful.
      */
     function send($generate_pdf = true, $log = true) {
         $success = false;
@@ -369,20 +378,22 @@ class RxSender {
 
         // Getting data to apply Piping.
         $data = $this->getPipingData();
+        foreach ($this->siteData['send_rx_delivery_methods'] as $type => $flag) {
+            if (!$flag) {
+                continue;
+            }
 
-        foreach ($this->getDeliveryMethods() as $msg_type => $config) {
-            // Getting templates.
-            $subject = empty($config['send_rx_message_subject']) ? $this->pharmacyConfig->messageSubject : $config['send_rx_message_subject'];
-            $body = empty($config['send_rx_message_body']) ? $this->pharmacyConfig->messageBody : $config['send_rx_message_body'];
+            $message = array();
+            foreach (array('subject' => 'messageSubject', 'body' => 'messageBody') as $section => $prop) {
+                $field = 'send_rx_' . $type . '_' . $section;
+                $message[$section] = send_rx_piping(empty($this->siteData[$field]) ? $this->siteConfig->$prop : $this->siteData[$field], $data);
+            }
 
-            // Replacing wildcards.
-            $subject = send_rx_piping($subject, $data);
-            $body = send_rx_piping($body, $data);
-
-            switch ($msg_type) {
+            switch ($type) {
                 case 'email':
-                    $success = REDCap::email($config['send_rx_recipients'], $this->prescriberData['send_rx_prescriber_email'], $subject, $body);
-                    $this->log($msg_type, $success, $config['send_rx_recipients'], $subject, $body);
+                    // TODO: Discuss and define properly the "from" address.
+                    $success = REDCap::email($this->siteData['send_rx_email_recipients'], $this->prescriberData['send_rx_user_email'], $message['subject'], $message['body']);
+                    $this->log($type, $success, $this->siteData['send_rx_email_recipients'], $message['subject'], $message['body']);
 
                     break;
 
@@ -476,11 +487,11 @@ class RxSender {
             'current_date' => date('m/d/Y'),
             'current_time' => date('h:i a'),
             'patient_url' => $base_path . 'record_home.php?pid=' . $this->patientProjectId . '&id=' . $this->patientId,
-            'pharmacy_url' => $base_path . 'record_home.php?pid=' . $this->pharmacyProjectId . '&id=' . $this->pharmacyId,
-            'project' => isset($this->pharmacyConfig->variables) ? $this->pharmacyConfig->variables : array(),
+            'site_url' => $base_path . 'record_home.php?pid=' . $this->siteProjectId . '&id=' . $this->siteId,
+            'project' => isset($this->siteConfig->variables) ? $this->siteConfig->variables : array(),
             'patient' => $this->preprocessData($this->patientData, $this->patientProj),
-            'pharmacy' => $this->preprocessData($this->pharmacyData, $this->pharmacyProj),
-            'prescriber' => $this->preprocessData($this->prescriberData, $this->pharmacyProj),
+            'site' => $this->preprocessData($this->siteData, $this->siteProj),
+            'prescriber' => $this->preprocessData($this->prescriberData, $this->siteProj),
         );
 
         return $data;
