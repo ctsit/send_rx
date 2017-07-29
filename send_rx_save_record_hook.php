@@ -14,23 +14,34 @@
                 return;
             }
 
+            global $redcap_version;
+
             $data = send_rx_get_record_data($project_id, $record, $event_id);
+            $site_name = $data['send_rx_site_name'];
+
             $action = empty($data['send_rx_dag_id']) ? 'add' : 'rename';
 
             // Call endpoint responsible to create or rename the DAG.
-            $url = APP_PATH_WEBROOT . 'DataAccessGroups/data_access_groups_ajax.php?pid=' . $config->targetProjectId . '&action=' . $action . '&item=' . $data['send_rx_site_name'];
-            $curl = curl_init($url);
-
-            curl_exec($curl);
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+                CURLOPT_RETURNTRANSFER => false,
+                CURLOPT_URL => APP_PATH_WEBROOT_FULL . 'redcap_v' . $redcap_version . '/DataAccessGroups/data_access_groups_ajax.php?pid=' . $config->targetProjectId . '&action=' . $action . '&item=' . urlencode($site_name),
+                CURLOPT_COOKIE => 'PHPSESSID=' . $_COOKIE['PHPSESSID'],
+                CURLOPT_USERAGENT => $_SERVER['HTTP_USER_AGENT'],
+            ));
 
             // Get newly created DAG Id from database and save it to redcap data.
-            if (curl_getinfo($curl, CURLINFO_HTTP_CODE) == 200 && $action == 'add') {
-                $sql = 'SELECT MAX(group_id) FROM redcap_data_access_groups WHERE project_id = $project_id AND group_name = "' . db_escape($site_name) . '"';
+            if (curl_exec($curl) && curl_getinfo($curl, CURLINFO_HTTP_CODE) == 200 && $action == 'add') {
+                $sql = '
+                    SELECT group_id FROM redcap_data_access_groups
+                    WHERE project_id = ' . $config->targetProjectId . ' AND group_name = "' . db_escape($site_name) . '"
+                    ORDER BY group_id LIMIT 1';
+
                 $q = db_query($sql);
                 if (db_num_rows($q)) {
-                    $dag_id = db_fetch_assoc($q);
+                    $result = db_fetch_assoc($q);
                     // Save DAG Id to redcap data explicitly when a new site is created.
-                    send_rx_save_record_field($project_id, $event_id, $record, 'send_rx_dag_id', $dag_id);
+                    send_rx_save_record_field($project_id, $event_id, $record, 'send_rx_dag_id', $result['group_id']);
                 } 
             }
 

@@ -74,7 +74,7 @@
                 var grantGroupAccessToStaff = function(users, group_id = '') {
                     // Remove each user to DAG.
                     $.each(users, function(key, value) {
-                        $.get(app_path_webroot + 'DataAccessGroups/data_access_groups_ajax.php?pid=' + pid + '&action=add_user&user=' + user + '&group_id=' + group_id);
+                        $.get(app_path_webroot + 'DataAccessGroups/data_access_groups_ajax.php?pid=' + pid + '&action=add_user&user=' + value + '&group_id=' + group_id);
                         // TODO: if errors, display an alert.
                     });
                 }
@@ -85,10 +85,10 @@
                 else {
                     $rebuild_button.on('click', function() {
                         // Rebuilding, part 1: Revoke access.
-                        grantGroupAccessToStaff(users_to_del);
+                        grantGroupAccessToStaff(members_to_del);
 
                         // Rebuilding, part 2: Grant access..
-                        grantGroupAccessToStaff(users_to_add, group_id);
+                        grantGroupAccessToStaff(members_to_add, group_id);
 
                         // Reloading page.
                         location.reload();
