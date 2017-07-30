@@ -17,11 +17,14 @@ If you are deploying the extension using UF CTS-IT's [redcap_deployment](https:/
 ```
 fab instance:vagrant activate_hook:redcap_save_record,send_rx_save_record_hook.php
 fab instance:vagrant activate_hook:redcap_data_entry_form_top,send_rx_data_entry_form_top_hook.php
+fab instance:vagrant activate_hook:redcap_every_page_before_render,send_rx_every_page_before_render_hook.php
+fab instance:vagrant activate_hook:redcap_every_page_top,send_rx_every_page_top.php
 ```
 
 ### Option 2: Other Environments
 
-The `send_rx_save_record_hook` and `send_rx_data_entry_form_top_hook` hooks are designed to be activated as `redcap_save_record` and `redcap_data_entry_form` hook functions, respectively. The hooks are dependent on a framework that calls _anonymous_ PHP functions such as UF CTS-IT's [Extensible REDCap Hooks](https://github.com/ctsit/extensible-redcap-hooks) ([https://github.com/ctsit/extensible-redcap-hooks](https://github.com/ctsit/extensible-redcap-hooks)). If you are not using such a framework, the hook will need to be edited by changing `return function($project_id)` to `function redcap_every_page_top($project_id)`.
+The hooks are dependent on a framework that calls _anonymous_ PHP functions such as UF CTS-IT's [Extensible REDCap Hooks](https://github.com/ctsit/extensible-redcap-hooks) ([https://github.com/ctsit/extensible-redcap-hooks](https://github.com/ctsit/extensible-redcap-hooks)). If you are not using such a framework, each hook will need to be edited by changing `return function($project_id)` to `function <hook_function_name>($project_id)` where the _hook\_function\_name_ should be that referenced in the relevant activate_hook line above.
+
 
 ### Developer Notes
 
@@ -30,57 +33,75 @@ When using the local test environment provided by UF CTS-IT's [redcap_deployment
 ```
 fab instance:vagrant test_hook:redcap_save_record,send_rx/send_rx_save_record_hook.php
 fab instance:vagrant test_hook:redcap_data_entry_form_top,send_rx/send_rx_data_entry_form_top_hook.php
+fab instance:vagrant test_hook:redcap_every_page_before_render,send_rx/send_rx_every_page_before_render_hook.php
+fab instance:vagrant test_hook:redcap_every_page_top,send_rx/send_rx_every_page_top.php
 ```
 
 ## Configuration
 
 In order to activate Send Rx extension, we need to create and configure two projects:
-- **Pharmacy**: Stores pharmacies and prescribers information.
-- **Patient**: Provides the patient/prescription form to the prescriber. Once submitted, the prescription is sent to the pharmacy.
+- **Site**: Stores Site details including the pharmacy used and prescribers and study coordinators at each site.
+- **Patient**: Provides the Patient details and prescription form. Once submitted, the prescription is sent to the pharmacy.
 
-### Step 1: Creating Pharmacy Project
-1. Access **+ New Project** page, then import `RxSendPharmacyProjectSample.xml` file.
+### Step 1: Creating Sites Project
+1. Access **+ New Project** page, then import `SendRxSites.xml` file.
 2. Take note of your new project's ID (you should see it at the URL's `pid` parameter).
 3. Access **File Repository** page, then go to **Upload New File** tab
-4. Upload `SampleRxTemplate.pdf` file provided by this repository, name it as `SampleRxTemplate`, and save.
+4. Upload `pdf_template_complete.html` file provided by this repository, name it as `SamplePDFTemplate`, and save.
 5. Go back to **Project Setup** page, then access **Custom Project Settings**
-6. Add a config entry called `send_rx_config` as JSON string, whose keys are described as follows:
-- `type`: The project type (`pharmacy` on this case)
-- `pdfTemplate`: The name of PDF prescription template file you entered on step 4 (`SampleRxTemplate` on this case).
-- `messageSubject`: The message subject (e.g. `Test prescription`)
-- `messageBody`: The message body (e.g. `The prescription file is available at: [pdf_file_url]`)
-
-Thus, the JSON contents should look like this:
+6. Add a config entry called `send_rx_config` as JSON string, with keys like these:
 ```
 {
-    "type": "pharmacy",
-    "pdfTemplate": "Test prescription<br><br>Administered Drug: [patient][administered_drug]<br>Dosage: [patient][daily_drug_dosage] mg/L.",
+    "type": "site",
+    "targetProjectId": 24,
+    "pdfTemplate": "SamplePDFTemplate",
     "messageSubject": "Test prescription",
-    "messageBody": "<div>The prescription file is available at: [pdf_file_url]</div>"
+    "messageBody": "<div>The prescription file is available at: [patient][send_rx_pdf]</div>",
+    "variables": {
+        "study_irb": "2017-1234",
+        "study_name": "Sample Study"
+    }
 }
 ```
 
-By opening the PDF template file or looking at `messageBody` field, you might noticed that a few replacement wildcards have been used, like `[pdf_file_url]`, `[patient][administered_drug]` and `[patient][daily_dosage]`. There is a [full section](#templating-pdfs-and-messages) dedicated to explain PDFs and messages templating, but let's put this aside for a while and move on to the next step.
+The keys are described as follows:
+- `type`: The project type of _this_ project.
+- `targetProjectId`: The project ID of the patient project
+- `pdfTemplate`: The name of PDF prescription template file you entered on step 4.
+- `messageSubject`: The subject line of the email message that will alert the pharmacist to a new prescription to be filled.
+- `messageBody`: The body of the email message that will alert the pharmacist to a new prescription to be filled. You can include the names of objects and fields to be substituted in the body.  e.g., [patient][send_rx_pdf]
+
+There is a [full section](#templating-pdfs-and-messages) dedicated to explain PDFs and messages templating, but let's put this aside for a while and move on to the next step.
+
 
 ### Step 2: Creating Patient Project
 This is quite analogous to what we just did on previous section.
 
-1. Access **+ New Project** page, then import `RxSendPatientProjectSample.xml` file.
-2. Go to **Custom Project Settings** of your new project and create a config entry called `send_rx_config` as a JSON string, whose keys are described as follows:
-- `type`: The project type (`patient` on this case)
-- `targetProjectId`: The pharmacy project ID you got from the previous step (e.g. `123`)
-- _(optional)_ `lockInstruments`: You might add some edit restrictions to the prescribers once the prescription is done. On this case, you may set a comma separated list of instruments (i.e. form steps names) to be locked after the message is sent (e.g. `lab_orders,prescriptions`).
-- _(optional) (For developers use)_ `senderClass`: The PHP class responsible to create prescription PDFs and send messages to the pharmacies. This option opens the possibility of extending the default send engine (`RxSender` class) in order to satisfy all project's needs. Defaults to `RxSender`.
-
-Thus, the JSON contents should look like this (dont't forget to update `targetProjectId` value):
+1. Access **+ New Project** page, then import `SendRxPatients.xml` file.
+2. Go to **Custom Project Settings** of your new project and create a config entry called `send_rx_config` as a JSON string with keyes like these:
 ```
 {
     "type": "patient",
-    "targetProjectId": 123,
+    "targetProjectId": 23
+}
+```
+
+The keys are described as follows:
+- `type`: The project type of _this_ project.
+- `targetProjectId`: The project ID of the _sites_ project
+- _(optional)_ `lockInstruments`: You might add some edit restrictions to the prescribers once the prescription is done. On this case, you may set a comma separated list of instruments (i.e. form steps names) to be locked after the message is sent (e.g. `lab_orders,prescriptions`).
+- _(optional) (For developers use)_ `senderClass`: The PHP class responsible to create prescription PDFs and send messages to the pharmacies. This option opens the possibility of extending the default send engine (`RxSender` class) in order to satisfy all project's needs. Defaults to `RxSender`.
+
+With optional parameters, the JSON contents could look like this:
+```
+{
+    "type": "patient",
+    "targetProjectId": 23,
     "lockInstruments": "patient_demographics,prescription",
     "senderClass": "RxSender"
 }
 ```
+
 
 ## Sending your First Test Prescription
 
