@@ -90,6 +90,7 @@
             echo $modals;
         }
 
+        // Checking for PDF is updated flag.
         $sql = '
             SELECT value FROM redcap_data
             WHERE
@@ -107,30 +108,35 @@
             $pdf_is_updated = $result['value'];
         }
 
-        // Checking if PDF needs to be generated.
-        if (!$pdf_is_updated && $sender->getPrescriberData()) {
-            /*
-                Generate PDF.
-            */
-            $sender->generatePDFFile();
-            send_rx_save_record_field($project_id, $event_id, $record, 'send_rx_pdf_is_updated', '1', $repeat_instance);
-
-            ?>
-            <script type="text/javascript">
-                /*
-                    Success message on page load to confirm PDF generation.
-                */
-                $(document).ready(function() {
-                    var app_path_images = '<?php echo APP_PATH_IMAGES ?>';
-                    var successMsg = '<div class="darkgreen" style="margin:8px 0 5px;"><img src="' + app_path_images + 'tick.png"> A new prescription PDF preview has been created.';
-                    $('#pdfExportDropdownDiv').parent().next().append(successMsg);
-                });
-            </script>
-            <?php
-        }
-
         // Checking if event is complete.
         $event_is_complete = send_rx_event_is_complete($project_id, $record, $event_id, array($instrument));
+
+        // Checking if PDF needs to be generated.
+        if (!$pdf_is_updated) {
+            if ($sender->getPrescriberData()) {
+                /*
+                    Generate PDF.
+                */
+                $sender->generatePDFFile();
+                send_rx_save_record_field($project_id, $event_id, $record, 'send_rx_pdf_is_updated', '1', $repeat_instance);
+
+                // TODO: Test just printing message (without JS).
+                ?>
+                <script type="text/javascript">
+                    /*
+                        Success message on page load to confirm PDF generation.
+                    */
+                    $(document).ready(function() {
+                        var successMsg = '<div class="darkgreen" style="margin:8px 0 5px;"><img src="' + app_path_images + 'tick.png"> A new prescription PDF preview has been created.</div>';
+                        $('#pdfExportDropdownDiv').parent().next().append(successMsg);
+                    });
+                </script>
+                <?php
+            }
+            else {
+                $event_is_complete = false;
+            }
+        }
 
         ?>
         <script type="text/javascript">

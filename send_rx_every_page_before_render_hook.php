@@ -1,9 +1,11 @@
 <?php
     return function($project_id) {
+        // Checking if we are on data entry form.
         if (PAGE != 'DataEntry/index.php') {
             return;
         }
 
+        // Getting record ID.
         if (!empty($_GET['id'])) {
             $record = $_GET['id'];
         }
@@ -16,15 +18,18 @@
 
         require_once 'send_rx_functions.php';
 
+        // Checking if this project has a Send Rx config.
         if (!$config = send_rx_get_project_config($project_id, 'patient')) {
             return;
         }
 
+        // Checking if we are at the prescriber field's step.
         global $Proj;
         if (!isset($Proj->metadata['send_rx_prescriber_id']) || $_GET['page'] != $Proj->metadata['send_rx_prescriber_id']['form_name']) {
             return;
         }
 
+        // Getting record group ID.
         if (!$group_id = Records::getRecordGroupId($project_id, $record)) {
             $parts = explode('-', $record);
             if (count($parts) != 2) {
@@ -34,16 +39,20 @@
             $group_id = $parts[0];
         }
 
+        // Getting list of prescribers.
         if (!$prescribers = send_rx_get_group_members($project_id, $group_id, 'prescriber')) {
             return;
         }
 
+        // Creating prescribers list to be used on dropdown.
         $options = array();
         foreach ($prescribers as $username => $prescriber) {
             $options[$username] = $username . ',' . $prescriber['user_firstname'] . ' ' . $prescriber['user_lastname'];
         }
 
+        // Checking if current user is a prescriber and non-admin.
         if (isset($prescribers[USERID]) && !SUPER_USER && !ACCOUNT_MANAGER) {
+            // If prescriber, we need to turn prescriber into readonly.
             $username = USERID;
 
             $data = send_rx_get_record_data($project_id, $record, $_GET['event_id']);
