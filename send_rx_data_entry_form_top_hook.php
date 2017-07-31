@@ -167,14 +167,14 @@
 
                 // Disables submit buttons.
                 var disableSubmit = function() {
-                    $submit_buttons.attr('disabled', 'disabled');
-                    $submit_buttons.attr('title', 'Your must complete all form steps before sending the prescription.');
+                    $submit_buttons.prop('disabled', true);
+                    $submit_buttons.prop('title', 'Your must complete all form steps before sending the prescription.');
                 };
 
                 // Enables submit buttons.
                 var enableSubmit = function() {
-                    $submit_buttons.attr('disabled', null);
-                    $submit_buttons.attr('title', null);
+                    $submit_buttons.prop('disabled', false);
+                    $submit_buttons.prop('title', null);
                 };
 
                 if (event_is_complete) {

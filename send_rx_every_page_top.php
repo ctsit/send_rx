@@ -71,7 +71,7 @@
 
                 var buttons_enabled = <?php echo $buttons_enabled ? 'true' : 'false'; ?>;
                 if (!buttons_enabled) {
-                    $('.send-rx-access-btn').attr('disabled', 'disabled');
+                    $('.send-rx-access-btn').prop('disabled', true);
                     return;
                 }
 
@@ -92,7 +92,7 @@
                 }
 
                 if ($.isEmptyObject(members_to_add) && $.isEmptyObject(members_to_del)) {
-                    $rebuild_button.attr('disabled', 'disabled');
+                    $rebuild_button.prop('disabled', true);
                 }
                 else {
                     $rebuild_button.on('click', function() {
@@ -108,7 +108,7 @@
                 }
 
                 if ($.isEmptyObject(curr_members)) {
-                    $revoke_button.attr('disabled', 'disabled');
+                    $revoke_button.prop('disabled', true);
                 }
                 else {
                     $revoke_button.on('click', function() {
