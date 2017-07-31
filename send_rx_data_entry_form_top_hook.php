@@ -8,6 +8,15 @@
         require_once 'RxSender.php';
 
         global $Proj;
+
+        if ($config = send_rx_get_project_config($project_id, 'site')) {
+            if ($Proj->metadata['send_rx_dag_id']['form_name'] == $instrument) {
+                // Hiding DAG ID field.
+                echo '<script>$(document).ready(function() { $(\'#send_rx_dag_id-tr\').hide(); });</script>';
+            }
+
+            return;
+        }
         
         // Checking if PDF file exists.
         if (!isset($Proj->metadata['send_rx_pdf'])) {
@@ -119,19 +128,7 @@
                 */
                 $sender->generatePDFFile();
                 send_rx_save_record_field($project_id, $event_id, $record, 'send_rx_pdf_is_updated', '1', $repeat_instance);
-
-                // TODO: Test just printing message (without JS).
-                ?>
-                <script type="text/javascript">
-                    /*
-                        Success message on page load to confirm PDF generation.
-                    */
-                    $(document).ready(function() {
-                        var successMsg = '<div class="darkgreen" style="margin:8px 0 5px;"><img src="' + app_path_images + 'tick.png"> A new prescription PDF preview has been created.</div>';
-                        $('#pdfExportDropdownDiv').parent().next().append(successMsg);
-                    });
-                </script>
-                <?php
+                echo '<div class="darkgreen" style="margin-bottom:30px;"><img src="' . APP_PATH_IMAGES . 'tick.png"> A new prescription PDF preview has been created.</div>';
             }
             else {
                 $event_is_complete = false;

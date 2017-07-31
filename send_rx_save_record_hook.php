@@ -14,36 +14,9 @@
                 return;
             }
 
-            global $redcap_version;
-
             $data = send_rx_get_record_data($project_id, $record, $event_id);
-            $site_name = $data['send_rx_site_name'];
-
-            $url = APP_PATH_WEBROOT_FULL . 'redcap_v' . $redcap_version . '/DataAccessGroups/data_access_groups_ajax.php';
-            $url .= '?pid=' . $config->targetProjectId . '&item=' . urlencode($site_name) . '&action=';
-            $url .= $data['send_rx_dag_id'] ? 'rename&group_id=' . $data['send_rx_dag_id'] : 'add';
-
-            // Call endpoint responsible to create or rename the DAG.
-            $curl = curl_init();
-            curl_setopt_array($curl, array(
-                CURLOPT_RETURNTRANSFER => false,
-                CURLOPT_URL => $url,
-                CURLOPT_COOKIE => 'PHPSESSID=' . $_COOKIE['PHPSESSID'],
-                CURLOPT_USERAGENT => $_SERVER['HTTP_USER_AGENT'],
-            ));
-
-            if (curl_exec($curl) && curl_getinfo($curl, CURLINFO_HTTP_CODE) == 200 && !$data['send_rx_dag_id']) {
-                $sql = '
-                    SELECT group_id FROM redcap_data_access_groups
-                    WHERE project_id = ' . $config->targetProjectId . ' AND group_name = "' . db_escape($site_name) . '"
-                    ORDER BY group_id LIMIT 1';
-
-                // Get newly created DAG ID from database and save it to redcap data.
-                $q = db_query($sql);
-                if (db_num_rows($q)) {
-                    $result = db_fetch_assoc($q);
-                    send_rx_save_record_field($project_id, $event_id, $record, 'send_rx_dag_id', $result['group_id']);
-                } 
+            if (($group_id = send_rx_save_dag($config->targetProjectId, $data['send_rx_site_name'], $data['send_rx_dag_id'])) && !$data['send_rx_dag_id']) {
+                send_rx_save_record_field($project_id, $event_id, $record, 'send_rx_dag_id', $group_id);
             }
 
             return;

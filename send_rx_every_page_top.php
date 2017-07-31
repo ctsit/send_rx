@@ -17,10 +17,20 @@
 
         $data = send_rx_get_record_data($project_id, $record);
         reset($data);
+
         $event_id = key($data);
-        
-        if (empty($data[$event_id]['send_rx_dag_id'])) {
+        $data = $data[$event_id];
+
+        if (!isset($data['send_rx_dag_id']) || empty($data['send_rx_site_name'])) {
             return;
+        }
+
+        if (!$group_id = $data['send_rx_dag_id']) {
+            if (!$group_id = send_rx_save_dag($config->targetProjectId, $data['send_rx_site_name'])) {
+                return;
+            }
+
+            send_rx_save_record_field($project_id, $event_id, $record, 'send_rx_dag_id', $group_id);
         }
 
         if (
@@ -47,8 +57,6 @@
                     $input_members[] = $member['send_rx_user_id'];
                 }
             }
-
-            $group_id = $data['send_rx_dag_id'];
 
             $curr_members = send_rx_get_group_members($config->targetProjectId, $group_id);
             $curr_members = array_keys($curr_members);
