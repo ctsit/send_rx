@@ -460,7 +460,7 @@ function send_rx_event_is_complete($project_id, $record, $event_id, $exclude = a
 
     // Getting the list of instruments of the given event.
     $fields = array();
-    foreach (array_keys($proj->eventsForms[$event_id]) as $form_name) {
+    foreach ($proj->eventsForms[$event_id] as $form_name) {
         $fields[$form_name] = $form_name . '_complete';
     }
 
@@ -470,7 +470,6 @@ function send_rx_event_is_complete($project_id, $record, $event_id, $exclude = a
     }
 
     // Calculating whether the event is complete or not.
-    $event_is_complete = true;
     $data = REDCap::getData($project_id, 'array', $record, $fields, $event_id);
     foreach ($fields as $form_name => $field) {
         if (isset($data[$record]['repeat_instances'][$event_id][$form_name])) {
