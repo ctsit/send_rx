@@ -343,23 +343,39 @@ class RxSender {
     protected function preprocessData($data, $proj) {
         $project_type = isset($proj->metadata['patient_id']) ? 'patient' : 'site';
         foreach ($data as $field_name => $value) {
-            if (!isset($proj->metadata[$field_name]) || $proj->metadata[$field_name]['element_type'] != 'file' || empty($value)) {
+            if (!isset($proj->metadata[$field_name]) || empty($value)) {
                 continue;
             }
 
-            if (!$file_path = send_rx_get_edoc_file_path($value)) {
-                $data[$field_name] = '';
-                continue;
-            }
+            if ($proj->metadata[$field_name]['element_type'] == 'select') {
+                if (!$options = explode('\\n', $proj->metadata[$field_name]['element_enum'])) {
+                    continue;
+                }
 
-            $mimetype = mime_content_type($file_path);
-            if (strpos($mimetype, 'image/') === 0) {
-                // Building image tag.
-                $data[$field_name] = '<img src="data:' . $mimetype . ';base64,' . base64_encode(file_get_contents($file_path)) . '">';
+                foreach ($options as $option) {
+                    list($key, $label) = explode(',', $option);
+
+                    if (trim($key) == $value) {
+                        $data[$field_name] = trim($label);
+                        break;
+                    }
+                }
             }
-            else {
-                // Building download link.
-                $data[$field_name] = $this->buildFileUrl($value, $field_name, $project_type);
+            elseif ($proj->metadata[$field_name]['element_type'] == 'file') {
+                if (!$file_path = send_rx_get_edoc_file_path($value)) {
+                    $data[$field_name] = '';
+                    continue;
+                }
+
+                $mimetype = mime_content_type($file_path);
+                if (strpos($mimetype, 'image/') === 0) {
+                    // Building image tag.
+                    $data[$field_name] = '<img src="data:' . $mimetype . ';base64,' . base64_encode(file_get_contents($file_path)) . '">';
+                }
+                else {
+                    // Building download link.
+                    $data[$field_name] = $this->buildFileUrl($value, $field_name, $project_type);
+                }
             }
         }
 
