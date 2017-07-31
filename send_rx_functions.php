@@ -460,7 +460,7 @@ function send_rx_event_is_complete($project_id, $record, $event_id, $exclude = a
 
     // Getting the list of instruments of the given event.
     $fields = array();
-    foreach (array_keys($proj->eventForms[$event_id]) as $form_name) {
+    foreach (array_keys($proj->eventsForms[$event_id]) as $form_name) {
         $fields[$form_name] = $form_name . '_complete';
     }
 
