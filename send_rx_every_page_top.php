@@ -14,43 +14,55 @@
         }
 
         $record = $_GET['id'];
+
         $data = send_rx_get_record_data($project_id, $record);
-        reset($data);
-        $event_id = key($data);
-        $data = $data[$event_id];
+        $data = reset($data);
 
         if (empty($data['send_rx_dag_id'])) {
             return;
         }
 
+        $event_id = key($data);
+
+        if (
+            $buttons_enabled = send_rx_event_is_complete($project_id, $record, $event_id) &&
+            $staff = send_rx_get_site_users($project_id, $record)
+        ) {
+            if (isset($_GET['msg'])) {
+                $msgs = array(
+                    'rebuild_perms' => 'The permissions have been rebuilt successfully.',
+                    'revoke_perms' => 'The permissions have been revoked successfully.',
+                );
+
+                if (isset($msgs[$_GET['msg']])) {
+                    // Showing success message.
+                    echo '<div class="darkgreen" style="margin:8px 0 5px;"><img src="' . APP_PATH_IMAGES . 'tick.png"> ' . $msgs[$_GET['msg']] . '</div>';
+                }
+            }
+
+            $db = new RedCapDB();
+
+            $input_members = array();
+            foreach ($staff as $member) {
+                if ($db->usernameExists($member['send_rx_user_id'])) {
+                    $input_members[] = $member['send_rx_user_id'];
+                }
+            }
+
+            $group_id = $data['send_rx_dag_id'];
+
+            $curr_members = send_rx_get_group_members($config->targetProjectId, $group_id);
+            $curr_members = array_keys($curr_members);
+
+            // Creating lists of users to be added and removed from the DAG.
+            $members_to_add = array_diff($input_members, $curr_members);
+            $members_to_del = array_diff($curr_members, $input_members);
+        }
+
+        // Buttons markup.
         $buttons = '<button class="btn btn-success send-rx-access-btn" id="send-rx-rebuild-access-btn" style="margin-right:5px;">Rebuild staff permissions</button>';
         $buttons .= '<button class="btn btn-danger send-rx-access-btn" id="send-rx-revoke-access-btn">Revoke staff permissions</button>';
         $buttons = '<div id="access-btns">' . $buttons . '</div>';
-
-        if ($buttons_enabled = send_rx_event_is_complete($project_id, $record, $event_id)) {
-            global $Proj;
-
-            $form_name = $Proj->metadata['send_rx_user_id']['form_name'];
-            if ($staff = send_rx_get_repeat_instrument_instances($project_id, $record, $form_name, $event_id)) {
-                $db = new RedCapDB();
-
-                // Create a list of users to be added to DAG.
-                $input_members = array();
-                foreach ($staff as $member) {
-                    if ($db->usernameExists($member['send_rx_user_id'])) {
-                        $input_members[] = $member['send_rx_user_id'];
-                    }
-                }
-
-                $group_id = $data['send_rx_dag_id'];
-
-                $curr_members = send_rx_get_group_members($config->targetProjectId, $group_id);
-                $curr_members = array_keys($curr_members);
-
-                $members_to_add = array_diff($input_members, $curr_members);
-                $members_to_del = array_diff($curr_members, $input_members);
-            }
-        }
 
         ?>
         <script type="text/javascript">
@@ -74,7 +86,7 @@
                 var grantGroupAccessToStaff = function(users, group_id = '') {
                     // Remove each user to DAG.
                     $.each(users, function(key, value) {
-                        $.get(app_path_webroot + 'DataAccessGroups/data_access_groups_ajax.php?pid=' + pid + '&action=add_user&user=' + user + '&group_id=' + group_id);
+                        $.get(app_path_webroot + 'DataAccessGroups/data_access_groups_ajax.php?pid=' + pid + '&action=add_user&user=' + value + '&group_id=' + group_id);
                         // TODO: if errors, display an alert.
                     });
                 }
@@ -85,13 +97,13 @@
                 else {
                     $rebuild_button.on('click', function() {
                         // Rebuilding, part 1: Revoke access.
-                        grantGroupAccessToStaff(users_to_del);
+                        grantGroupAccessToStaff(members_to_del);
 
-                        // Rebuilding, part 2: Grant access..
-                        grantGroupAccessToStaff(users_to_add, group_id);
+                        // Rebuilding, part 2: Grant access.
+                        grantGroupAccessToStaff(members_to_add, group_id);
 
                         // Reloading page.
-                        location.reload();
+                        window.location.href = window.location.href + '&msg=' + 'rebuild_perms';
                     });
                 }
 
@@ -104,7 +116,7 @@
                         grantGroupAccessToStaff(curr_members);
 
                         // Reloading page.
-                        location.reload();
+                        window.location.href = window.location.href + '&msg=' + 'revoke_perms';
                     });
                 }
             });

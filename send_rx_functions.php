@@ -441,23 +441,26 @@ function send_rx_get_group_members($project_id, $group_id, $user_role = null) {
 }
 
 /**
- * Throws an access denied page.
+ * Checks whether the event forms are complete.
+ *
+ * @param int $project_id
+ *   The project ID.
+ * @param int $record
+ *   The record ID.
+ * @param int $event_id
+ *   The event ID.
+ * @param array $exclude
+ *   (optional) An array of instrument names to bypass the check.
+ *
+ * @return bool
+ *   TRUE if the event is complete, FALSE otherwise.
  */
-function send_rx_access_denied() {
-    global $lang;
-
-    print '<div class="red"><img src="' . APP_PATH_IMAGES . 'exclamation.png"><b>' . $lang['global_05'] . '</b></div>';
-    print RCView::div(array('style' => 'margin-top:20px;'), RCView::a(array('href' => APP_PATH_WEBROOT_FULL . 'index.php?action=myprojects'), $lang['bottom_69']));
-
-    exit;
-}
-
 function send_rx_event_is_complete($project_id, $record, $event_id, $exclude = array()) {
     $proj = new Project($project_id);
 
     // Getting the list of instruments of the given event.
     $fields = array();
-    foreach (array_keys($proj->forms) as $form_name) {
+    foreach (array_keys($proj->eventForms[$event_id]) as $form_name) {
         $fields[$form_name] = $form_name . '_complete';
     }
 

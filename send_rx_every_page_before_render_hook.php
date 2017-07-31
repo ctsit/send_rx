@@ -1,9 +1,11 @@
 <?php
     return function($project_id) {
+        // Checking if we are on data entry form.
         if (PAGE != 'DataEntry/index.php') {
             return;
         }
 
+        // Getting record ID.
         if (!empty($_GET['id'])) {
             $record = $_GET['id'];
         }
@@ -16,10 +18,18 @@
 
         require_once 'send_rx_functions.php';
 
+        // Checking if this project has a Send Rx config.
         if (!$config = send_rx_get_project_config($project_id, 'patient')) {
             return;
         }
 
+        // Checking if we are at the prescriber field's step.
+        global $Proj;
+        if (!isset($Proj->metadata['send_rx_prescriber_id']) || $_GET['page'] != $Proj->metadata['send_rx_prescriber_id']['form_name']) {
+            return;
+        }
+
+        // Getting record group ID.
         if (!$group_id = Records::getRecordGroupId($project_id, $record)) {
             $parts = explode('-', $record);
             if (count($parts) != 2) {
@@ -29,34 +39,38 @@
             $group_id = $parts[0];
         }
 
-        $prescribers = send_rx_get_group_members($project_id, $group_id, 'prescriber');
-        if (isset($prescribers[USERID]) && !SUPER_USER && !ACCOUNT_MANAGER) {
-            $data = send_rx_get_record_data($project_id, $record, $_GET['event_id']);
-            if (!empty($data) && !empty($data['send_rx_prescriber_id']) && $data['send_rx_prescriber_id'] != USERID) {
-                // Prescribers cannot access prescriptions that do not belong to them.
-                send_rx_access_denied();
-            }
-        }
-
-        global $Proj;
-        if (!isset($Proj->metadata['send_rx_prescriber_id']) || $_GET['page'] != $Proj->metadata['send_rx_prescriber_id']['form_name']) {
+        // Getting list of prescribers.
+        if (!$prescribers = send_rx_get_group_members($project_id, $group_id, 'prescriber')) {
             return;
         }
 
+        // Creating prescribers list to be used on dropdown.
         $options = array();
         foreach ($prescribers as $username => $prescriber) {
             $options[$username] = $username . ',' . $prescriber['user_firstname'] . ' ' . $prescriber['user_lastname'];
         }
 
-        if (isset($options[USERID])) {
-            $options = array($options[USERID]);
+        // Checking if current user is a prescriber and non-admin.
+        if (isset($prescribers[USERID]) && !SUPER_USER && !ACCOUNT_MANAGER) {
+            // If prescriber, we need to turn prescriber into readonly.
+            $username = USERID;
+
+            $data = send_rx_get_record_data($project_id, $record, $_GET['event_id']);
+            if (!empty($data) && !empty($data['send_rx_prescriber_id']) && $data['send_rx_prescriber_id'] != USERID && isset($options[$data['send_rx_prescriber_id']])) {
+                $username = $data['send_rx_prescriber_id'];
+            }
+
+            $options = array($options[$username]);
             $parts = explode(',', reset($options));
 
             ?>
             <script type="text/javascript">
                 document.addEventListener('DOMContentLoaded', function() {
-                    $('select[name="send_rx_prescriber_id"] option[value="<?php echo USERID; ?>"]').prop('selected', true);
-                    $('#send_rx_prescriber_id-tr').hide();
+                    var $select = $('select[name="send_rx_prescriber_id"]');
+                    var $row = $('#send_rx_prescriber_id-tr');
+
+                    $select.hide().find('option[value="<?php echo $username; ?>"]').prop('selected', true);
+                    $row.css('opacity', '0.6').find('.data').append('<?php echo $parts[1]; ?>');
                 });
             </script>
             <?php
