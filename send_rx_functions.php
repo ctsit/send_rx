@@ -488,3 +488,55 @@ function send_rx_event_is_complete($project_id, $record, $event_id, $exclude = a
 
     return true;
 }
+
+/**
+ * Creates or renames a Data Access Group.
+ *
+ * @param int $project_id
+ *   The project ID.
+ * @param int $group_name
+ *   The group name.
+ * @param int $group_id
+ *   The group ID to update. Leave blank to create a new group.
+ *
+ * @return int|bool
+ *   The group ID if success, FALSE otherwise.
+ */
+function send_rx_save_dag($project_id, $group_name, $group_id = null) {
+    global $redcap_version;
+
+    $url = APP_PATH_WEBROOT_FULL . 'redcap_v' . $redcap_version . '/DataAccessGroups/data_access_groups_ajax.php';
+    $url .= '?pid=' . $project_id . '&item=' . urlencode($group_name) . '&action=';
+    $url .= $group_id ? 'rename&group_id=gid_' . $group_id : 'add';
+
+    // Call endpoint responsible to create or rename the DAG.
+    $curl = curl_init();
+    curl_setopt_array($curl, array(
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_URL => $url,
+        CURLOPT_COOKIE => 'PHPSESSID=' . $_COOKIE['PHPSESSID'],
+        CURLOPT_USERAGENT => $_SERVER['HTTP_USER_AGENT'],
+    ));
+
+    if (!($output = curl_exec($curl)) || $output == 'ERROR!' || curl_getinfo($curl, CURLINFO_HTTP_CODE) != 200) {
+        return false;
+    }
+
+    if (!$group_id) {
+        $sql = '
+            SELECT group_id FROM redcap_data_access_groups
+            WHERE project_id = ' . $project_id . ' AND group_name = "' . db_escape($group_name) . '"
+            ORDER BY group_id LIMIT 1';
+
+        // Get newly created DAG ID from database and save it to redcap data.
+        $q = db_query($sql);
+        if (!db_num_rows($q)) {
+            return false;
+        }
+
+        $group_id = db_fetch_assoc($q);
+        $group_id = $group_id['group_id'];
+    }
+
+    return $group_id;
+}
