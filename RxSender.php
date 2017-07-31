@@ -347,7 +347,7 @@ class RxSender {
                 continue;
             }
 
-            if ($proj->metadata[$field_name]['element_type'] == 'select') {
+            if (in_array($proj->metadata[$field_name]['element_type'], array('select', 'radio'))) {
                 if (!$options = explode('\\n', $proj->metadata[$field_name]['element_enum'])) {
                     continue;
                 }
