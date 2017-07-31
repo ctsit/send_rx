@@ -59,7 +59,7 @@
 
                 var buttons_enabled = <?php echo $buttons_enabled ? 'true' : 'false'; ?>;
                 if (!buttons_enabled) {
-                    $('send-rx-access-btn').attr('disabled', 'disabled');
+                    $('.send-rx-access-btn').attr('disabled', 'disabled');
                     return;
                 }
 
