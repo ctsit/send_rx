@@ -16,13 +16,12 @@
         $record = $_GET['id'];
 
         $data = send_rx_get_record_data($project_id, $record);
-        $data = reset($data);
-
-        if (empty($data['send_rx_dag_id'])) {
+        reset($data);
+        $event_id = key($data);
+        
+        if (empty($data[$event_id]['send_rx_dag_id'])) {
             return;
         }
-
-        $event_id = key($data);
 
         if (
             $buttons_enabled = send_rx_event_is_complete($project_id, $record, $event_id) &&
