@@ -403,7 +403,6 @@ function send_rx_get_site_users($project_id, $site_id, $user_role = null) {
             $users[] = $user_info;
         }
     }
-
     return $users;
 }
 
@@ -438,6 +437,73 @@ function send_rx_get_group_members($project_id, $group_id, $user_role = null) {
     }
 
     return $users;
+}
+
+/**
+ * Get user roles array with username and role_id as key value pair.
+ *
+ * @param int $project_id
+ *   The project ID.
+ * @param int $group_id
+ *   The group ID.
+ *
+ * @return array
+ *   Array of users info, keyed by role. Returns FALSE if failure.
+ */
+function send_rx_get_user_roles($project_id, $group_id) {
+    
+    $user_roles = array();
+    $sql = 'SELECT rit.username, rol.role_name, rol.role_id FROM redcap_user_rights rit left join redcap_user_roles rol on rol.project_id = rit.project_id and rit.role_id = rol.role_id';
+    $sql .= ' WHERE rit.project_id = ' . db_escape($project_id);
+    $sql .= ' AND rit.group_id = ' . db_escape($group_id);
+
+    $users1 = array();
+    $roles1 = array();
+    $q = db_query($sql);
+    if (db_num_rows($q)) {
+        while ($result = db_fetch_assoc($q)) {
+            $curr_role = $result['role_id'];
+            $curr_user = $result['username'];
+            $user_roles[$curr_user] = $curr_role;
+        }
+    } else {
+        return false;
+    }
+
+    return $user_roles;
+}
+
+/**
+ * Get role ids and role names as a key, value pair in a array.
+ *
+ * @param int $project_id
+ *   The project ID.
+ * @param array $role_names
+ *   Array of role_names.
+ *
+ * @return array
+ *   Array of roles, keyed by role_name. Returns FALSE if failure.
+ */
+function send_rx_get_user_role_ids($pid, $role_names) {
+    
+    $roles = array();
+    $sql = 'SELECT role_id, role_name from redcap_user_roles where project_id = ' . ($pid) . ' and role_name in ';
+    $sql .= '("' . implode('","', $role_names) . '")';
+    // prettyPrint($sql);
+    $roles_info = array();
+    $q = db_query($sql);
+    if (db_num_rows($q)) {
+        while ($result = db_fetch_assoc($q)) {
+            $rid = $result['role_id'];
+            $rname = $result['role_name'];
+            $roles_info[$rname] = $rid;
+        }
+    } else {
+        return false;
+    }
+
+    return $roles_info;
+
 }
 
 /**
