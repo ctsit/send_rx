@@ -457,8 +457,6 @@ function send_rx_get_user_roles($project_id, $group_id) {
     $sql .= ' WHERE rit.project_id = ' . db_escape($project_id);
     $sql .= ' AND rit.group_id = ' . db_escape($group_id);
 
-    $users1 = array();
-    $roles1 = array();
     $q = db_query($sql);
     if (db_num_rows($q)) {
         while ($result = db_fetch_assoc($q)) {
@@ -489,7 +487,7 @@ function send_rx_get_user_role_ids($pid, $role_names) {
     $roles = array();
     $sql = 'SELECT role_id, role_name from redcap_user_roles where project_id = ' . ($pid) . ' and role_name in ';
     $sql .= '("' . implode('","', $role_names) . '")';
-    // prettyPrint($sql);
+
     $roles_info = array();
     $q = db_query($sql);
     if (db_num_rows($q)) {

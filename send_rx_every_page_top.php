@@ -81,7 +81,6 @@
                 }
             }
             if (!($roles_info = send_rx_get_user_role_ids($config->targetProjectId, $role_names))) {
-                // prettyPrint("return");
                 return;
             }
 
@@ -89,12 +88,7 @@
                 $val = $roles_info[$val];
             }
             
-            prettyPrint($roles_info, "Roles Info");
-            prettyPrint($input_value, "Inputed");
-            prettyPrint($curr_value, "Current");
-
             $roles_to_add = array();
-            // $roles_to_mod = array();
             $roles_to_del = array();
             
             foreach ($input_value as $key => $value) {
@@ -111,10 +105,6 @@
                     $roles_to_del[$key] = 0;
                 }
             }
-
-            prettyPrint($roles_to_add, "Add");
-            // prettyPrint($roles_to_mod, "Mod");
-            prettyPrint($roles_to_del, "Del");
 
         }
 
@@ -171,10 +161,10 @@
                     $rebuild_button.on('click', function() {
 
                         // Rebuilding, delete roles
-                        // assignRole(roles_to_del);
+                        assignRole(roles_to_del);
                         
                         // Rebuilding, modify roles
-                        // assignRole(roles_to_add);
+                        assignRole(roles_to_add);
 
                         // Rebuilding, part 1: Revoke access.
                         grantGroupAccessToStaff(members_to_del);
