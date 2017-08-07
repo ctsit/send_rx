@@ -49,7 +49,7 @@
                 }
             }
 
-            if (!($curr_value = send_rx_get_user_roles($config->targetProjectId, $group_id))) {
+            if (!($curr_role_values = send_rx_get_user_roles($config->targetProjectId, $group_id))) {
                 return;
             }
 
@@ -70,12 +70,12 @@
             $members_to_del = array_diff($curr_members, $input_members);
 
             $role_names = array();
-            $input_value = array();
+            $input_role_values = array();
             foreach ($staff as $member) {
                 $curr_user = $member['send_rx_user_id'];
                 $curr_role = $member['send_rx_user_role'];
                 if ($db->usernameExists($curr_user)) {
-                    $input_value[$curr_user] = $curr_role;
+                    $input_role_values[$curr_user] = $curr_role;
                     if (!in_array($curr_role, $role_names)) {
                         $role_names[] = $curr_role;
                     }
@@ -85,23 +85,23 @@
                 return;
             }
 
-            foreach($input_value as &$val) {
+            foreach($input_role_values as &$val) {
                 $val = $roles_info[$val];
             }
             
             $roles_to_add = array();
             $roles_to_del = array();
             
-            foreach ($input_value as $key => $value) {
-                if (!array_key_exists($key, $curr_value)) {
+            foreach ($input_role_values as $key => $value) {
+                if (!array_key_exists($key, $curr_role_values)) {
                     $roles_to_add[$key] = $value;
-                } else if ($curr_value[$key] != $value) {
+                } else if ($curr_role_values[$key] != $value) {
                     $roles_to_add[$key] = $value;
                 }
             }
 
-            foreach ($curr_value as $key => $value) {
-                if (!array_key_exists($key, $input_value) && $value != 0) {
+            foreach ($curr_role_values as $key => $value) {
+                if (!array_key_exists($key, $input_role_values) && $value != 0) {
                     $roles_to_del[$key] = 0;
                 }
             }
