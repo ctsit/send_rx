@@ -49,6 +49,10 @@
                 }
             }
 
+            if (!($curr_value = send_rx_get_user_roles($config->targetProjectId, $group_id))) {
+                return;
+            }
+
             $db = new RedCapDB();
 
             $input_members = array();
@@ -65,9 +69,6 @@
             $members_to_add = array_diff($input_members, $curr_members);
             $members_to_del = array_diff($curr_members, $input_members);
 
-            if (!($curr_value = send_rx_get_user_roles($config->targetProjectId))) {
-                return;
-            }
             $role_names = array();
             $input_value = array();
             foreach ($staff as $member) {
