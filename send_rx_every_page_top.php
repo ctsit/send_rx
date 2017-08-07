@@ -96,16 +96,14 @@
                     $roles_to_add[$key] = $value;
                 } else if ($curr_value[$key] != $value) {
                     $roles_to_add[$key] = $value;
-                    $roles_to_del[$key] = 0;
                 }
             }
 
             foreach ($curr_value as $key => $value) {
-                if (!array_key_exists($key, $input_value)) {
+                if (!array_key_exists($key, $input_value) && $value != 0) {
                     $roles_to_del[$key] = 0;
                 }
             }
-
         }
 
         // Buttons markup.
@@ -145,16 +143,12 @@
 
                 var assignRole = function(users) {
                     $.each(users, function(key, value) {
-                        $.post(app_path_webroot+'UserRights/assign_user.php?pid='+pid, { username: key, role_id: value, notify_email_role: ($('#notify_email_role').prop('checked') ? 1 : 0) }, function(data){
-                            if (data == '') { alert(woops); return; }
-                            $('#user_rights_roles_table_parent').html(data);
-                            });
+                        $.post(app_path_webroot+'UserRights/assign_user.php?pid='+pid, { username: key, role_id: value, notify_email_role:0 });
                     });                    
                 }
 
                 if ($.isEmptyObject(members_to_add) && $.isEmptyObject(members_to_del)
-                    && $.isEmptyObject($roles_to_add) && $.isEmptyObject($roles_to_mod) 
-                    && $.isEmptyObject($roles_to_del)) {
+                    && $.isEmptyObject(roles_to_add) && $.isEmptyObject(roles_to_del)) {
                     $rebuild_button.prop('disabled', true);
                 }
                 else {
@@ -163,7 +157,7 @@
                         // Rebuilding, delete roles
                         assignRole(roles_to_del);
                         
-                        // Rebuilding, modify roles
+                        // Rebuilding, add/modify roles
                         assignRole(roles_to_add);
 
                         // Rebuilding, part 1: Revoke access.
