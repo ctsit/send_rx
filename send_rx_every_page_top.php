@@ -49,6 +49,10 @@
                 }
             }
 
+            if (!($curr_role_values = send_rx_get_user_roles($config->targetProjectId, $group_id))) {
+                return;
+            }
+
             $db = new RedCapDB();
 
             $input_members = array();
@@ -64,6 +68,43 @@
             // Creating lists of users to be added and removed from the DAG.
             $members_to_add = array_diff($input_members, $curr_members);
             $members_to_del = array_diff($curr_members, $input_members);
+
+            $role_names = array();
+            $input_role_values = array();
+            foreach ($staff as $member) {
+                $curr_user = $member['send_rx_user_id'];
+                $curr_role = $member['send_rx_user_role'];
+                if ($db->usernameExists($curr_user)) {
+                    $input_role_values[$curr_user] = $curr_role;
+                    if (!in_array($curr_role, $role_names)) {
+                        $role_names[] = $curr_role;
+                    }
+                }
+            }
+            if (!($roles_info = send_rx_get_user_role_ids($config->targetProjectId, $role_names))) {
+                return;
+            }
+
+            foreach($input_role_values as &$val) {
+                $val = $roles_info[$val];
+            }
+            
+            $roles_to_add = array();
+            $roles_to_del = array();
+            
+            foreach ($input_role_values as $key => $value) {
+                if (!array_key_exists($key, $curr_role_values)) {
+                    $roles_to_add[$key] = $value;
+                } else if ($curr_role_values[$key] != $value) {
+                    $roles_to_add[$key] = $value;
+                }
+            }
+
+            foreach ($curr_role_values as $key => $value) {
+                if (!array_key_exists($key, $input_role_values) && $value != 0) {
+                    $roles_to_del[$key] = 0;
+                }
+            }
         }
 
         // Buttons markup.
@@ -90,6 +131,9 @@
                 var members_to_add = <?php echo json_encode($members_to_add); ?>;
                 var members_to_del = <?php echo json_encode($members_to_del); ?>;
 
+                var roles_to_add = <?php echo json_encode($roles_to_add); ?>;
+                var roles_to_del = <?php echo json_encode($roles_to_del); ?>;
+
                 var grantGroupAccessToStaff = function(users, group_id = '') {
                     // Remove each user to DAG.
                     $.each(users, function(key, value) {
@@ -98,11 +142,25 @@
                     });
                 }
 
-                if ($.isEmptyObject(members_to_add) && $.isEmptyObject(members_to_del)) {
+                var assignRole = function(users) {
+                    $.each(users, function(key, value) {
+                        $.post(app_path_webroot+'UserRights/assign_user.php?pid='+pid, { username: key, role_id: value, notify_email_role:0 });
+                    });                    
+                }
+
+                if ($.isEmptyObject(members_to_add) && $.isEmptyObject(members_to_del)
+                    && $.isEmptyObject(roles_to_add) && $.isEmptyObject(roles_to_del)) {
                     $rebuild_button.prop('disabled', true);
                 }
                 else {
                     $rebuild_button.on('click', function() {
+
+                        // Rebuilding, delete roles
+                        assignRole(roles_to_del);
+                        
+                        // Rebuilding, add/modify roles
+                        assignRole(roles_to_add);
+
                         // Rebuilding, part 1: Revoke access.
                         grantGroupAccessToStaff(members_to_del);
 
