@@ -153,7 +153,7 @@ class RxSender {
             $class = 'RxSender';
         }
         elseif (class_exists($config->senderClass)) {
-            $class = $this->senderClass;
+            $class = $config->senderClass;
         }
         else {
             return false;
