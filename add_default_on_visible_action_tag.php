@@ -119,9 +119,11 @@ return function($project_id) {
 	    				}
 	    			}
 	    		} else if (elem_type == 'select') {
+	    			//ToDo
 
 	    		} else if (elem_type == 'radio') {
-
+	    			//ToDo
+	    			
 	    		} else {
 	    			$(selector).val(value);
 	    		}
@@ -157,8 +159,10 @@ return function($project_id) {
 			    				$(selector1).siblings('input').val('');
 		    				}
 		    			} else if (elem_type == 'radio') {
+		    				//ToDo
 
 		    			} else if (elem_type == 'select') {
+							//ToDo
 
 		    			} else {
 		    				$elem.val('');
