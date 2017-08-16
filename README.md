@@ -19,6 +19,7 @@ fab instance:vagrant activate_hook:redcap_save_record,send_rx_save_record_hook.p
 fab instance:vagrant activate_hook:redcap_data_entry_form_top,send_rx_data_entry_form_top_hook.php
 fab instance:vagrant activate_hook:redcap_every_page_before_render,send_rx_every_page_before_render_hook.php
 fab instance:vagrant activate_hook:redcap_every_page_top,send_rx_every_page_top.php
+fab instance:vagrant activate_hook:redcap_data_entry_form_top,add_default_on_visible_action_tag.php
 ```
 
 ### Option 2: Other Environments
@@ -35,6 +36,7 @@ fab instance:vagrant test_hook:redcap_save_record,send_rx/send_rx_save_record_ho
 fab instance:vagrant test_hook:redcap_data_entry_form_top,send_rx/send_rx_data_entry_form_top_hook.php
 fab instance:vagrant test_hook:redcap_every_page_before_render,send_rx/send_rx_every_page_before_render_hook.php
 fab instance:vagrant test_hook:redcap_every_page_top,send_rx/send_rx_every_page_top.php
+fab instance:vagrant test_hook:redcap_data_entry_form_top,send_rx/add_default_on_visible_action_tag.php
 ```
 
 ## Configuration
