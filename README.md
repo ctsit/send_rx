@@ -23,12 +23,12 @@ The steps below will walk you through a study research use case.
 Send Rx requires Table-base authentication method to work, so if your REDCap does not have it, you may need to follow the steps below:
 1. Go to **Control Manager > Add Users (Table-based Only)**
 2. Add a new user that will be the new admin account (`site_admin` will be deprecated)
-3. Go to **Control Manager > Administrators & Acct Managers** and designate the new user as administrator
+3. Go to **Control Manager > Administrators & Acct Managers** and add the new user to the administrators list
 4. Go to **Control Manager > Security & Authentication**, change authentication method to "Table-based", and save
 5. Check your email inbox and look for a "REDCap access granted" email
 6. Open the email contents, and click on "Set your new REDCap password" link
 7. Set your password
-8. Go to **Control Manager > Administrators & Acct Managers** and remove deprecated `site_admin` as administrators list
+8. Go to **Control Manager > Administrators & Acct Managers** and remove deprecated `site_admin` from administrators list
 
 
 ### Step 2: Creating a few test users
@@ -43,14 +43,14 @@ Let's create at least 3 test users - 1 to be a study coordinator, and 2 prescrib
 5. Upload `SamplePDFTemplate.html` file provided by this repository, name it as `SamplePDFTemplate`, and save.
 6. Go to **Manage Extensions** section and enable Send Rx module for this project
 7. Yet on Manage Extensions page, click on Send Rx **Configure** button and set fields as follows:
-- Type: "Site"
-- Target Project ID: (Leave it blank for now, you are going to set it on step 4.8)
-- PDF Template Name: "SamplePDFTemplate"
-- PDF Template Variables:
-  - Key: "study_irb", Value: "2017-1234"
-  - Key: "study_name", Value: "Sample Study"
-- Message subject: "Test prescription"
-- Message body: "The prescription file is available at: [patient][send_rx_pdf]"
+  - Type: "Site"
+  - Target Project ID: (Leave it blank for now, you are going to set it on step 4.8)
+  - PDF Template Name: "SamplePDFTemplate"
+  - PDF Template Variables:
+    - Key: "study_irb", Value: "2017-1234"
+    - Key: "study_name", Value: "Sample Study"
+  - Message subject: "Test prescription"
+  - Message body: "The prescription file is available at: [patient][send_rx_pdf]"
 
 
 ### Step 4: Creating Patients Project
@@ -59,8 +59,8 @@ Let's create at least 3 test users - 1 to be a study coordinator, and 2 prescrib
 3. Take note of your new project ID (you should see it at the `pid` parameter in your URL).
 4. Go to **Manage Extensions** section and enable Send Rx module for this project
 5. Yet on Manage Extensions page, click on Configure Button and set fields as follows:
-- Type: Site
-- Target Project ID: _Place here the PID from step 3.2_
+  - Type: Site
+  - Target Project ID: _Place here the PID from step 3.2_
 6. Go to **User Rights** section and create two roles: `prescriber` and `study_coordinator`
 7. Switch to Sites project, then access **Manage Extensions** and click on Send Rx **Configure** button
 8. Set **Target Project ID** as the PID from step 4.2 and save.
