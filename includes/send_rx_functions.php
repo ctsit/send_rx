@@ -4,8 +4,7 @@
  * Helper Send RX functions.
  */
 
-require_once dirname(__DIR__) . '/vendor/autoload.php';
-
+include_once dirname(__DIR__) . '/vendor/autoload.php';
 use ExternalModules\ExternalModules;
 
 /**

@@ -32,7 +32,7 @@ class ExternalModule extends AbstractExternalModule {
 
             return;
         }
-        
+
         // Checking if PDF file exists.
         if (!isset($Proj->metadata['send_rx_pdf'])) {
             return;
@@ -150,68 +150,71 @@ class ExternalModule extends AbstractExternalModule {
             }
         }
 
-    ?>
-    <script type="text/javascript">
-        // All DOM modifications for the final instrument.
-        $(document).ready(function() {
-            var event_is_complete = <?php echo $event_is_complete ? 'true' : 'false'; ?>;
-            var instrument_name = '<?php echo $instrument; ?>';
-            var helpTxt = '<div style="color: #666;font-size: 11px;"><b>ATTENTION:</b> The prescription will be sent by submitting this form.</div>';
+?>
+<script type="text/javascript">
+    // All DOM modifications for the final instrument.
+    document.addEventListener('DOMContentLoaded', function() {
+        var event_is_complete = <?php echo $event_is_complete ? 'true' : 'false'; ?>;
+        var instrument_name = '<?php echo $instrument; ?>';
+        var helpTxt = '<div style="color: #666;font-size: 11px;"><b>ATTENTION:</b> The prescription will be sent by submitting this form.</div>';
 
-            $(helpTxt).insertBefore($('button[name="submit-btn-cancel"]')[0]);
+        $(helpTxt).insertBefore($('button[name="submit-btn-cancel"]')[0]);
 
-            // Removing operation buttons on PDF file.
-            if ($('#send_rx_pdf-linknew')) {
-                $('#send_rx_pdf-linknew').remove();
-            }
+        // Removing operation buttons on PDF file.
+        if ($('#send_rx_pdf-linknew')) {
+            $('#send_rx_pdf-linknew').remove();
+        }
 
-            $('#submit-btn-saverecord').html('Send & Exit Form');
-            $('#submit-btn-savecontinue').html('Send & Stay');
+        $('#submit-btn-saverecord').html('Send & Exit Form');
+        $('#submit-btn-savecontinue').html('Send & Stay');
+        $('#submit-btn-savenextform').html('Send & Go to Next Form');
+        $('#submit-btn-saveexitrecord').html('Send & Exit Record');
+        $('#submit-btn-savenextrecord').html('Send & Go To Next Record');
 
-            // Showing logs table.
-            $('#send_rx_logs-tr .data').html('<?php echo $table; ?>');
+        // Showing logs table.
+        $('#send_rx_logs-tr .data').html('<?php echo $table; ?>');
 
-            // Changing color of submit buttons.
-            var $submit_buttons = $('#submit-btn-saverecord, #submit-btn-savecontinue');
-            $submit_buttons.addClass('btn-success');
+        // Changing color of submit buttons.
+        var $submit_buttons = $('button[id^="submit-btn-"]');
+        $submit_buttons.addClass('btn-success');
 
-            // Disables submit buttons.
-            var disableSubmit = function() {
-                $submit_buttons.prop('disabled', true);
-                $submit_buttons.prop('title', 'Your must complete all form steps before sending the prescription.');
-            };
+        // Disables submit buttons.
+        var disableSubmit = function() {
+            $submit_buttons.prop('disabled', true);
+            $submit_buttons.prop('title', 'Your must complete all form steps before sending the prescription.');
+        };
 
-            // Enables submit buttons.
-            var enableSubmit = function() {
-                $submit_buttons.prop('disabled', false);
-                $submit_buttons.prop('title', null);
-            };
+        // Enables submit buttons.
+        var enableSubmit = function() {
+            $submit_buttons.removeProp('disabled');
+            $submit_buttons.removeProp('title');
+        };
 
-            if (event_is_complete) {
-                var $complete = $('select[name="' + instrument_name + '_complete"]');
-                if ($complete.val() !== '2') {
-                    // Disables submit buttons if initial state not complete.
-                    disableSubmit();
-                }
-
-                $complete.change(function() {
-                    if ($(this).val() === '2') {
-                        // Enables submit buttons if form becomes complete.
-                        enableSubmit();
-                    }
-                    else {
-                        // Disables submit buttons if form becomes not complete.
-                        disableSubmit();
-                    }
-                });
-            }
-            else {
-                // If form is not complete, submit buttons must remain disabled.
+        if (event_is_complete) {
+            var $complete = $('select[name="' + instrument_name + '_complete"]');
+            if ($complete.val() !== '2') {
+                // Disables submit buttons if initial state not complete.
                 disableSubmit();
             }
-        });
-    </script>
-    <?php
+
+            $complete.change(function() {
+                if ($(this).val() === '2') {
+                    // Enables submit buttons if form becomes complete.
+                    enableSubmit();
+                }
+                else {
+                    // Disables submit buttons if form becomes not complete.
+                    disableSubmit();
+                }
+            });
+        }
+        else {
+            // If form is not complete, submit buttons must remain disabled.
+            disableSubmit();
+        }
+    });
+</script>
+<?php
     }
 
     /**
@@ -281,17 +284,17 @@ class ExternalModule extends AbstractExternalModule {
             $options = array($options[$username]);
             $parts = explode(',', reset($options));
 
-            ?>
-            <script type="text/javascript">
-                document.addEventListener('DOMContentLoaded', function() {
-                    var $select = $('select[name="send_rx_prescriber_id"]');
-                    var $row = $('#send_rx_prescriber_id-tr');
+?>
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        var $select = $('select[name="send_rx_prescriber_id"]');
+        var $row = $('#send_rx_prescriber_id-tr');
 
-                    $select.hide().find('option[value="<?php echo $username; ?>"]').prop('selected', true);
-                    $row.css('opacity', '0.6').find('.data').append('<?php echo $parts[1]; ?>');
-                });
-            </script>
-            <?php
+        $select.hide().find('option[value="<?php echo $username; ?>"]').prop('selected', true);
+        $row.css('opacity', '0.6').find('.data').append('<?php echo $parts[1]; ?>');
+    });
+</script>
+<?php
         }
 
         // Adding prescriber options.
@@ -393,10 +396,10 @@ class ExternalModule extends AbstractExternalModule {
             foreach($input_role_values as &$val) {
                 $val = $roles_info[$val];
             }
-            
+
             $roles_to_add = array();
             $roles_to_del = array();
-            
+
             foreach ($input_role_values as $key => $value) {
                 if (!array_key_exists($key, $curr_role_values)) {
                     $roles_to_add[$key] = $value;
@@ -417,91 +420,91 @@ class ExternalModule extends AbstractExternalModule {
         $buttons .= '<button class="btn btn-danger send-rx-access-btn" id="send-rx-revoke-access-btn">Revoke staff permissions</button>';
         $buttons = '<div id="access-btns">' . $buttons . '</div>';
 
-    ?>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $('#repeating_forms_table_parent').after('<?php echo $buttons; ?>');
+?>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#repeating_forms_table_parent').after('<?php echo $buttons; ?>');
 
-            var buttons_enabled = <?php echo $buttons_enabled ? 'true' : 'false'; ?>;
-            if (!buttons_enabled) {
-                $('.send-rx-access-btn').prop('disabled', true);
-                return;
-            }
+        var buttons_enabled = <?php echo $buttons_enabled ? 'true' : 'false'; ?>;
+        if (!buttons_enabled) {
+            $('.send-rx-access-btn').prop('disabled', true);
+            return;
+        }
 
-            var $rebuild_button = $('#send-rx-rebuild-access-btn');
-            var $revoke_button = $('#send-rx-revoke-access-btn');
-            var pid = '<?php echo $config['target_project_id']; ?>';
-            var group_id = '<?php echo $group_id; ?>';
-            var curr_members = <?php echo json_encode($curr_members); ?>;
-            var members_to_add = <?php echo json_encode($members_to_add); ?>;
-            var members_to_del = <?php echo json_encode($members_to_del); ?>;
+        var $rebuild_button = $('#send-rx-rebuild-access-btn');
+        var $revoke_button = $('#send-rx-revoke-access-btn');
+        var pid = '<?php echo $config['target_project_id']; ?>';
+        var group_id = '<?php echo $group_id; ?>';
+        var curr_members = <?php echo json_encode($curr_members); ?>;
+        var members_to_add = <?php echo json_encode($members_to_add); ?>;
+        var members_to_del = <?php echo json_encode($members_to_del); ?>;
 
-            var roles_to_add = <?php echo json_encode($roles_to_add); ?>;
-            var roles_to_del = <?php echo json_encode($roles_to_del); ?>;
-            var count = 0;
+        var roles_to_add = <?php echo json_encode($roles_to_add); ?>;
+        var roles_to_del = <?php echo json_encode($roles_to_del); ?>;
+        var count = 0;
 
-            var refreshButtons = function() {
-                $rebuild_button.prop('disabled', $.isEmptyObject(members_to_add) && $.isEmptyObject(members_to_del) && $.isEmptyObject(roles_to_add) && $.isEmptyObject(roles_to_del));
-                $revoke_button.prop('disabled', $.isEmptyObject(curr_members));
-            }
+        var refreshButtons = function() {
+            $rebuild_button.prop('disabled', $.isEmptyObject(members_to_add) && $.isEmptyObject(members_to_del) && $.isEmptyObject(roles_to_add) && $.isEmptyObject(roles_to_del));
+            $revoke_button.prop('disabled', $.isEmptyObject(curr_members));
+        }
 
-            refreshButtons();
+        refreshButtons();
 
-            var grantGroupAccessToStaff = function(users, group_id = '') {
-                // Remove each user to DAG.
-                $.each(users, function(key, value) {
-                    $.ajax({
-                        url: app_path_webroot + 'DataAccessGroups/data_access_groups_ajax.php',
-                        data: { pid: pid, action: 'add_user', user: value, group_id: group_id },
-                        async: false
-                    });
+        var grantGroupAccessToStaff = function(users, group_id = '') {
+            // Remove each user to DAG.
+            $.each(users, function(key, value) {
+                $.ajax({
+                    url: app_path_webroot + 'DataAccessGroups/data_access_groups_ajax.php',
+                    data: { pid: pid, action: 'add_user', user: value, group_id: group_id },
+                    async: false
                 });
-            }
-
-            var assignRole = function(users) {
-                $.each(users, function(key, value) {
-                    $.ajax({
-                        type: 'POST',
-                        url: app_path_webroot + 'UserRights/assign_user.php?pid=' + pid,
-                        data: { username: key, role_id: value, notify_email_role: 0 },
-                        async: false
-                    });
-                });                    
-            }
-
-            var reloadPage = function(msg) {
-                window.location.href = window.location.href.replace('&msg=rebuild_perms', '').replace('&msg=revoke_perms', '') + '&msg=' + msg;
-            }
-
-            $rebuild_button.on('click', function() {
-
-                // Rebuilding, delete roles
-                assignRole(roles_to_del);
-                
-                // Rebuilding, add/modify roles
-                assignRole(roles_to_add);
-
-                // Rebuilding, part 1: Revoke access.
-                grantGroupAccessToStaff(members_to_del);
-
-                // Rebuilding, part 2: Grant access.
-                grantGroupAccessToStaff(members_to_add, group_id);
-
-                // Reloading page.
-                reloadPage('rebuild_perms');
             });
+        }
 
-
-            $revoke_button.on('click', function() {
-                // Revoke group access from users.
-                grantGroupAccessToStaff(curr_members);
-
-                // Reloading page.
-                reloadPage('revoke_perms');
+        var assignRole = function(users) {
+            $.each(users, function(key, value) {
+                $.ajax({
+                    type: 'POST',
+                    url: app_path_webroot + 'UserRights/assign_user.php?pid=' + pid,
+                    data: { username: key, role_id: value, notify_email_role: 0 },
+                    async: false
+                });
             });
+        }
+
+        var reloadPage = function(msg) {
+            window.location.href = window.location.href.replace('&msg=rebuild_perms', '').replace('&msg=revoke_perms', '') + '&msg=' + msg;
+        }
+
+        $rebuild_button.on('click', function() {
+
+            // Rebuilding, delete roles
+            assignRole(roles_to_del);
+
+            // Rebuilding, add/modify roles
+            assignRole(roles_to_add);
+
+            // Rebuilding, part 1: Revoke access.
+            grantGroupAccessToStaff(members_to_del);
+
+            // Rebuilding, part 2: Grant access.
+            grantGroupAccessToStaff(members_to_add, group_id);
+
+            // Reloading page.
+            reloadPage('rebuild_perms');
         });
-    </script>
-    <?php
+
+
+        $revoke_button.on('click', function() {
+            // Revoke group access from users.
+            grantGroupAccessToStaff(curr_members);
+
+            // Reloading page.
+            reloadPage('revoke_perms');
+        });
+    });
+</script>
+<?php
     }
 
     /**
