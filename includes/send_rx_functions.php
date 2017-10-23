@@ -580,9 +580,6 @@ function send_rx_add_dag($project_id, $group_name, $group_id = null) {
  *   The group name.
  * @param int $group_id
  *   The group ID.
- *
- * @return int|void
- *   The group ID if success, FALSE otherwise.
  */
 function send_rx_rename_dag($project_id, $group_name, $group_id) {
     $project_id = db_escape($project_id);
