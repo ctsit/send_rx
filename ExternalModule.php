@@ -278,7 +278,7 @@ class ExternalModule extends AbstractExternalModule {
         }
 
         if (!$group_id = $data['send_rx_dag_id']) {
-            if (!$group_id = send_rx_save_dag($config['target_project_id'], $data['send_rx_site_name'])) {
+            if (!$group_id = send_rx_add_dag($config['target_project_id'], $data['send_rx_site_name'])) {
                 return;
             }
 
@@ -395,7 +395,11 @@ class ExternalModule extends AbstractExternalModule {
             }
 
             $data = send_rx_get_record_data($project_id, $record, $event_id);
-            if (($group_id = send_rx_save_dag($config['target_project_id'], $data['send_rx_site_name'], $data['send_rx_dag_id'])) && !$data['send_rx_dag_id']) {
+            if ($data['send_rx_dag_id']) {
+                send_rx_rename_dag($config['target_project_id'], $data['send_rx_site_name'], $data['send_rx_dag_id']);
+            }
+            else {
+                $group_id = send_rx_add_dag($config['target_project_id'], $data['send_rx_site_name']);
                 send_rx_save_record_field($project_id, $event_id, $record, 'send_rx_dag_id', $group_id);
             }
 
