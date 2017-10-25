@@ -1,0 +1,19 @@
+## [1.0.0] - 2017-10-25
+### Summary
+ - This is the first release
+
+### Added
+- Changes to pdf template to accommodate new prescription form (prasadlan)
+- Turning Send Rx into a REDCap Module. (Tiago Bember Simeao)
+- add helper functions to get user_roles and roles with ids (suryayalla)
+- sync the user roles with respect to the newly inputed fields (suryayalla)
+- Adapting code to a DAG approach. (Tiago Bember Simeao)
+- Processing images and file links to be used on PDF. (Tiago Bember Simeao)
+- changes in hook to implement prescribers drop down on first intrument (prasadlan)
+- create a utils function which fetches site id based on dag (prasadlan)
+- create a method in class to fetch site id based on dag (prasadlan)
+- add Designer data class (suryayalla)
+- add a method to validate cps config (suryayalla)
+- added data entry trigger listener hook to track save form event (prasadlan)
+- Adding RXSender class and a few helper functions. (Tiago Bember Simeao)
+- Add xml versions of the two projects, sites and patients (Stewart Wehmeyer)
