@@ -4,8 +4,15 @@
  * Provides RXSender class.
  */
 
+namespace SendRx;
+
 require_once 'send_rx_functions.php';
 require_once 'LockUtil.php';
+
+use Project;
+use Records;
+use SendRx\LockUtil;
+use UserProfile\UserProfile;
 
 class RxSender {
 
@@ -149,7 +156,7 @@ class RxSender {
             return false;
         }
 
-        $class = empty($config['sender_class']) ? 'RxSender' : $config['sender_class'];
+        $class = empty($config['sender_class']) ? '\SendRx\RxSender' : $config['sender_class'];
         if (!class_exists($class)) {
             return false;
         }
@@ -225,19 +232,7 @@ class RxSender {
         reset($data);
         $this->siteEventId = key($data);
         $this->setSiteData($data[$this->siteEventId]);
-
-        $instrument = $this->siteProj->metadata['send_rx_user_id']['form_name'];
-        if (!$data = send_rx_get_repeat_instrument_instances($this->siteProjectId, $this->siteId, $instrument)) {
-            return;
-        }
-
-        // Setting up prescriber data.
-        foreach ($data as $value) {
-            if ($value['send_rx_user_id'] == $this->username) {
-                $this->setPrescriberData($value);
-                break;
-            }
-        }
+        $this->setPrescriberData();
     }
 
     /**
@@ -301,8 +296,9 @@ class RxSender {
     /**
      * Sets prescriber data.
      */
-    protected function setPrescriberData($data) {
-        $this->prescriberData = $data;
+    protected function setPrescriberData() {
+        $user_profile = new UserProfile($this->username);
+        $this->prescriberData = $user_profile->getProfileData();
     }
 
     /**

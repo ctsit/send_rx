@@ -10,6 +10,10 @@ require_once 'includes/RxSender.php';
 
 use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;
+use Records;
+use RedCapDB;
+use SendRx\RxSender;
+use UserProfile\UserProfile;
 
 /**
  * ExternalModule class for Linear Data Entry Workflow.
@@ -44,7 +48,7 @@ class ExternalModule extends AbstractExternalModule {
         }
 
         // Getting Rx sender to make sure we are in a patient project.
-        if (!$sender = \RxSender::getSender($project_id, $event_id, $record)) {
+        if (!$sender = RxSender::getSender($project_id, $event_id, $record)) {
             return;
         }
 
@@ -164,6 +168,25 @@ class ExternalModule extends AbstractExternalModule {
      * @inheritdoc.
      */
     function hook_every_page_before_render($project_id) {
+        if (empty($project_id)) {
+            return;
+        }
+
+        if ($config = send_rx_get_project_config($project_id, 'site')) {
+            global $Proj;
+
+            $options = array();
+            foreach (UserProfile::getProfiles() as $username => $user_profile) {
+                $data = $user_profile->getProfileData();
+                $options[] = $username . ',' . $data['send_rx_user_first_name'] . ' ' . $data['send_rx_user_last_name'];
+            }
+
+            // Setting dropdown options dynamically.
+            $Proj->metadata['send_rx_user_id']['element_enum'] = implode('\\n', $options);
+
+            return;
+        }
+
         // Checking if we are on data entry form.
         if (PAGE != 'DataEntry/index.php') {
             return;
@@ -194,7 +217,7 @@ class ExternalModule extends AbstractExternalModule {
         }
 
         // Getting record group ID.
-        if (!$group_id = \Records::getRecordGroupId($project_id, $record)) {
+        if (!$group_id = Records::getRecordGroupId($project_id, $record)) {
             $parts = explode('-', $record);
             if (count($parts) != 2) {
                 return;
@@ -305,7 +328,7 @@ class ExternalModule extends AbstractExternalModule {
                 return;
             }
 
-            $db = new \RedCapDB();
+            $db = new RedCapDB();
 
             $input_members = array();
             foreach ($staff as $member) {
@@ -354,7 +377,9 @@ class ExternalModule extends AbstractExternalModule {
             }
 
             foreach ($curr_role_values as $key => $value) {
-                if (!array_key_exists($key, $input_role_values) && $value != 0) {
+                if (!isset($input_role_values[$key]) && $value != 0) {
+                    // TODO: adapt this list when users become able to join
+                    // multiple DAGs.
                     $roles_to_del[$key] = 0;
                 }
             }
@@ -375,6 +400,8 @@ class ExternalModule extends AbstractExternalModule {
             'rolesToAdd' => $roles_to_add,
             'rolesToDel' => $roles_to_del,
             'currMembers' => $curr_members,
+            'revokeRoles' => array_combine($curr_members, array_fill(0, count($curr_members), 0)) + $roles_to_del,
+            'revokeGroups' => array_merge($curr_members, $members_to_del),
         );
 
         $this->setJsSetting('permButtons', $settings);
@@ -412,7 +439,7 @@ class ExternalModule extends AbstractExternalModule {
         }
 
         // Getting Rx sender to make sure we are in a patient project.
-        if (!$sender = \RxSender::getSender($project_id, $event_id, $record)) {
+        if (!$sender = RxSender::getSender($project_id, $event_id, $record)) {
             return;
         }
 

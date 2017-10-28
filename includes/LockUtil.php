@@ -1,5 +1,7 @@
 <?php
 
+namespace SendRx;
+
 /**
  * Imports the redcap_connect file so that it can access the global variable $conn
  */
