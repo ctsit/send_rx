@@ -172,6 +172,11 @@ class ExternalModule extends AbstractExternalModule {
             return;
         }
 
+        if (PAGE == 'ProjectSetup/export_project_odm.php') {
+            // Avoiding any interferences in exports.
+            return;
+        }
+
         if ($config = send_rx_get_project_config($project_id, 'site')) {
             global $Proj;
 

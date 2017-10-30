@@ -2,11 +2,10 @@
 
 Send Rx is a REDCap module that allows users to automatically generate prescriptions on PDF format and send them to the pharmacies.
 
-
 ## Prerequisites
 - [REDCap Modules](https://github.com/vanderbilt/redcap-external-modules)
 - [Composer](https://getcomposer.org/)
-
+- [REDCap User Profile](https://github.com/ctsit/redcap_user_profile)
 
 ## Installation
 - Clone this repo into to an `<redcap-root>/modules/send_rx_v1.0`.
@@ -30,10 +29,13 @@ Send Rx requires Table-base authentication method to work, so if your REDCap doe
 7. Set your password
 8. Go to **Control Manager > Administrators & Acct Managers** and remove deprecated `site_admin` from administrators list
 
-
-### Step 2: Creating a few test users
-Let's create at least 3 test users - 1 to be a study coordinator, and 2 prescribers. You may add a new user by accessing **Control Manager > Add Users (Table-based Only)**.
-
+### Step 2: Creating User Profiles project
+1. Access **+ New Project** page, then import `samples/UserProfiles.xml` file.
+2. Take note of your new project ID (you should see it at the `pid` parameter in your URL).
+3. If User Profile module is not enabled yet, you may do that by accessing **Control Center > Manage External Modules**.
+4. Yet on **Control Center > Manage External Modules**, configure the module as follows:
+  - Project ID: _Place here the PID you took note previously_
+  - Username field: `send_rx_user_id`
 
 ### Step 3: Creating Sites Project
 1. Make sure you are logged in as the admin user created on step 1 (not `site_admin`)
@@ -52,7 +54,6 @@ Let's create at least 3 test users - 1 to be a study coordinator, and 2 prescrib
   - Message subject: "Test prescription"
   - Message body: "The prescription file is available at: [patient][send_rx_pdf]"
 
-
 ### Step 4: Creating Patients Project
 1. Make sure you are logged in as the admin user created on step 1 (not `site_admin`)
 2. Access **+ New Project** page, then import `samples/SendRxPatients.xml` file.
@@ -65,24 +66,31 @@ Let's create at least 3 test users - 1 to be a study coordinator, and 2 prescrib
 7. Switch to Sites project, then access **Manage Extensions** and click on Send Rx **Configure** button
 8. Set **Target Project ID** as the PID from step 4.2 and save.
 
-
 ## Sending your First Test Prescription
 
-### Step 1: Create a Pharmacy
-1. On site project, go to **Add / Edit records** and then click on **Add new record**.
-2. Fill **Pharmacy Information** form step and go ahead to the next step
-3. On **Delivery methods step**, choose `Email` as the delivery type, then fill the email address you want to use in your test, and save.
-4. On **People** step, add 3 people - 1 one study coordinator and 2 prescribers (use the usernames from step 2!), then click on **Save & Exit**
-5. On record home page, will might be able to see two buttons: **Rebuild staff permissions** and **Revoke staff permissions**
+### Step 1: Creating a few test users
+1. Go to **Control Manager > Add Users (Table-based Only)** and create a few test users.
+2. Go to **Control Manager > Browse Users** and click on **View Users**.
+3. For each account you created:
+  - Access its details page;
+  - Click on **Create user profile** button;
+  - Fill and submit the user profile information.
 
-### Step 2: Create a Prescription and Send it
+### Step 2: Create a Site/Pharmacy
+1. On site project, go to **Add / Edit records** and then click on **Add new record**.
+2. Fill **Site Information** form step and go ahead to the next step
+3. On **Delivery methods step**, choose `Email` as the delivery type, then fill the email address you want to use in your test, and save.
+4. On **Site Staff** step, add the test users you created previously (make sure to add prescribers and at least one study coordinator), then click on **Save & Exit**
+5. On record home page, will might be able to see two buttons: **Rebuild staff permissions** and **Revoke staff permissions**
+6. Click on **Rebuild staff permissions** to grant permissions to your staff
+
+### Step 3: Create a Prescription and Send it
 1. Log in as study coordinator.
 2. On patient project, go to **Add / Edit records** and then click on **Add new record**
 3. Complete all steps until the last step (**Review & Send Rx**).
 5. On review step, click on **Send and Stay**
 6. At **Messages History** block you should now see the notification contents you just sent.
 7. Check your email inbox.
-
 
 ## Customizing PDF and messages
 
