@@ -172,7 +172,7 @@ class ExternalModule extends AbstractExternalModule {
             return;
         }
 
-        if (PAGE == 'ProjectSetup/export_project_odm.php') {
+        if (PAGE == 'ProjectSetup/export_project_odm.php' || PAGE == 'DataExport/data_export_ajax.php') {
             // Avoiding any interferences in exports.
             return;
         }
