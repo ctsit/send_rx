@@ -31,22 +31,20 @@ Send Rx requires Table-base authentication method to work, so if your REDCap doe
 
 ### Step 2: Creating User Profiles project
 1. Access **+ New Project** page, then import `samples/UserProfiles.xml` file.
-2. Take note of your new project ID (you should see it at the `pid` parameter in your URL).
-3. If User Profile module is not enabled yet, you may do that by accessing **Control Center > Manage External Modules**.
-4. Yet on **Control Center > Manage External Modules**, configure the module as follows:
-  - Project ID: _Place here the PID you took note previously_
+2. If User Profile module is not enabled yet, you may do that by accessing **Control Center > Manage External Modules**.
+3. Yet on **Control Center > Manage External Modules**, configure the module as follows:
+  - Project: User Profiles (or any name you might have given to the project)
   - Username field: `send_rx_user_id`
 
 ### Step 3: Creating Sites Project
 1. Make sure you are logged in as the admin user created on step 1 (not `site_admin`)
 2. Access **+ New Project** page, then import `samples/SendRxSites.xml` file.
-3. Take note of your new project ID (you should see it at the `pid` parameter in your URL).
-4. Access **File Repository** page, then go to **Upload New File** tab
-5. Upload `SamplePDFTemplate.html` file provided by this repository, name it as `SamplePDFTemplate`, and save.
-6. Go to **Manage Extensions** section and enable Send Rx module for this project
-7. Yet on Manage Extensions page, click on Send Rx **Configure** button and set fields as follows:
-  - Type: "Site"
-  - Target Project ID: (Leave it blank for now, you are going to set it on step 4.8)
+3. Access **File Repository** page, then go to **Upload New File** tab
+4. Upload `SamplePDFTemplate.html` file provided by this repository, name it as `SamplePDFTemplate`, and save.
+5. Go to **Manage Extensions** section and enable Send Rx module for this project
+6. Yet on Manage Extensions page, click on Send Rx **Configure** button and set fields as follows:
+  - Type: Site
+  - Target Project: (Leave it blank for now, you are going to set it on step 4.8)
   - PDF Template Name: "SamplePDFTemplate"
   - PDF Template Variables:
     - Key: "study_irb", Value: "2017-1234"
@@ -60,11 +58,11 @@ Send Rx requires Table-base authentication method to work, so if your REDCap doe
 3. Take note of your new project ID (you should see it at the `pid` parameter in your URL).
 4. Go to **Manage Extensions** section and enable Send Rx module for this project
 5. Yet on Manage Extensions page, click on Configure Button and set fields as follows:
-  - Type: Site
+  - Type: Patient
   - Target Project ID: _Place here the PID from step 3.2_
 6. Go to **User Rights** section and create two roles: `prescriber` and `study_coordinator`
 7. Switch to Sites project, then access **Manage Extensions** and click on Send Rx **Configure** button
-8. Set **Target Project ID** as the PID from step 4.2 and save.
+8. Set **Target Project** as sites project defined on step 3 and save.
 
 ## Sending your First Test Prescription
 

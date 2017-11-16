@@ -9,8 +9,10 @@ namespace SendRx;
 require_once 'send_rx_functions.php';
 require_once 'LockUtil.php';
 
+use Files;
 use Project;
 use Records;
+use REDCap;
 use SendRx\LockUtil;
 use UserProfile\UserProfile;
 
