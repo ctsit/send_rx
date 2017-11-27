@@ -3,7 +3,7 @@
 Send Rx is a REDCap module that allows users to automatically generate prescriptions on PDF format and send them to the pharmacies.
 
 ## Prerequisites
-- [REDCap Modules](https://github.com/vanderbilt/redcap-external-modules)
+- REDCap >= 8.0.0 (for versions < 8.0.0, [REDCap Modules](https://github.com/vanderbilt/redcap-external-modules) is required).
 - [Composer](https://getcomposer.org/)
 - [REDCap User Profile](https://github.com/ctsit/redcap_user_profile)
 
