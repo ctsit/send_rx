@@ -12,6 +12,7 @@ use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;
 use Records;
 use RedCapDB;
+use REDCap;
 use SendRx\RxSender;
 use UserProfile\UserProfile;
 
@@ -138,9 +139,6 @@ class ExternalModule extends AbstractExternalModule {
             $pdf_is_updated = $result['value'];
         }
 
-        // Checking if event is complete.
-        $event_is_complete = send_rx_event_is_complete($project_id, $record, $event_id, array($instrument));
-
         // Checking if PDF needs to be generated.
         if (!$pdf_is_updated) {
             if ($sender->getPrescriberData()) {
@@ -154,8 +152,10 @@ class ExternalModule extends AbstractExternalModule {
             }
         }
 
+        $prescriber_field = 'send_rx_prescriber_id';
+        $data = REDCap::getData($project_id, 'array', $record, $prescriber_field, $event_id);
         $settings = array(
-            'eventIsComplete' => $event_is_complete,
+            'prescriberIsSet' => !empty($data[$record][$event_id][$prescriber_field]),
             'instrument' => $instrument,
             'table' => $table,
         );

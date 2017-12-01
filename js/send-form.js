@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
         $submit_buttons.removeProp('title');
     };
 
-    if (settings.eventIsComplete) {
+    if (settings.prescriberIsSet) {
         var $complete = $('select[name="' + settings.instrument + '_complete"]');
         if ($complete.val() !== '2') {
             // Disables submit buttons if initial state not complete.
