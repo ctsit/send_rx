@@ -402,6 +402,7 @@ function send_rx_get_site_users($project_id, $site_id, $user_role = null) {
         if (empty($user_role) || $user_info['send_rx_user_role'] == $user_role) {
             $user_profile = new UserProfile($user_info['send_rx_user_id']);
             $user_profile = $user_profile->getProfileData();
+            $user_profile['send_rx_user_id'] = $user_info['send_rx_user_id'];
             $user_profile['send_rx_user_role'] = $user_info['send_rx_user_role'];
 
             $users[] = $user_profile;
