@@ -42,12 +42,15 @@ function send_rx_get_project_config($project_id, $project_type) {
 
     $config = array();
     while ($result = db_fetch_assoc($q)) {
-        if ($result['type'] == 'json') {
+        if ($result['type'] == 'json' || $result['type'] == 'json-array') {
             $result['value'] = json_decode($result['value']);
 
             if (strpos($result['key'], 'send-rx-pdf-template-variable-') === false) {
                 $result['value'] = reset($result['value']);
             }
+        }
+        elseif ($result['type'] == 'file') {
+            $result['value'] = send_rx_get_edoc_file_contents($result['value']);
         }
 
         $config[str_replace('-', '_', str_replace('send-rx-', '', $result['key']))] = $result['value'];
