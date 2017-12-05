@@ -1,31 +1,25 @@
 $(document).ready(function() {
-    var send_rx_modal = false;
+    $modal = $('#external-modules-configure-modal');
     var subject = 'input[type="radio"][name="send-rx-type"]';
 
-    function sendRxBranchingLogic(op) {
-        if ($(subject).length === 0) {
-            return false;
-        }
-
-        fields = [
-            'send-rx-pdf-template-name',
-            'send-rx-pdf-template-variable',
-            'send-rx-pdf-template-variable-key',
-            'send-rx-pdf-template-variable-value',
-            'send-rx-message',
-            'send-rx-message-subject',
-            'send-rx-message-body'
-        ];
-
-        var op = $(subject + ':checked').val() === 'site' ? 'show' : 'hide';
-        $('[field="' + fields.join('"],[field="') + '"]')[op]();
+    function sendRxBranchingLogic() {
+        var op = $(subject + ':checked').val() === 'site' ? 'removeClass' : 'addClass';
+        $modal[op]('send-rx');
     }
 
-    $('#external-modules-configure-modal').on('shown.bs.modal', function (e) {
-        $(subject).change(function () {
-            sendRxBranchingLogic();
-        });
+    $modal.on('show.bs.modal', function() {
+        if ($modal.data('module') === 'send_rx') {
+            $modal.addClass('send-rx');
+        }
+    });
 
-        sendRxBranchingLogic();
+    $modal.on('shown.bs.modal', function() {
+        if ($modal.data('module') === 'send_rx') {
+            $(subject).change(function() {
+                sendRxBranchingLogic();
+            });
+
+            sendRxBranchingLogic();
+        }
     });
 });

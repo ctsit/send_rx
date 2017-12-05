@@ -281,6 +281,7 @@ class ExternalModule extends AbstractExternalModule {
             strpos(PAGE, 'ExternalModules/manager/project.php') !== false ||
             strpos(PAGE, 'external_modules/manager/project.php') !== false
         ) {
+            $this->includeCss('css/config.css');
             $this->includeJs('js/config.js');
             return;
         }
@@ -462,6 +463,16 @@ class ExternalModule extends AbstractExternalModule {
         // Reset pdf_is_updated flag to generate new PDF.
         $field_name = 'send_rx_pdf_is_updated';
         send_rx_save_record_field($project_id, $event_id, $record, $field_name, '0', $repeat_instance);
+    }
+
+    /**
+     * Includes a local CSS file.
+     *
+     * @param string $path
+     *   The relative path to the css file.
+     */
+    protected function includeCss($path) {
+        echo '<link rel="stylesheet" href="' . $this->getUrl($path) . '">';
     }
 
     /**
