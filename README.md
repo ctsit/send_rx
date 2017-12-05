@@ -39,13 +39,11 @@ Send Rx requires Table-base authentication method to work, so if your REDCap doe
 ### Step 3: Creating Sites Project
 1. Make sure you are logged in as the admin user created on step 1 (not `site_admin`)
 2. Access **+ New Project** page, then import `samples/SendRxSites.xml` file.
-3. Access **File Repository** page, then go to **Upload New File** tab
-4. Upload `SamplePDFTemplate.html` file provided by this repository, name it as `SamplePDFTemplate`, and save.
-5. Go to **Manage Extensions** section and enable Send Rx module for this project
-6. Yet on Manage Extensions page, click on Send Rx **Configure** button and set fields as follows:
+3. Go to **Manage Extensions** section and enable Send Rx module for this project
+4. Yet on Manage Extensions page, click on Send Rx **Configure** button and set fields as follows:
   - Type: Site
   - Target Project: (Leave it blank for now, you are going to set it on step 4.8)
-  - PDF Template Name: "SamplePDFTemplate"
+  - PDF Template Name: (upload `SamplePDFTemplate.html`) file
   - PDF Template Variables:
     - Key: "study_irb", Value: "2017-1234"
     - Key: "study_name", Value: "Sample Study"
@@ -90,6 +88,6 @@ Send Rx requires Table-base authentication method to work, so if your REDCap doe
 6. At **Messages History** block you should now see the notification contents you just sent.
 7. Check your email inbox.
 
-## Customizing PDF and messages
+## Customizing PDF and email messages
 
 The presented example can be fully adapted to your needs. You may freely create your own PDF template, change the email contents configuration, and override all forms/instruments (as soon as the fields containing `send_rx_` prefix remain untouched). All form fields you update/create will available to be used as wildcards on PDF and email (e.g. `[patient][first_name]`, `[site][send_rx_name]`, `[prescriber][first_name]`, etc).
