@@ -323,7 +323,9 @@ class RxSender {
                 }
 
                 foreach ($options as $option) {
-                    list($key, $label) = explode(',', $option);
+                    $parts = explode(',', $option);
+                    $key = array_shift($parts);
+                    $label = implode(',', $parts);
 
                     if (trim($key) == $value) {
                         $data[$field_name] = trim($label);

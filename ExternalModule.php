@@ -256,9 +256,12 @@ class ExternalModule extends AbstractExternalModule {
             $options = array($options[$username]);
             $parts = explode(',', reset($options));
 
+            // Losing the key part.
+            array_shift($parts);
+
             $settings = array(
                 'username' => $username,
-                'fullname' => $parts[1],
+                'fullname' => implode(',', $parts),
             );
 
             $this->includeJs('js/init.js');
