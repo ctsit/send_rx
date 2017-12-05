@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    $modal = $('#external-modules-configure-modal');
+    var $modal = $('#external-modules-configure-modal');
     var subject = 'input[type="radio"][name="send-rx-type"]';
 
     function sendRxBranchingLogic() {
@@ -7,19 +7,18 @@ $(document).ready(function() {
         $modal[op]('send-rx');
     }
 
-    $modal.on('show.bs.modal', function() {
-        if ($modal.data('module') === 'send_rx') {
-            $modal.addClass('send-rx');
+    ExternalModules.Settings.prototype.configureSettingsOld = ExternalModules.Settings.prototype.configureSettings;
+    ExternalModules.Settings.prototype.configureSettings = function() {
+        ExternalModules.Settings.prototype.configureSettingsOld();
+
+        if ($modal.data('module') !== 'send_rx') {
+            return;
         }
-    });
 
-    $modal.on('shown.bs.modal', function() {
-        if ($modal.data('module') === 'send_rx') {
-            $(subject).change(function() {
-                sendRxBranchingLogic();
-            });
-
+        $(subject).change(function() {
             sendRxBranchingLogic();
-        }
-    });
+        });
+
+        sendRxBranchingLogic();
+    }
 });
