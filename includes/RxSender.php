@@ -292,6 +292,10 @@ class RxSender {
      * Sets site data.
      */
     protected function setSiteData($data) {
+        if ($edoc_id = $data['send_rx_pdf_template']) {
+            $data['send_rx_pdf_template'] = send_rx_get_edoc_file_contents($edoc_id);
+        }
+
         $this->siteData = $data;
     }
 
@@ -301,33 +305,6 @@ class RxSender {
     protected function setPrescriberData() {
         $user_profile = new UserProfile($this->username);
         $this->prescriberData = $user_profile->getProfileData();
-    }
-
-    /**
-     * Gets PDF template contents.
-     */
-    protected function getPDFTemplate() {
-        $pdf_template = $this->siteConfig['pdf_template_name'];
-        if (!empty($this->siteData['send_rx_pdf_template'])) {
-            $pdf_template = $this->siteData['send_rx_pdf_template'];
-        }
-
-        $sql = '
-            SELECT e.doc_id FROM redcap_docs_to_edocs e
-            INNER JOIN redcap_docs d ON
-                d.docs_id = e.docs_id AND
-                d.project_id = "' . db_escape($this->siteProjectId) . '" AND
-                d.docs_comment = "' . db_escape($pdf_template) . '"
-            ORDER BY d.docs_id DESC
-            LIMIT 1';
-
-        $q = db_query($sql);
-        if (!db_num_rows($q)) {
-            return false;
-        }
-
-        $result = db_fetch_assoc($q);
-        return send_rx_get_edoc_file_contents($result['doc_id']);
     }
 
     /**
@@ -379,8 +356,6 @@ class RxSender {
      * Sends the message to the site and returns whether the operation was successful.
      */
     function send($generate_pdf = true, $log = true) {
-        $success = false;
-
         if ($generate_pdf) {
             $this->generatePDFFile();
         }
@@ -393,13 +368,14 @@ class RxSender {
             }
 
             $message = array();
-            foreach (array('subject', 'body') as $section) {
-                $field = 'send_rx_' . $type . '_' . $section;
-                $message[$section] = send_rx_piping(empty($this->siteData[$field]) ? $this->siteConfig['message_' . $section] : $this->siteData[$field], $data);
-            }
 
             switch ($type) {
                 case 'email':
+                    foreach (array('subject', 'body') as $section) {
+                        $field = 'send_rx_' . $type . '_' . $section;
+                        $message[$section] = send_rx_piping(empty($this->siteData[$field]) ? $this->siteConfig['message_' . $section] : $this->siteData[$field], $data);
+                    }
+
                     // TODO: Discuss and define properly the "from" address.
                     $success = REDCap::email($this->siteData['send_rx_email_recipients'], $this->prescriberData['send_rx_user_email'], $message['subject'], $message['body']);
                     $this->log($type, $success, $this->siteData['send_rx_email_recipients'], $message['subject'], $message['body']);
@@ -423,7 +399,7 @@ class RxSender {
      * Generates the prescription PDF file.
      */
     function generatePDFFile() {
-        if (!$contents = $this->getPDFTemplate()) {
+        if (!($contents = $this->siteData['send_rx_pdf_template']) && !($contents = $this->siteConfig['pdf_template'])) {
             return false;
         }
 
