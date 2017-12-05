@@ -311,7 +311,7 @@ class RxSender {
      * Auxiliar function that preprocesses files fields before setting them up.
      */
     protected function preprocessData($data, $proj) {
-        $project_type = isset($proj->metadata['patient_id']) ? 'patient' : 'site';
+        $project_type = $proj->project_id == $this->patientProjectId ? 'patient' : 'site';
         foreach ($data as $field_name => $value) {
             if (!isset($proj->metadata[$field_name]) || empty($value)) {
                 continue;

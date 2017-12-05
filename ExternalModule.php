@@ -197,12 +197,14 @@ class ExternalModule extends AbstractExternalModule {
             return;
         }
 
+        global $Proj;
+
         // Getting record ID.
         if (!empty($_GET['id'])) {
             $record = $_GET['id'];
         }
-        elseif (!empty($_POST['patient_id'])) {
-            $record = $_POST['patient_id'];
+        elseif (!empty($_POST[$Proj->table_pk])) {
+            $record = $_POST[$Proj->table_pk];
         }
         else {
             return;
@@ -216,7 +218,6 @@ class ExternalModule extends AbstractExternalModule {
         }
 
         // Checking if we are at the prescriber field's step.
-        global $Proj;
         if (!isset($Proj->metadata['send_rx_prescriber_id']) || $_GET['page'] != $Proj->metadata['send_rx_prescriber_id']['form_name']) {
             return;
         }
