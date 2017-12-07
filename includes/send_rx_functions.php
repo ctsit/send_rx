@@ -123,20 +123,17 @@ function send_rx_get_site_id_from_dag($project_id, $group_id) {
  *   The processed string, with the replaced values from source data.
  */
 function send_rx_piping($subject, $data) {
-    // Checking for wildcards.
-    if (!$brackets = getBracketedFields($subject, true, true, false)) {
-        return $subject;
-    }
+    preg_match_all('/(\[[^\[]*\])+/', $subject, $matches);
 
-    foreach (array_keys($brackets) as $wildcard) {
-        $parts = explode('.', $wildcard);
-        $count = count($parts);
+    foreach ($matches[0] as $wildcard) {
+        $parts = substr($wildcard, 1, -1);
+        $parts = explode('][', $parts);
 
         $value = '';
-        if ($count == 1) {
+        if (count($parts) == 1) {
             // This wildcard has no children.
-            if (isset($data[$wildcard])) {
-                $value = $data[$wildcard];
+            if (isset($data[$parts[0]])) {
+                $value = $data[$parts[0]];
             }
         }
         else {
@@ -148,7 +145,7 @@ function send_rx_piping($subject, $data) {
         }
 
         // Search and replace.
-        $subject = str_replace('[' . str_replace('.', '][', $wildcard) . ']', $value, $subject);
+        $subject = str_replace($wildcard, $value, $subject);
     }
 
     return $subject;

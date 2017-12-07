@@ -198,15 +198,17 @@ class RxSender {
         $this->siteConfig = $config;
 
         // Getting patient data.
-        if (!$data = send_rx_get_record_data($this->patientProjectId, $this->patientId, $this->patientEventId)) {
+        if (!$data = send_rx_get_record_data($this->patientProjectId, $this->patientId)) {
             return;
         }
 
         $this->setPatientData($data);
-        $this->username = $this->patientData['send_rx_prescriber_id'];
+        $patient_data = $this->patientData[$this->patientEventId];
+
+        $this->username = $patient_data['send_rx_prescriber_id'];
 
         // Getting logs.
-        if (!empty($this->patientData['send_rx_logs']) && ($logs = send_rx_get_edoc_file_contents($this->patientData['send_rx_logs']))) {
+        if (!empty($patient_data['send_rx_logs']) && ($logs = send_rx_get_edoc_file_contents($patient_data['send_rx_logs']))) {
             $this->logs = json_decode($logs, true);
         }
 
@@ -416,17 +418,18 @@ class RxSender {
             return false;
         }
 
-        if (!empty($this->patientData['send_rx_pdf'])) {
+        $patient_data = $this->patientData[$this->patientEventId];
+        if (!empty($patient_data['send_rx_pdf'])) {
             $last_log = end($this->logs);
 
-            if (!$last_log || $this->patientData['send_rx_pdf'] != $last_log[7]) {
+            if (!$last_log || $patient_data['send_rx_pdf'] != $last_log[7]) {
                 // Removing non logged PDF file.
-                send_rx_edoc_file_delete($this->patientData['send_rx_pdf']);
+                send_rx_edoc_file_delete($patient_data['send_rx_pdf']);
             }
         }
 
         send_rx_save_record_field($this->patientProjectId, $this->patientEventId, $this->patientId, 'send_rx_pdf', $file_id);
-        $this->patientData['send_rx_pdf'] = $file_id;
+        $this->patientData[$this->patientEventId]['send_rx_pdf'] = $file_id;
 
         return $file_id;
     }
@@ -455,9 +458,10 @@ class RxSender {
             return false;
         }
 
-        if (!empty($this->patientData['send_rx_logs'])) {
+        $patient_data = $this->patientData[$this->patientEventId];
+        if (!empty($patient_data['send_rx_logs'])) {
             // Removing old log file.
-            send_rx_edoc_file_delete($this->patientData['send_rx_logs']);
+            send_rx_edoc_file_delete($patient_data['send_rx_logs']);
         }
 
         send_rx_save_record_field($this->patientProjectId, $this->patientEventId, $this->patientId, 'send_rx_logs', $file_id);
@@ -476,10 +480,21 @@ class RxSender {
             'patient_url' => $base_path . 'record_home.php?pid=' . $this->patientProjectId . '&id=' . $this->patientId,
             'site_url' => $base_path . 'record_home.php?pid=' . $this->siteProjectId . '&id=' . $this->siteId,
             'project' => isset($this->siteConfig['pdf_template_variables']) ? $this->siteConfig['pdf_template_variables'] : array(),
-            'patient' => $this->preprocessData($this->patientData, $this->patientProj),
             'site' => $this->preprocessData($this->siteData, $this->siteProj),
             'prescriber' => $this->preprocessData($this->prescriberData, $this->siteProj),
         );
+
+        $data['patient'] = array();
+
+        $event_names = $this->patientProj->getUniqueEventNames();
+        foreach ($this->patientData as $event_id => $event_data) {
+            $event_name = $event_names[$event_id];
+            $data['patient'][$event_name] = $this->preprocessData($event_data, $this->patientProj);
+
+            if ($event_id == $this->patientEventId) {
+                $data['patient'] += $data['patient'][$event_name];
+            }
+        }
 
         return $data;
     }
