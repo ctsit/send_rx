@@ -6,6 +6,7 @@
 
 include_once dirname(__DIR__) . '/vendor/autoload.php';
 use ExternalModules\ExternalModules;
+use UserProfile\UserProfile;
 
 /**
  * Gets Send RX config from project.
@@ -41,12 +42,15 @@ function send_rx_get_project_config($project_id, $project_type) {
 
     $config = array();
     while ($result = db_fetch_assoc($q)) {
-        if ($result['type'] == 'json') {
+        if ($result['type'] == 'json' || $result['type'] == 'json-array') {
             $result['value'] = json_decode($result['value']);
 
             if (strpos($result['key'], 'send-rx-pdf-template-variable-') === false) {
                 $result['value'] = reset($result['value']);
             }
+        }
+        elseif ($result['type'] == 'file') {
+            $result['value'] = send_rx_get_edoc_file_contents($result['value']);
         }
 
         $config[str_replace('-', '_', str_replace('send-rx-', '', $result['key']))] = $result['value'];
@@ -119,20 +123,17 @@ function send_rx_get_site_id_from_dag($project_id, $group_id) {
  *   The processed string, with the replaced values from source data.
  */
 function send_rx_piping($subject, $data) {
-    // Checking for wildcards.
-    if (!$brackets = getBracketedFields($subject, true, true, false)) {
-        return $subject;
-    }
+    preg_match_all('/(\[[^\[]*\])+/', $subject, $matches);
 
-    foreach (array_keys($brackets) as $wildcard) {
-        $parts = explode('.', $wildcard);
-        $count = count($parts);
+    foreach ($matches[0] as $wildcard) {
+        $parts = substr($wildcard, 1, -1);
+        $parts = explode('][', $parts);
 
         $value = '';
-        if ($count == 1) {
+        if (count($parts) == 1) {
             // This wildcard has no children.
-            if (isset($data[$wildcard])) {
-                $value = $data[$wildcard];
+            if (isset($data[$parts[0]])) {
+                $value = $data[$parts[0]];
             }
         }
         else {
@@ -144,7 +145,7 @@ function send_rx_piping($subject, $data) {
         }
 
         // Search and replace.
-        $subject = str_replace('[' . str_replace('.', '][', $wildcard) . ']', $value, $subject);
+        $subject = str_replace($wildcard, $value, $subject);
     }
 
     return $subject;
@@ -396,16 +397,18 @@ function send_rx_get_site_users($project_id, $site_id, $user_role = null) {
         return false;
     }
 
-    if (empty($user_role)) {
-        return $data[$event_id][$form];
-    }
-
     $users = array();
     foreach ($data[$event_id][$form] as $user_info) {
-        if ($user_info['send_rx_user_role'] == $user_role) {
-            $users[] = $user_info;
+        if (empty($user_role) || $user_info['send_rx_user_role'] == $user_role) {
+            $user_profile = new UserProfile($user_info['send_rx_user_id']);
+            $user_profile = $user_profile->getProfileData();
+            $user_profile['send_rx_user_id'] = $user_info['send_rx_user_id'];
+            $user_profile['send_rx_user_role'] = $user_info['send_rx_user_role'];
+
+            $users[] = $user_profile;
         }
     }
+
     return $users;
 }
 
@@ -452,7 +455,6 @@ function send_rx_get_group_members($project_id, $group_id, $user_role = null) {
  *   Array of users info, keyed by role. Returns FALSE if failure.
  */
 function send_rx_get_user_roles($project_id) {
-    
     $user_roles = array();
     $sql = 'SELECT rit.username, rol.role_name, rol.role_id FROM redcap_user_rights rit left join redcap_user_roles rol on rol.project_id = rit.project_id and rit.role_id = rol.role_id';
     $sql .= ' WHERE rit.project_id = ' . db_escape($project_id);
@@ -483,7 +485,6 @@ function send_rx_get_user_roles($project_id) {
  *   Array of roles, keyed by role_name. Returns FALSE if failure.
  */
 function send_rx_get_user_role_ids($pid, $role_names) {
-    
     $roles = array();
     $sql = 'SELECT role_id, role_name from redcap_user_roles where project_id = ' . ($pid) . ' and role_name in ';
     $sql .= '("' . implode('","', $role_names) . '")';
@@ -501,7 +502,6 @@ function send_rx_get_user_role_ids($pid, $role_names) {
     }
 
     return $roles_info;
-
 }
 
 /**

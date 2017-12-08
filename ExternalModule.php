@@ -10,6 +10,11 @@ require_once 'includes/RxSender.php';
 
 use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;
+use Records;
+use RedCapDB;
+use REDCap;
+use SendRx\RxSender;
+use UserProfile\UserProfile;
 
 /**
  * ExternalModule class for Linear Data Entry Workflow.
@@ -44,7 +49,7 @@ class ExternalModule extends AbstractExternalModule {
         }
 
         // Getting Rx sender to make sure we are in a patient project.
-        if (!$sender = \RxSender::getSender($project_id, $event_id, $record)) {
+        if (!$sender = RxSender::getSender($project_id, $event_id, $record)) {
             return;
         }
 
@@ -134,9 +139,6 @@ class ExternalModule extends AbstractExternalModule {
             $pdf_is_updated = $result['value'];
         }
 
-        // Checking if event is complete.
-        $event_is_complete = send_rx_event_is_complete($project_id, $record, $event_id, array($instrument));
-
         // Checking if PDF needs to be generated.
         if (!$pdf_is_updated) {
             if ($sender->getPrescriberData()) {
@@ -150,8 +152,10 @@ class ExternalModule extends AbstractExternalModule {
             }
         }
 
+        $prescriber_field = 'send_rx_prescriber_id';
+        $data = REDCap::getData($project_id, 'array', $record, $prescriber_field, $event_id);
         $settings = array(
-            'eventIsComplete' => $event_is_complete,
+            'prescriberIsSet' => !empty($data[$record][$event_id][$prescriber_field]),
             'instrument' => $instrument,
             'table' => $table,
         );
@@ -164,17 +168,43 @@ class ExternalModule extends AbstractExternalModule {
      * @inheritdoc.
      */
     function hook_every_page_before_render($project_id) {
+        if (empty($project_id)) {
+            return;
+        }
+
+        if (PAGE == 'ProjectSetup/export_project_odm.php' || PAGE == 'DataExport/data_export_ajax.php') {
+            // Avoiding any interferences in exports.
+            return;
+        }
+
+        if ($config = send_rx_get_project_config($project_id, 'site')) {
+            global $Proj;
+
+            $options = array();
+            foreach (UserProfile::getProfiles() as $username => $user_profile) {
+                $data = $user_profile->getProfileData();
+                $options[] = $username . ',' . $data['send_rx_user_first_name'] . ' ' . $data['send_rx_user_last_name'];
+            }
+
+            // Setting dropdown options dynamically.
+            $Proj->metadata['send_rx_user_id']['element_enum'] = implode('\\n', $options);
+
+            return;
+        }
+
         // Checking if we are on data entry form.
         if (PAGE != 'DataEntry/index.php') {
             return;
         }
 
+        global $Proj;
+
         // Getting record ID.
         if (!empty($_GET['id'])) {
             $record = $_GET['id'];
         }
-        elseif (!empty($_POST['patient_id'])) {
-            $record = $_POST['patient_id'];
+        elseif (!empty($_POST[$Proj->table_pk])) {
+            $record = $_POST[$Proj->table_pk];
         }
         else {
             return;
@@ -188,13 +218,12 @@ class ExternalModule extends AbstractExternalModule {
         }
 
         // Checking if we are at the prescriber field's step.
-        global $Proj;
         if (!isset($Proj->metadata['send_rx_prescriber_id']) || $_GET['page'] != $Proj->metadata['send_rx_prescriber_id']['form_name']) {
             return;
         }
 
         // Getting record group ID.
-        if (!$group_id = \Records::getRecordGroupId($project_id, $record)) {
+        if (!$group_id = Records::getRecordGroupId($project_id, $record)) {
             $parts = explode('-', $record);
             if (count($parts) != 2) {
                 return;
@@ -227,9 +256,12 @@ class ExternalModule extends AbstractExternalModule {
             $options = array($options[$username]);
             $parts = explode(',', reset($options));
 
+            // Losing the key part.
+            array_shift($parts);
+
             $settings = array(
                 'username' => $username,
-                'fullname' => $parts[1],
+                'fullname' => implode(',', $parts),
             );
 
             $this->includeJs('js/init.js');
@@ -249,7 +281,11 @@ class ExternalModule extends AbstractExternalModule {
             $this->includeJs('js/init.js');
         }
 
-        if (strpos(PAGE, 'external_modules/manager/project.php') !== false) {
+        if (
+            strpos(PAGE, 'ExternalModules/manager/project.php') !== false ||
+            strpos(PAGE, 'external_modules/manager/project.php') !== false
+        ) {
+            $this->includeCss('css/config.css');
             $this->includeJs('js/config.js');
             return;
         }
@@ -305,7 +341,7 @@ class ExternalModule extends AbstractExternalModule {
                 return;
             }
 
-            $db = new \RedCapDB();
+            $db = new RedCapDB();
 
             $input_members = array();
             foreach ($staff as $member) {
@@ -354,7 +390,9 @@ class ExternalModule extends AbstractExternalModule {
             }
 
             foreach ($curr_role_values as $key => $value) {
-                if (!array_key_exists($key, $input_role_values) && $value != 0) {
+                if (!isset($input_role_values[$key]) && $value != 0) {
+                    // TODO: adapt this list when users become able to join
+                    // multiple DAGs.
                     $roles_to_del[$key] = 0;
                 }
             }
@@ -375,6 +413,8 @@ class ExternalModule extends AbstractExternalModule {
             'rolesToAdd' => $roles_to_add,
             'rolesToDel' => $roles_to_del,
             'currMembers' => $curr_members,
+            'revokeRoles' => array_combine($curr_members, array_fill(0, count($curr_members), 0)) + $roles_to_del,
+            'revokeGroups' => array_merge($curr_members, $members_to_del),
         );
 
         $this->setJsSetting('permButtons', $settings);
@@ -412,7 +452,7 @@ class ExternalModule extends AbstractExternalModule {
         }
 
         // Getting Rx sender to make sure we are in a patient project.
-        if (!$sender = \RxSender::getSender($project_id, $event_id, $record)) {
+        if (!$sender = RxSender::getSender($project_id, $event_id, $record)) {
             return;
         }
 
@@ -427,6 +467,16 @@ class ExternalModule extends AbstractExternalModule {
         // Reset pdf_is_updated flag to generate new PDF.
         $field_name = 'send_rx_pdf_is_updated';
         send_rx_save_record_field($project_id, $event_id, $record, $field_name, '0', $repeat_instance);
+    }
+
+    /**
+     * Includes a local CSS file.
+     *
+     * @param string $path
+     *   The relative path to the css file.
+     */
+    protected function includeCss($path) {
+        echo '<link rel="stylesheet" href="' . $this->getUrl($path) . '">';
     }
 
     /**

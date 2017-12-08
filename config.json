@@ -68,14 +68,14 @@
         },
         {
             "key": "send-rx-target-project-id",
-            "name": "Target project ID",
+            "name": "Target project",
             "required": true,
-            "type": "text"
+            "type": "project-id"
         },
         {
-            "key": "send-rx-pdf-template-name",
-            "name": "PDF Template Name",
-            "type": "text"
+            "key": "send-rx-pdf-template",
+            "name": "PDF Template",
+            "type": "file"
         },
         {
             "key": "send-rx-pdf-template-variable",

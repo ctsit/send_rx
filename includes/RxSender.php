@@ -4,8 +4,17 @@
  * Provides RXSender class.
  */
 
+namespace SendRx;
+
 require_once 'send_rx_functions.php';
 require_once 'LockUtil.php';
+
+use Files;
+use Project;
+use Records;
+use REDCap;
+use SendRx\LockUtil;
+use UserProfile\UserProfile;
 
 class RxSender {
 
@@ -149,7 +158,7 @@ class RxSender {
             return false;
         }
 
-        $class = empty($config['sender_class']) ? 'RxSender' : $config['sender_class'];
+        $class = empty($config['sender_class']) ? '\SendRx\RxSender' : $config['sender_class'];
         if (!class_exists($class)) {
             return false;
         }
@@ -189,15 +198,17 @@ class RxSender {
         $this->siteConfig = $config;
 
         // Getting patient data.
-        if (!$data = send_rx_get_record_data($this->patientProjectId, $this->patientId, $this->patientEventId)) {
+        if (!$data = send_rx_get_record_data($this->patientProjectId, $this->patientId)) {
             return;
         }
 
         $this->setPatientData($data);
-        $this->username = $this->patientData['send_rx_prescriber_id'];
+        $patient_data = $this->patientData[$this->patientEventId];
+
+        $this->username = $patient_data['send_rx_prescriber_id'];
 
         // Getting logs.
-        if (!empty($this->patientData['send_rx_logs']) && ($logs = send_rx_get_edoc_file_contents($this->patientData['send_rx_logs']))) {
+        if (!empty($patient_data['send_rx_logs']) && ($logs = send_rx_get_edoc_file_contents($patient_data['send_rx_logs']))) {
             $this->logs = json_decode($logs, true);
         }
 
@@ -225,19 +236,7 @@ class RxSender {
         reset($data);
         $this->siteEventId = key($data);
         $this->setSiteData($data[$this->siteEventId]);
-
-        $instrument = $this->siteProj->metadata['send_rx_user_id']['form_name'];
-        if (!$data = send_rx_get_repeat_instrument_instances($this->siteProjectId, $this->siteId, $instrument)) {
-            return;
-        }
-
-        // Setting up prescriber data.
-        foreach ($data as $value) {
-            if ($value['send_rx_user_id'] == $this->username) {
-                $this->setPrescriberData($value);
-                break;
-            }
-        }
+        $this->setPrescriberData();
     }
 
     /**
@@ -295,48 +294,26 @@ class RxSender {
      * Sets site data.
      */
     protected function setSiteData($data) {
+        if ($edoc_id = $data['send_rx_pdf_template']) {
+            $data['send_rx_pdf_template'] = send_rx_get_edoc_file_contents($edoc_id);
+        }
+
         $this->siteData = $data;
     }
 
     /**
      * Sets prescriber data.
      */
-    protected function setPrescriberData($data) {
-        $this->prescriberData = $data;
-    }
-
-    /**
-     * Gets PDF template contents.
-     */
-    protected function getPDFTemplate() {
-        $pdf_template = $this->siteConfig['pdf_template_name'];
-        if (!empty($this->siteData['send_rx_pdf_template'])) {
-            $pdf_template = $this->siteData['send_rx_pdf_template'];
-        }
-
-        $sql = '
-            SELECT e.doc_id FROM redcap_docs_to_edocs e
-            INNER JOIN redcap_docs d ON
-                d.docs_id = e.docs_id AND
-                d.project_id = "' . db_escape($this->siteProjectId) . '" AND
-                d.docs_comment = "' . db_escape($pdf_template) . '"
-            ORDER BY d.docs_id DESC
-            LIMIT 1';
-
-        $q = db_query($sql);
-        if (!db_num_rows($q)) {
-            return false;
-        }
-
-        $result = db_fetch_assoc($q);
-        return send_rx_get_edoc_file_contents($result['doc_id']);
+    protected function setPrescriberData() {
+        $user_profile = new UserProfile($this->username);
+        $this->prescriberData = $user_profile->getProfileData();
     }
 
     /**
      * Auxiliar function that preprocesses files fields before setting them up.
      */
     protected function preprocessData($data, $proj) {
-        $project_type = isset($proj->metadata['patient_id']) ? 'patient' : 'site';
+        $project_type = $proj->project_id == $this->patientProjectId ? 'patient' : 'site';
         foreach ($data as $field_name => $value) {
             if (!isset($proj->metadata[$field_name]) || empty($value)) {
                 continue;
@@ -348,7 +325,9 @@ class RxSender {
                 }
 
                 foreach ($options as $option) {
-                    list($key, $label) = explode(',', $option);
+                    $parts = explode(',', $option);
+                    $key = array_shift($parts);
+                    $label = implode(',', $parts);
 
                     if (trim($key) == $value) {
                         $data[$field_name] = trim($label);
@@ -381,8 +360,6 @@ class RxSender {
      * Sends the message to the site and returns whether the operation was successful.
      */
     function send($generate_pdf = true, $log = true) {
-        $success = false;
-
         if ($generate_pdf) {
             $this->generatePDFFile();
         }
@@ -395,13 +372,14 @@ class RxSender {
             }
 
             $message = array();
-            foreach (array('subject', 'body') as $section) {
-                $field = 'send_rx_' . $type . '_' . $section;
-                $message[$section] = send_rx_piping(empty($this->siteData[$field]) ? $this->siteConfig['message_' . $section] : $this->siteData[$field], $data);
-            }
 
             switch ($type) {
                 case 'email':
+                    foreach (array('subject', 'body') as $section) {
+                        $field = 'send_rx_' . $type . '_' . $section;
+                        $message[$section] = send_rx_piping(empty($this->siteData[$field]) ? $this->siteConfig['message_' . $section] : $this->siteData[$field], $data);
+                    }
+
                     // TODO: Discuss and define properly the "from" address.
                     $success = REDCap::email($this->siteData['send_rx_email_recipients'], $this->prescriberData['send_rx_user_email'], $message['subject'], $message['body']);
                     $this->log($type, $success, $this->siteData['send_rx_email_recipients'], $message['subject'], $message['body']);
@@ -425,7 +403,7 @@ class RxSender {
      * Generates the prescription PDF file.
      */
     function generatePDFFile() {
-        if (!$contents = $this->getPDFTemplate()) {
+        if (!($contents = $this->siteData['send_rx_pdf_template']) && !($contents = $this->siteConfig['pdf_template'])) {
             return false;
         }
 
@@ -440,17 +418,18 @@ class RxSender {
             return false;
         }
 
-        if (!empty($this->patientData['send_rx_pdf'])) {
+        $patient_data = $this->patientData[$this->patientEventId];
+        if (!empty($patient_data['send_rx_pdf'])) {
             $last_log = end($this->logs);
 
-            if (!$last_log || $this->patientData['send_rx_pdf'] != $last_log[7]) {
+            if (!$last_log || $patient_data['send_rx_pdf'] != $last_log[7]) {
                 // Removing non logged PDF file.
-                send_rx_edoc_file_delete($this->patientData['send_rx_pdf']);
+                send_rx_edoc_file_delete($patient_data['send_rx_pdf']);
             }
         }
 
         send_rx_save_record_field($this->patientProjectId, $this->patientEventId, $this->patientId, 'send_rx_pdf', $file_id);
-        $this->patientData['send_rx_pdf'] = $file_id;
+        $this->patientData[$this->patientEventId]['send_rx_pdf'] = $file_id;
 
         return $file_id;
     }
@@ -479,9 +458,10 @@ class RxSender {
             return false;
         }
 
-        if (!empty($this->patientData['send_rx_logs'])) {
+        $patient_data = $this->patientData[$this->patientEventId];
+        if (!empty($patient_data['send_rx_logs'])) {
             // Removing old log file.
-            send_rx_edoc_file_delete($this->patientData['send_rx_logs']);
+            send_rx_edoc_file_delete($patient_data['send_rx_logs']);
         }
 
         send_rx_save_record_field($this->patientProjectId, $this->patientEventId, $this->patientId, 'send_rx_logs', $file_id);
@@ -500,10 +480,21 @@ class RxSender {
             'patient_url' => $base_path . 'record_home.php?pid=' . $this->patientProjectId . '&id=' . $this->patientId,
             'site_url' => $base_path . 'record_home.php?pid=' . $this->siteProjectId . '&id=' . $this->siteId,
             'project' => isset($this->siteConfig['pdf_template_variables']) ? $this->siteConfig['pdf_template_variables'] : array(),
-            'patient' => $this->preprocessData($this->patientData, $this->patientProj),
             'site' => $this->preprocessData($this->siteData, $this->siteProj),
             'prescriber' => $this->preprocessData($this->prescriberData, $this->siteProj),
         );
+
+        $data['patient'] = array();
+
+        $event_names = $this->patientProj->getUniqueEventNames();
+        foreach ($this->patientData as $event_id => $event_data) {
+            $event_name = $event_names[$event_id];
+            $data['patient'][$event_name] = $this->preprocessData($event_data, $this->patientProj);
+
+            if ($event_id == $this->patientEventId) {
+                $data['patient'] += $data['patient'][$event_name];
+            }
+        }
 
         return $data;
     }

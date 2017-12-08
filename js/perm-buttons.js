@@ -11,15 +11,14 @@ $(document).ready(function() {
     var $revoke_button = $('#send-rx-revoke-access-btn');
 
     // Refreshing buttons.
-    $revoke_button.prop('disabled', $.isEmptyObject(settings.currMembers));
+    $revoke_button.prop('disabled', $.isEmptyObject(settings.revokeRoles) && $.isEmptyObject(settings.revokeGroups));
     $rebuild_button.prop('disabled', $.isEmptyObject(settings.membersToAdd) &&
         $.isEmptyObject(settings.membersToDel) &&
         $.isEmptyObject(settings.rolesToAdd) &&
         $.isEmptyObject(settings.rolesToDel)
     );
 
-    var grantGroupAccessToStaff = function(users, group_id = '') {
-        // Remove each user to DAG.
+    var assignGroup = function(users, group_id = '') {
         $.each(users, function(key, value) {
             $.ajax({
                 url: app_path_webroot + 'DataAccessGroups/data_access_groups_ajax.php',
@@ -34,7 +33,7 @@ $(document).ready(function() {
             $.ajax({
                 type: 'POST',
                 url: app_path_webroot + 'UserRights/assign_user.php?pid=' + settings.pid,
-                data: { username: key, role_id: value, notify_email_role: 0 },
+                data: { username: key, role_id: value, notify_email_role: 0, redcap_csrf_token: window.redcap_csrf_token },
                 async: false
             });
         });
@@ -45,26 +44,28 @@ $(document).ready(function() {
     }
 
     $rebuild_button.on('click', function() {
+        // Rebuilding, part 1: Revoke access.
+        assignGroup(settings.membersToDel);
+
         // Rebuilding, delete roles
         assignRole(settings.rolesToDel);
 
         // Rebuilding, add/modify roles
         assignRole(settings.rolesToAdd);
 
-        // Rebuilding, part 1: Revoke access.
-        grantGroupAccessToStaff(settings.membersToDel);
-
         // Rebuilding, part 2: Grant access.
-        grantGroupAccessToStaff(settings.membersToAdd, settings.groupId);
+        assignGroup(settings.membersToAdd, settings.groupId);
 
         // Reloading page.
         reloadPage('rebuild_perms');
     });
 
-
     $revoke_button.on('click', function() {
         // Revoke group access from users.
-        grantGroupAccessToStaff(settings.currMembers);
+        assignGroup(settings.revokeGroups);
+
+        // Rebuilding, delete roles
+        assignRole(settings.revokeRoles);
 
         // Reloading page.
         reloadPage('revoke_perms');

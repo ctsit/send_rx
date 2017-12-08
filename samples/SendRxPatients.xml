@@ -13,7 +13,7 @@
 	<redcap:PurposeOther></redcap:PurposeOther>
 	<redcap:ProjectNotes></redcap:ProjectNotes>
 </GlobalVariables>
-<MetaDataVersion OID="Metadata.Patients_2017-08-23_1436" Name="Patients" redcap:RecordIdField="patient_id">
+<MetaDataVersion OID="Metadata.Patients" Name="Patients" redcap:RecordIdField="patient_id">
 	<FormDef OID="Form.patient_info" Name="Patient Info" Repeating="No" redcap:FormName="patient_info">
 		<ItemGroupRef ItemGroupOID="patient_info.patient_id" Mandatory="No"/>
 		<ItemGroupRef ItemGroupOID="patient_info.patient_info_complete" Mandatory="No"/>
@@ -386,68 +386,4 @@
 	</CodeList>
 </MetaDataVersion>
 </Study>
-<ClinicalData StudyOID="Project.Patients" MetaDataVersionOID="Metadata.Patients_2017-08-23_1436">
-	<SubjectData SubjectKey="10-1" redcap:RecordIdField="patient_id">
-			<FormData FormOID="Form.patient_info" FormRepeatKey="1">
-				<ItemGroupData ItemGroupOID="patient_info.patient_id" ItemGroupRepeatKey="1">
-					<ItemData ItemOID="patient_id" Value="10-1"/>
-					<ItemData ItemOID="redcap_data_access_group" Value="uf"/>
-					<ItemData ItemOID="send_rx_pdf_is_updated" Value="1"/>
-					<ItemData ItemOID="first_name" Value="mary"/>
-					<ItemData ItemOID="last_name" Value="smith"/>
-					<ItemData ItemOID="dob" Value="2017-08-09"/>
-					<ItemData ItemOID="subject" Value="2232"/>
-					<ItemData ItemOID="mrn" Value="44232"/>
-				</ItemGroupData>
-				<ItemGroupData ItemGroupOID="patient_info.patient_info_complete" ItemGroupRepeatKey="1">
-					<ItemData ItemOID="patient_info_complete" Value="2"/>
-				</ItemGroupData>
-			</FormData>
-			<FormData FormOID="Form.patient_demographics" FormRepeatKey="1">
-				<ItemGroupData ItemGroupOID="patient_demographics.gender" ItemGroupRepeatKey="1">
-					<ItemData ItemOID="gender" Value="2"/>
-					<ItemData ItemOID="race" Value="6"/>
-					<ItemData ItemOID="ethnicity" Value="2"/>
-				</ItemGroupData>
-				<ItemGroupData ItemGroupOID="patient_demographics.patient_demographics_complete" ItemGroupRepeatKey="1">
-					<ItemData ItemOID="patient_demographics_complete" Value="2"/>
-				</ItemGroupData>
-			</FormData>
-			<FormData FormOID="Form.prescription_form" FormRepeatKey="1">
-				<ItemGroupData ItemGroupOID="prescription_form.pres_street_address" ItemGroupRepeatKey="1">
-					<ItemData ItemOID="pres_street_address" Value="4430 NW 13th Ave"/>
-				</ItemGroupData>
-				<ItemGroupData ItemGroupOID="prescription_form.pres_city" ItemGroupRepeatKey="1">
-					<ItemData ItemOID="pres_city" Value="Gainesville"/>
-					<ItemData ItemOID="pres_state" Value="FL"/>
-					<ItemData ItemOID="pres_zipcode" Value="32611"/>
-				</ItemGroupData>
-				<ItemGroupData ItemGroupOID="prescription_form.pres_dop" ItemGroupRepeatKey="1">
-					<ItemData ItemOID="pres_dop" Value="2017-08-09"/>
-				</ItemGroupData>
-				<ItemGroupData ItemGroupOID="prescription_form.pres_drug_name_1" ItemGroupRepeatKey="1">
-					<ItemData ItemOID="pres_drug_name_1" Value="2"/>
-					<ItemData ItemOID="pres_rosuvastatin_dose" Value="40"/>
-					<ItemData ItemOID="pres_drug_route_1" Value="1"/>
-					<ItemData ItemOID="pres_drug_supply_1" Value="180"/>
-					<ItemData ItemOID="display_rule_2" Value="0"/>
-					<ItemData ItemOID="display_rule_3" Value="0"/>
-					<ItemData ItemOID="pres_drug_route_2" Value="1"/>
-					<ItemData ItemOID="pres_drug_name_4" Value="1"/>
-					<ItemData ItemOID="pres_evolocumab_dose" Value="420"/>
-					<ItemData ItemOID="pres_drug_route_4" Value="1"/>
-					<ItemData ItemOID="pres_drug_supply_4" Value="180"/>
-					<ItemData ItemOID="send_rx_prescriber_id" Value="bob"/>
-				</ItemGroupData>
-				<ItemGroupData ItemGroupOID="prescription_form.prescription_form_complete" ItemGroupRepeatKey="1">
-					<ItemData ItemOID="prescription_form_complete" Value="2"/>
-				</ItemGroupData>
-			</FormData>
-			<FormData FormOID="Form.review_send_rx" FormRepeatKey="1">
-				<ItemGroupData ItemGroupOID="review_send_rx.review_send_rx_complete" ItemGroupRepeatKey="1">
-					<ItemData ItemOID="review_send_rx_complete" Value="2"/>
-				</ItemGroupData>
-			</FormData>
-	</SubjectData>
-</ClinicalData>
 </ODM>

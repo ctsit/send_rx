@@ -19,41 +19,12 @@ document.addEventListener('DOMContentLoaded', function() {
     $('#send_rx_logs-tr .data').html(settings.table);
 
     // Changing color of submit buttons.
-    var $submit_buttons = $('button[id^="submit-btn-"]');
-    $submit_buttons.addClass('btn-success');
+    var $submitButtons = $('button[id^="submit-btn-"]');
+    $submitButtons.addClass('btn-success');
 
-    // Disables submit buttons.
-    var disableSubmit = function() {
-        $submit_buttons.prop('disabled', true);
-        $submit_buttons.prop('title', 'Your must complete all form steps before sending the prescription.');
-    };
-
-    // Enables submit buttons.
-    var enableSubmit = function() {
-        $submit_buttons.removeProp('disabled');
-        $submit_buttons.removeProp('title');
-    };
-
-    if (settings.eventIsComplete) {
-        var $complete = $('select[name="' + settings.instrument + '_complete"]');
-        if ($complete.val() !== '2') {
-            // Disables submit buttons if initial state not complete.
-            disableSubmit();
-        }
-
-        $complete.change(function() {
-            if ($(this).val() === '2') {
-                // Enables submit buttons if form becomes complete.
-                enableSubmit();
-            }
-            else {
-                // Disables submit buttons if form becomes not complete.
-                disableSubmit();
-            }
-        });
-    }
-    else {
-        // If form is not complete, submit buttons must remain disabled.
-        disableSubmit();
+    if (!settings.prescriberIsSet) {
+        // Disable submit buttons if prescriber is not set.
+        $submitButtons.prop('disabled', true);
+        $submitButtons.prop('title', 'Your must setup a prescriber before sending your prescription.');
     }
 });
