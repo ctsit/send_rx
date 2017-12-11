@@ -1,3 +1,26 @@
+# Change Log
+All notable changes to the Send RX project will be documented in this file.
+This project adheres to [Semantic Versioning](http://semver.org/).
+
+
+## [1.1.0] - 2017-12-11
+### Changed
+- Reformat Warrior prescription template to red molike an outline than a table (Philip Chase)
+- Improving templates styles. (Tiago Bember Simeao)
+- Supporting cross-event Piping on templates. (Tiago Bember Simeao)
+- Create Warrior project pdf template as WarriorPDFTemplate.html (Philip Chase)
+- Allowing labels with commas on piping data. (Tiago Bember Simeao)
+- Handling 'json-array' and 'file' config element types. (Tiago Bember Simeao)
+- Converting PDF template file on sample site project from a text field to a file upload field. (Tiago Bember Simeao)
+- Unhard-coding patient_id as record ID field. (Tiago Bember Simeao)
+- Updating README regarding the new PDF template config field. (Tiago Bember Simeao)
+- Allowing sending prescription from an incomplete instrument. (Tiago Bember Simeao)
+- Setting PDF template as a config field. (Tiago Bember Simeao)
+- Removing restriction of form completeness on Review & Send buttons. (Tiago Bember Simeao)
+- Adding missing property on send_rx_get_site_users() function. (Tiago Bember Simeao)
+- Adapting Send Rx to work with User Profile module. (Tiago Bember Simeao)
+
+
 ## [1.0.0] - 2017-10-25
 ### Summary
  - This is the first release
