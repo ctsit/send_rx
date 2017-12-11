@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:redcap="https://projectredcap.org" xsi:schemaLocation="http://www.cdisc.org/ns/odm/v1.3 schema/odm/ODM1-3-1.xsd" ODMVersion="1.3.1" FileOID="000-00-0000" FileType="Snapshot" Description="User Profiles" AsOfDateTime="2017-10-30T10:08:47" CreationDateTime="2017-10-30T10:08:47" SourceSystem="REDCap" SourceSystemVersion="7.6.2">
+<Study OID="Project.UserProfiles">
+<GlobalVariables>
+	<StudyName>User Profiles</StudyName>
+	<StudyDescription>This file contains the metadata, events, and data for REDCap project "User Profiles".</StudyDescription>
+	<ProtocolName>User Profiles</ProtocolName>
+	<redcap:RecordAutonumberingEnabled>1</redcap:RecordAutonumberingEnabled>
+	<redcap:CustomRecordLabel>[send_rx_user_first_name] [send_rx_user_last_name]</redcap:CustomRecordLabel>
+	<redcap:SecondaryUniqueField></redcap:SecondaryUniqueField>
+	<redcap:SchedulingEnabled>0</redcap:SchedulingEnabled>
+	<redcap:Purpose>0</redcap:Purpose>
+	<redcap:PurposeOther></redcap:PurposeOther>
+	<redcap:ProjectNotes></redcap:ProjectNotes>
+</GlobalVariables>
+<MetaDataVersion OID="Metadata.UserProfiles" Name="User Profiles" redcap:RecordIdField="profile_id">
+	<FormDef OID="Form.profile_info" Name="Profile Info" Repeating="No" redcap:FormName="profile_info">
+		<ItemGroupRef ItemGroupOID="profile_info.profile_id" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="profile_info.profile_info_complete" Mandatory="No"/>
+	</FormDef>
+	<ItemGroupDef OID="profile_info.profile_id" Name="Profile Info" Repeating="No">
+		<ItemRef ItemOID="profile_id" Mandatory="No" redcap:Variable="profile_id"/>
+		<ItemRef ItemOID="send_rx_user_first_name" Mandatory="Yes" redcap:Variable="send_rx_user_first_name"/>
+		<ItemRef ItemOID="send_rx_user_last_name" Mandatory="Yes" redcap:Variable="send_rx_user_last_name"/>
+		<ItemRef ItemOID="send_rx_user_id" Mandatory="Yes" redcap:Variable="send_rx_user_id"/>
+		<ItemRef ItemOID="send_rx_user_email" Mandatory="Yes" redcap:Variable="send_rx_user_email"/>
+		<ItemRef ItemOID="user_phone" Mandatory="Yes" redcap:Variable="user_phone"/>
+		<ItemRef ItemOID="user_address" Mandatory="Yes" redcap:Variable="user_address"/>
+		<ItemRef ItemOID="user_name_on_prescription" Mandatory="No" redcap:Variable="user_name_on_prescription"/>
+		<ItemRef ItemOID="user_dea" Mandatory="No" redcap:Variable="user_dea"/>
+		<ItemRef ItemOID="user_license" Mandatory="No" redcap:Variable="user_license"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="profile_info.profile_info_complete" Name="Form Status" Repeating="No">
+		<ItemRef ItemOID="profile_info_complete" Mandatory="No" redcap:Variable="profile_info_complete"/>
+	</ItemGroupDef>
+	<ItemDef OID="profile_id" Name="profile_id" DataType="text" Length="999" redcap:Variable="profile_id" redcap:FieldType="text">
+		<Question><TranslatedText>Profile ID</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="send_rx_user_first_name" Name="send_rx_user_first_name" DataType="text" Length="999" redcap:Variable="send_rx_user_first_name" redcap:FieldType="text" redcap:RequiredField="y">
+		<Question><TranslatedText>First Name</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="send_rx_user_last_name" Name="send_rx_user_last_name" DataType="text" Length="999" redcap:Variable="send_rx_user_last_name" redcap:FieldType="text" redcap:RequiredField="y">
+		<Question><TranslatedText>Last Name</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="send_rx_user_id" Name="send_rx_user_id" DataType="text" Length="999" redcap:Variable="send_rx_user_id" redcap:FieldType="text" redcap:RequiredField="y">
+		<Question><TranslatedText>REDCap Username</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="send_rx_user_email" Name="send_rx_user_email" DataType="text" Length="999" redcap:Variable="send_rx_user_email" redcap:FieldType="text" redcap:TextValidationType="email" redcap:RequiredField="y">
+		<Question><TranslatedText>Email Address</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="user_phone" Name="user_phone" DataType="text" Length="999" redcap:Variable="user_phone" redcap:FieldType="text" redcap:TextValidationType="phone" redcap:RequiredField="y">
+		<Question><TranslatedText>Phone</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="user_address" Name="user_address" DataType="text" Length="999" redcap:Variable="user_address" redcap:FieldType="textarea" redcap:RequiredField="y">
+		<Question><TranslatedText>Address</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="user_name_on_prescription" Name="user_name_on_prescription" DataType="text" Length="999" redcap:Variable="user_name_on_prescription" redcap:FieldType="text" redcap:FieldNote="e.g. Joe Doe, MD.">
+		<Question><TranslatedText>Name on Prescription</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="user_dea" Name="user_dea" DataType="text" Length="999" redcap:Variable="user_dea" redcap:FieldType="text">
+		<Question><TranslatedText>DEA Number</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="user_license" Name="user_license" DataType="text" Length="999" redcap:Variable="user_license" redcap:FieldType="text">
+		<Question><TranslatedText>Medical License Number</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="profile_info_complete" Name="profile_info_complete" DataType="text" Length="1" redcap:Variable="profile_info_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+		<Question><TranslatedText>Complete?</TranslatedText></Question>
+		<CodeListRef CodeListOID="profile_info_complete.choices"/>
+	</ItemDef>
+	<CodeList OID="profile_info_complete.choices" Name="profile_info_complete" DataType="text" redcap:Variable="profile_info_complete">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+</MetaDataVersion>
+</Study>
+</ODM>

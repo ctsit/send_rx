@@ -1,0 +1,114 @@
+{
+    "name": "Send Rx",
+    "namespace": "SendRx\\ExternalModule",
+    "description": "Send Rx is a REDCap extension that allows users to automatically generate prescriptions in PDF format and send them to pharmacies.",
+    "permissions": [
+        "hook_every_page_before_render",
+        "hook_every_page_top",
+        "hook_save_record",
+        "hook_data_entry_form_top"
+    ],
+    "authors": [
+        {
+            "name": "Philip Chase",
+            "email": "pbc@ufl.edu",
+            "institution": "University of Florida - CTS-IT"
+        },
+        {
+            "name": "Taryn Stoffs",
+            "email": "tls@ufl.edu",
+            "institution": "University of Florida - CTS-IT"
+        },
+        {
+            "name": "Surya Prasanna",
+            "email": "suryayalla@ufl.edu",
+            "institution": "University of Florida - CTS-IT"
+        },
+        {
+            "name": "Prasad Lanka",
+            "email": "planka@ufl.edu",
+            "institution": "University of Florida - CTS-IT"
+        },
+        {
+            "name": "Dileep Rajput",
+            "email": "rajputd@ufl.edu",
+            "institution": "University of Florida - CTS-IT"
+        },
+        {
+            "name": "Stewart Wehmeyer",
+            "email": "swehmeyer@ufl.edu",
+            "institution": "University of Florida - CTS-IT"
+        },
+        {
+            "name": "Tiago Bember",
+            "email": "tbembersimeao@ufl.edu",
+            "institution": "University of Florida - CTS-IT"
+        },
+        {
+            "name": "Mike Conlon, Ph.D.",
+            "email": "mconlon@ufl.edu",
+            "institution": "University of Florida - CTS-IT"
+        }
+    ],
+    "project-settings": [
+        {
+            "key": "send-rx-type",
+            "name": "Type",
+            "required": true,
+            "type": "radio",
+            "choices": [
+                {"value": "site", "name": "Site"},
+                {"value": "patient", "name": "Patient"}
+            ]
+        },
+        {
+            "key": "send-rx-target-project-id",
+            "name": "Target project",
+            "required": true,
+            "type": "project-id"
+        },
+        {
+            "key": "send-rx-pdf-template",
+            "name": "PDF Template",
+            "type": "file"
+        },
+        {
+            "key": "send-rx-pdf-template-variable",
+            "name": "PDF Template Global Variables",
+            "required": false,
+            "type": "sub_settings",
+            "repeatable": "true",
+            "sub_settings": [
+                {
+                    "key": "send-rx-pdf-template-variable-key",
+                    "name": "Key",
+                    "type": "text"
+                },
+                {
+                    "key": "send-rx-pdf-template-variable-value",
+                    "name": "Value",
+                    "type": "text"
+                }
+            ]
+        },
+        {
+            "key": "send-rx-message",
+            "name": "Message",
+            "required": false,
+            "type": "sub_settings",
+            "sub_settings": [
+                {
+                    "key": "send-rx-message-subject",
+                    "name": "Subject",
+                    "type": "text"
+                },
+                {
+                    "key": "send-rx-message-body",
+                    "name": "Body",
+                    "required": false,
+                    "type": "rich-text"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:redcap="https://projectredcap.org" xsi:schemaLocation="http://www.cdisc.org/ns/odm/v1.3 schema/odm/ODM1-3-1.xsd" ODMVersion="1.3.1" FileOID="000-00-0000" FileType="Snapshot" Description="Send Rx Sites" AsOfDateTime="2017-12-01T15:32:35" CreationDateTime="2017-12-01T15:32:35" SourceSystem="REDCap" SourceSystemVersion="8.0.1">
+<Study OID="Project.SendRxSites">
+<GlobalVariables>
+	<StudyName>Send Rx Sites</StudyName>
+	<StudyDescription>This file contains the metadata, events, and data for REDCap project "Send Rx Sites".</StudyDescription>
+	<ProtocolName>Send Rx Sites</ProtocolName>
+	<redcap:RecordAutonumberingEnabled>1</redcap:RecordAutonumberingEnabled>
+	<redcap:CustomRecordLabel></redcap:CustomRecordLabel>
+	<redcap:SecondaryUniqueField></redcap:SecondaryUniqueField>
+	<redcap:SchedulingEnabled>0</redcap:SchedulingEnabled>
+	<redcap:Purpose>0</redcap:Purpose>
+	<redcap:PurposeOther></redcap:PurposeOther>
+	<redcap:ProjectNotes></redcap:ProjectNotes>
+	<redcap:RepeatingInstrumentsAndEvents>
+		<redcap:RepeatingInstruments>
+			<redcap:RepeatingInstrument redcap:UniqueEventName="event_1_arm_1" redcap:RepeatInstrument="site_staff" redcap:CustomLabel="[send_rx_user_id]"/>
+		</redcap:RepeatingInstruments>
+	</redcap:RepeatingInstrumentsAndEvents>
+</GlobalVariables>
+<MetaDataVersion OID="Metadata.SendRxSites" Name="Send Rx Sites" redcap:RecordIdField="site_id">
+	<FormDef OID="Form.site_information" Name="Site Information" Repeating="No" redcap:FormName="site_information">
+		<ItemGroupRef ItemGroupOID="site_information.site_id" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="site_information.site_information_complete" Mandatory="No"/>
+	</FormDef>
+	<FormDef OID="Form.site_information" Name="Site Information" Repeating="No" redcap:FormName="site_information">
+		<ItemGroupRef ItemGroupOID="site_information.send_rx_delivery_methods___email" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="site_information.site_information_complete" Mandatory="No"/>
+	</FormDef>
+	<FormDef OID="Form.site_staff" Name="Site Staff" Repeating="No" redcap:FormName="site_staff">
+		<ItemGroupRef ItemGroupOID="site_staff.send_rx_user_id" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="site_staff.send_rx_user_role" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="site_staff.site_staff_complete" Mandatory="No"/>
+	</FormDef>
+	<ItemGroupDef OID="site_information.site_id" Name="Site Information" Repeating="No">
+		<ItemRef ItemOID="site_id" Mandatory="No" redcap:Variable="site_id"/>
+		<ItemRef ItemOID="send_rx_site_name" Mandatory="Yes" redcap:Variable="send_rx_site_name"/>
+		<ItemRef ItemOID="send_rx_dag_id" Mandatory="No" redcap:Variable="send_rx_dag_id"/>
+		<ItemRef ItemOID="send_rx_pdf_template" Mandatory="No" redcap:Variable="send_rx_pdf_template"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="site_information.site_information_complete" Name="Form Status" Repeating="No">
+		<ItemRef ItemOID="site_information_complete" Mandatory="No" redcap:Variable="site_information_complete"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="site_information.send_rx_delivery_methods___email" Name="" Repeating="No">
+		<ItemRef ItemOID="send_rx_delivery_methods___email" Mandatory="Yes" redcap:Variable="send_rx_delivery_methods"/>
+		<ItemRef ItemOID="send_rx_delivery_methods___h17" Mandatory="Yes" redcap:Variable="send_rx_delivery_methods"/>
+		<ItemRef ItemOID="send_rx_delivery_methods___message_gateway" Mandatory="Yes" redcap:Variable="send_rx_delivery_methods"/>
+		<ItemRef ItemOID="send_rx_delivery_methods___email" Mandatory="Yes" redcap:Variable="send_rx_delivery_methods"/>
+		<ItemRef ItemOID="send_rx_delivery_methods___h17" Mandatory="Yes" redcap:Variable="send_rx_delivery_methods"/>
+		<ItemRef ItemOID="send_rx_delivery_methods___message_gateway" Mandatory="Yes" redcap:Variable="send_rx_delivery_methods"/>
+		<ItemRef ItemOID="send_rx_delivery_methods___email" Mandatory="Yes" redcap:Variable="send_rx_delivery_methods"/>
+		<ItemRef ItemOID="send_rx_delivery_methods___h17" Mandatory="Yes" redcap:Variable="send_rx_delivery_methods"/>
+		<ItemRef ItemOID="send_rx_delivery_methods___message_gateway" Mandatory="Yes" redcap:Variable="send_rx_delivery_methods"/>
+		<ItemRef ItemOID="send_rx_email_recipients" Mandatory="Yes" redcap:Variable="send_rx_email_recipients"/>
+		<ItemRef ItemOID="send_rx_email_subject" Mandatory="No" redcap:Variable="send_rx_email_subject"/>
+		<ItemRef ItemOID="send_rx_email_body" Mandatory="No" redcap:Variable="send_rx_email_body"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="site_information.site_information_complete" Name="Form Status" Repeating="No">
+		<ItemRef ItemOID="site_information_complete" Mandatory="No" redcap:Variable="site_information_complete"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="site_staff.send_rx_user_id" Name="Use this form to enter the details about study staff at each site. Prescribers must be described here for Send RX to generate the prescriptions they sign." Repeating="No">
+		<ItemRef ItemOID="send_rx_user_id" Mandatory="Yes" redcap:Variable="send_rx_user_id"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="site_staff.send_rx_user_role" Name="Site Staff" Repeating="No">
+		<ItemRef ItemOID="send_rx_user_role" Mandatory="Yes" redcap:Variable="send_rx_user_role"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="site_staff.site_staff_complete" Name="Form Status" Repeating="No">
+		<ItemRef ItemOID="site_staff_complete" Mandatory="No" redcap:Variable="site_staff_complete"/>
+	</ItemGroupDef>
+	<ItemDef OID="site_id" Name="site_id" DataType="text" Length="999" redcap:Variable="site_id" redcap:FieldType="text">
+		<Question><TranslatedText>Record ID</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="send_rx_site_name" Name="send_rx_site_name" DataType="text" Length="999" redcap:Variable="send_rx_site_name" redcap:FieldType="text" redcap:RequiredField="y">
+		<Question><TranslatedText>Name</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="send_rx_dag_id" Name="send_rx_dag_id" DataType="text" Length="999" redcap:Variable="send_rx_dag_id" redcap:FieldType="text" redcap:FieldNote="Data Access Group ID registered on Patients project that gives access to the prescriptions.">
+		<Question><TranslatedText>Data Access Group (DAG) ID</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="send_rx_pdf_template" Name="send_rx_pdf_template" DataType="text" Length="999" redcap:Variable="send_rx_pdf_template" redcap:FieldType="file" redcap:FieldNote="(optional) Overrides default template provided by the project configuration.">
+		<Question><TranslatedText>PDF Template</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="site_information_complete" Name="site_information_complete" DataType="text" Length="1" redcap:Variable="site_information_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+		<Question><TranslatedText>Complete?</TranslatedText></Question>
+		<CodeListRef CodeListOID="site_information_complete.choices"/>
+	</ItemDef>
+	<ItemDef OID="send_rx_delivery_methods___email" Name="send_rx_delivery_methods___email" DataType="boolean" Length="1" redcap:Variable="send_rx_delivery_methods" redcap:FieldType="checkbox" redcap:FieldNote="By what means will prescriptions be delivered to this site&#039;s pharmacy?" redcap:RequiredField="y" redcap:FieldAnnotation="@DEFAULT=&#039;email&#039;">
+		<Question><TranslatedText>Delivery Methods</TranslatedText></Question>
+		<CodeListRef CodeListOID="send_rx_delivery_methods___email.choices"/>
+	</ItemDef>
+	<ItemDef OID="send_rx_delivery_methods___h17" Name="send_rx_delivery_methods___h17" DataType="boolean" Length="1" redcap:Variable="send_rx_delivery_methods" redcap:FieldType="checkbox" redcap:FieldNote="By what means will prescriptions be delivered to this site&#039;s pharmacy?" redcap:RequiredField="y" redcap:FieldAnnotation="@DEFAULT=&#039;email&#039;">
+		<Question><TranslatedText>Delivery Methods</TranslatedText></Question>
+		<CodeListRef CodeListOID="send_rx_delivery_methods___h17.choices"/>
+	</ItemDef>
+	<ItemDef OID="send_rx_delivery_methods___message_gateway" Name="send_rx_delivery_methods___message_gateway" DataType="boolean" Length="1" redcap:Variable="send_rx_delivery_methods" redcap:FieldType="checkbox" redcap:FieldNote="By what means will prescriptions be delivered to this site&#039;s pharmacy?" redcap:RequiredField="y" redcap:FieldAnnotation="@DEFAULT=&#039;email&#039;">
+		<Question><TranslatedText>Delivery Methods</TranslatedText></Question>
+		<CodeListRef CodeListOID="send_rx_delivery_methods___message_gateway.choices"/>
+	</ItemDef>
+	<ItemDef OID="send_rx_delivery_methods___email" Name="send_rx_delivery_methods___email" DataType="boolean" Length="1" redcap:Variable="send_rx_delivery_methods" redcap:FieldType="checkbox" redcap:FieldNote="By what means will prescriptions be delivered to this site&#039;s pharmacy?" redcap:RequiredField="y" redcap:FieldAnnotation="@DEFAULT=&#039;email&#039;">
+		<Question><TranslatedText>Delivery Methods</TranslatedText></Question>
+		<CodeListRef CodeListOID="send_rx_delivery_methods___email.choices"/>
+	</ItemDef>
+	<ItemDef OID="send_rx_delivery_methods___h17" Name="send_rx_delivery_methods___h17" DataType="boolean" Length="1" redcap:Variable="send_rx_delivery_methods" redcap:FieldType="checkbox" redcap:FieldNote="By what means will prescriptions be delivered to this site&#039;s pharmacy?" redcap:RequiredField="y" redcap:FieldAnnotation="@DEFAULT=&#039;email&#039;">
+		<Question><TranslatedText>Delivery Methods</TranslatedText></Question>
+		<CodeListRef CodeListOID="send_rx_delivery_methods___h17.choices"/>
+	</ItemDef>
+	<ItemDef OID="send_rx_delivery_methods___message_gateway" Name="send_rx_delivery_methods___message_gateway" DataType="boolean" Length="1" redcap:Variable="send_rx_delivery_methods" redcap:FieldType="checkbox" redcap:FieldNote="By what means will prescriptions be delivered to this site&#039;s pharmacy?" redcap:RequiredField="y" redcap:FieldAnnotation="@DEFAULT=&#039;email&#039;">
+		<Question><TranslatedText>Delivery Methods</TranslatedText></Question>
+		<CodeListRef CodeListOID="send_rx_delivery_methods___message_gateway.choices"/>
+	</ItemDef>
+	<ItemDef OID="send_rx_delivery_methods___email" Name="send_rx_delivery_methods___email" DataType="boolean" Length="1" redcap:Variable="send_rx_delivery_methods" redcap:FieldType="checkbox" redcap:FieldNote="By what means will prescriptions be delivered to this site&#039;s pharmacy?" redcap:RequiredField="y" redcap:FieldAnnotation="@DEFAULT=&#039;email&#039;">
+		<Question><TranslatedText>Delivery Methods</TranslatedText></Question>
+		<CodeListRef CodeListOID="send_rx_delivery_methods___email.choices"/>
+	</ItemDef>
+	<ItemDef OID="send_rx_delivery_methods___h17" Name="send_rx_delivery_methods___h17" DataType="boolean" Length="1" redcap:Variable="send_rx_delivery_methods" redcap:FieldType="checkbox" redcap:FieldNote="By what means will prescriptions be delivered to this site&#039;s pharmacy?" redcap:RequiredField="y" redcap:FieldAnnotation="@DEFAULT=&#039;email&#039;">
+		<Question><TranslatedText>Delivery Methods</TranslatedText></Question>
+		<CodeListRef CodeListOID="send_rx_delivery_methods___h17.choices"/>
+	</ItemDef>
+	<ItemDef OID="send_rx_delivery_methods___message_gateway" Name="send_rx_delivery_methods___message_gateway" DataType="boolean" Length="1" redcap:Variable="send_rx_delivery_methods" redcap:FieldType="checkbox" redcap:FieldNote="By what means will prescriptions be delivered to this site&#039;s pharmacy?" redcap:RequiredField="y" redcap:FieldAnnotation="@DEFAULT=&#039;email&#039;">
+		<Question><TranslatedText>Delivery Methods</TranslatedText></Question>
+		<CodeListRef CodeListOID="send_rx_delivery_methods___message_gateway.choices"/>
+	</ItemDef>
+	<ItemDef OID="send_rx_email_recipients" Name="send_rx_email_recipients" DataType="text" Length="999" redcap:Variable="send_rx_email_recipients" redcap:FieldType="text" redcap:FieldNote="For multiple emails, separate with a comma (e.g. example@example.com,joedoe@example.com)." redcap:RequiredField="y" redcap:BranchingLogic="[send_rx_delivery_methods(email)] = &#039;1&#039;">
+		<Question><TranslatedText>Email recipients at the pharmacy</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="send_rx_email_subject" Name="send_rx_email_subject" DataType="text" Length="999" redcap:Variable="send_rx_email_subject" redcap:FieldType="textarea" redcap:FieldNote="(optional) This field overrides the default value provided by project configuration." redcap:BranchingLogic="[send_rx_delivery_methods(email)] = &#039;1&#039;">
+		<Question><TranslatedText>Email Subject</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="send_rx_email_body" Name="send_rx_email_body" DataType="text" Length="999" redcap:Variable="send_rx_email_body" redcap:FieldType="textarea" redcap:FieldNote="(optional) This field overrides the default value provided by project configuration." redcap:BranchingLogic="[send_rx_delivery_methods(email)] = &#039;1&#039;">
+		<Question><TranslatedText>Email Body</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="site_information_complete" Name="site_information_complete" DataType="text" Length="1" redcap:Variable="site_information_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+		<Question><TranslatedText>Complete?</TranslatedText></Question>
+		<CodeListRef CodeListOID="site_information_complete.choices"/>
+	</ItemDef>
+	<ItemDef OID="send_rx_user_id" Name="send_rx_user_id" DataType="text" Length="10" redcap:Variable="send_rx_user_id" redcap:FieldType="select" redcap:SectionHeader="Use this form to enter the details about study staff at each site. Prescribers must be described here for Send RX to generate the prescriptions they sign." redcap:RequiredField="y">
+		<Question><TranslatedText>REDCap User</TranslatedText></Question>
+		<CodeListRef CodeListOID="send_rx_user_id.choices"/>
+	</ItemDef>
+	<ItemDef OID="send_rx_user_role" Name="send_rx_user_role" DataType="text" Length="17" redcap:Variable="send_rx_user_role" redcap:FieldType="select" redcap:RequiredField="y">
+		<Question><TranslatedText>Role in Study</TranslatedText></Question>
+		<CodeListRef CodeListOID="send_rx_user_role.choices"/>
+	</ItemDef>
+	<ItemDef OID="site_staff_complete" Name="site_staff_complete" DataType="text" Length="1" redcap:Variable="site_staff_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+		<Question><TranslatedText>Complete?</TranslatedText></Question>
+		<CodeListRef CodeListOID="site_staff_complete.choices"/>
+	</ItemDef>
+	<CodeList OID="site_information_complete.choices" Name="site_information_complete" DataType="text" redcap:Variable="site_information_complete">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="send_rx_delivery_methods___email.choices" Name="send_rx_delivery_methods___email" DataType="boolean" redcap:Variable="send_rx_delivery_methods" redcap:CheckboxChoices="email, Email|h17, H17|message_gateway, Message Gateway">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="send_rx_delivery_methods___h17.choices" Name="send_rx_delivery_methods___h17" DataType="boolean" redcap:Variable="send_rx_delivery_methods" redcap:CheckboxChoices="email, Email|h17, H17|message_gateway, Message Gateway">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="send_rx_delivery_methods___message_gateway.choices" Name="send_rx_delivery_methods___message_gateway" DataType="boolean" redcap:Variable="send_rx_delivery_methods" redcap:CheckboxChoices="email, Email|h17, H17|message_gateway, Message Gateway">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="send_rx_delivery_methods___email.choices" Name="send_rx_delivery_methods___email" DataType="boolean" redcap:Variable="send_rx_delivery_methods" redcap:CheckboxChoices="email, Email|h17, H17|message_gateway, Message Gateway">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="send_rx_delivery_methods___h17.choices" Name="send_rx_delivery_methods___h17" DataType="boolean" redcap:Variable="send_rx_delivery_methods" redcap:CheckboxChoices="email, Email|h17, H17|message_gateway, Message Gateway">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="send_rx_delivery_methods___message_gateway.choices" Name="send_rx_delivery_methods___message_gateway" DataType="boolean" redcap:Variable="send_rx_delivery_methods" redcap:CheckboxChoices="email, Email|h17, H17|message_gateway, Message Gateway">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="send_rx_delivery_methods___email.choices" Name="send_rx_delivery_methods___email" DataType="boolean" redcap:Variable="send_rx_delivery_methods" redcap:CheckboxChoices="email, Email|h17, H17|message_gateway, Message Gateway">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="send_rx_delivery_methods___h17.choices" Name="send_rx_delivery_methods___h17" DataType="boolean" redcap:Variable="send_rx_delivery_methods" redcap:CheckboxChoices="email, Email|h17, H17|message_gateway, Message Gateway">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="send_rx_delivery_methods___message_gateway.choices" Name="send_rx_delivery_methods___message_gateway" DataType="boolean" redcap:Variable="send_rx_delivery_methods" redcap:CheckboxChoices="email, Email|h17, H17|message_gateway, Message Gateway">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="site_information_complete.choices" Name="site_information_complete" DataType="text" redcap:Variable="site_information_complete">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="send_rx_user_role.choices" Name="send_rx_user_role" DataType="text" redcap:Variable="send_rx_user_role">
+		<CodeListItem CodedValue="prescriber"><Decode><TranslatedText>Prescriber</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="study_coordinator"><Decode><TranslatedText>Study Coordinator</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="site_staff_complete.choices" Name="site_staff_complete" DataType="text" redcap:Variable="site_staff_complete">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+</MetaDataVersion>
+</Study>
+</ODM>
