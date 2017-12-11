@@ -8,7 +8,7 @@ Send Rx is a REDCap module that allows users to automatically generate prescript
 - [REDCap User Profile](https://github.com/ctsit/redcap_user_profile)
 
 ## Installation
-- Clone this repo into to an `<redcap-root>/modules/send_rx_v1.0`.
+- Clone this repo into to an `<redcap-root>/modules/send_rx_v<version_number>`.
 - Go to **Control Center > Manage External Modules** and enable Send Rx.
 - Run Composer in order to install third-party dependencies:
   - In a terminal, go to your Send Rx root directory

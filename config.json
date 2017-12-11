@@ -1,7 +1,7 @@
 {
     "name": "Send Rx",
     "namespace": "SendRx\\ExternalModule",
-    "description": "Send Rx is a REDCap extension that allows users to automatically generate prescriptions on PDF format and send them to the pharmacies.",
+    "description": "Send Rx is a REDCap extension that allows users to automatically generate prescriptions in PDF format and send them to pharmacies.",
     "permissions": [
         "hook_every_page_before_render",
         "hook_every_page_top",
@@ -12,47 +12,42 @@
         {
             "name": "Philip Chase",
             "email": "pbc@ufl.edu",
-            "institution": "CTS-IT - University of Florida"
+            "institution": "University of Florida - CTS-IT"
         },
         {
             "name": "Taryn Stoffs",
             "email": "tls@ufl.edu",
-            "institution": "CTS-IT - University of Florida"
+            "institution": "University of Florida - CTS-IT"
         },
         {
             "name": "Surya Prasanna",
             "email": "suryayalla@ufl.edu",
-            "institution": "CTS-IT - University of Florida"
+            "institution": "University of Florida - CTS-IT"
         },
         {
             "name": "Prasad Lanka",
             "email": "planka@ufl.edu",
-            "institution": "CTS-IT - University of Florida"
+            "institution": "University of Florida - CTS-IT"
         },
         {
             "name": "Dileep Rajput",
             "email": "rajputd@ufl.edu",
-            "institution": "CTS-IT - University of Florida"
+            "institution": "University of Florida - CTS-IT"
         },
         {
             "name": "Stewart Wehmeyer",
             "email": "swehmeyer@ufl.edu",
-            "institution": "CTS-IT - University of Florida"
+            "institution": "University of Florida - CTS-IT"
         },
         {
             "name": "Tiago Bember",
             "email": "tbembersimeao@ufl.edu",
-            "institution": "CTS-IT - University of Florida"
+            "institution": "University of Florida - CTS-IT"
         },
         {
             "name": "Mike Conlon, Ph.D.",
             "email": "mconlon@ufl.edu",
-            "institution": "University of Florida"
-        },
-        {
-            "name": "Carl J Pepine, M.D., MACC",
-            "email": "",
-            "institution": "University of Florida"
+            "institution": "University of Florida - CTS-IT"
         }
     ],
     "project-settings": [
