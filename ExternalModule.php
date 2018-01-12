@@ -155,7 +155,7 @@ class ExternalModule extends AbstractExternalModule {
         $prescriber_field = 'send_rx_prescriber_id';
         $data = REDCap::getData($project_id, 'array', $record, $prescriber_field, $event_id);
         $settings = array(
-            'prescriberIsSet' => !empty($data[$record][$event_id][$prescriber_field]),
+            'currentUserIsPrescriber' => $data[$record][$event_id][$prescriber_field] == USERID,
             'instrument' => $instrument,
             'table' => $table,
         );
@@ -482,8 +482,14 @@ class ExternalModule extends AbstractExternalModule {
 
         // Checking if we are on PDF form step.
         if ($Proj->metadata['send_rx_pdf']['form_name'] == $instrument) {
-            // Send prescription.
-            $sender->send(false);
+            $data = $sender->getPrescriberData();
+
+            // Only the prescriber can send the prescription.
+            if ($data['send_rx_user_id'] == USERID) {
+                // Send prescription.
+                $sender->send(false);
+            }
+
             return;
         }
 
