@@ -446,6 +446,30 @@ class ExternalModule extends AbstractExternalModule {
             return;
         }
 
+        // Checking if we are at the prescriber field's step.
+        $id_field_name = 'send_rx_prescriber_id';
+        if (isset($Proj->metadata[$id_field_name]) && $_GET['page'] == $Proj->metadata[$id_field_name]['form_name']) {
+            if (empty($_POST[$id_field_name])) {
+                return;
+            }
+
+            $target_field_name = 'send_rx_prescriber_email';
+            if (!isset($Proj->metadata[$target_field_name])) {
+                return;
+            }
+
+            $user_profile = new UserProfile($_POST[$id_field_name]);
+            $data = $user_profile->getProfileData();
+
+            $source_field_name = 'send_rx_user_email';
+            if (empty($data[$source_field_name])) {
+                return;
+            }
+
+            send_rx_save_record_field($project_id, $event_id, $record, $target_field_name, $data[$source_field_name]);
+            return;
+        }
+
         // Checking if PDF file exists.
         if (!isset($Proj->metadata['send_rx_pdf'])) {
             return;
