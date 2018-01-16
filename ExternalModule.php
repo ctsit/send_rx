@@ -155,7 +155,7 @@ class ExternalModule extends AbstractExternalModule {
         $prescriber_field = 'send_rx_prescriber_id';
         $data = REDCap::getData($project_id, 'array', $record, $prescriber_field, $event_id);
         $settings = array(
-            'prescriberIsSet' => !empty($data[$record][$event_id][$prescriber_field]),
+            'currentUserIsPrescriber' => $data[$record][$event_id][$prescriber_field] == USERID,
             'instrument' => $instrument,
             'table' => $table,
         );
@@ -446,6 +446,20 @@ class ExternalModule extends AbstractExternalModule {
             return;
         }
 
+        // Checking if we are at the prescriber field's step.
+        $id_field_name = 'send_rx_prescriber_id';
+        $target_field_name = 'send_rx_prescriber_email';
+
+        if (isset($Proj->metadata[$id_field_name]) && $instrument == $Proj->metadata[$id_field_name]['form_name'] && isset($Proj->metadata[$target_field_name]) && !empty($_POST[$id_field_name])) {
+            $user_profile = new UserProfile($_POST[$id_field_name]);
+            $data = $user_profile->getProfileData();
+
+            $source_field_name = 'send_rx_user_email';
+            if (!empty($data[$source_field_name])) {
+                send_rx_save_record_field($project_id, $event_id, $record, $target_field_name, $data[$source_field_name]);
+            }
+        }
+
         // Checking if PDF file exists.
         if (!isset($Proj->metadata['send_rx_pdf'])) {
             return;
@@ -458,8 +472,14 @@ class ExternalModule extends AbstractExternalModule {
 
         // Checking if we are on PDF form step.
         if ($Proj->metadata['send_rx_pdf']['form_name'] == $instrument) {
-            // Send prescription.
-            $sender->send(false);
+            $data = $sender->getPrescriberData();
+
+            // Only the prescriber can send the prescription.
+            if ($data['send_rx_user_id'] == USERID) {
+                // Send prescription.
+                $sender->send(false);
+            }
+
             return;
         }
 

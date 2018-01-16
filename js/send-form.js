@@ -22,9 +22,10 @@ document.addEventListener('DOMContentLoaded', function() {
     var $submitButtons = $('button[id^="submit-btn-"]');
     $submitButtons.addClass('btn-success');
 
-    if (!settings.prescriberIsSet) {
+    if (!settings.currentUserIsPrescriber) {
         // Disable submit buttons if prescriber is not set.
         $submitButtons.prop('disabled', true);
-        $submitButtons.prop('title', 'Your must setup a prescriber before sending your prescription.');
+        $submitButtons.removeAttr('onclick');
+        $submitButtons.prop('title', 'Only the prescriber can send the prescription.');
     }
 });
