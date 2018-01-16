@@ -450,7 +450,7 @@ class ExternalModule extends AbstractExternalModule {
         $id_field_name = 'send_rx_prescriber_id';
         $target_field_name = 'send_rx_prescriber_email';
 
-        if (isset($Proj->metadata[$id_field_name]) && $_GET['page'] == $Proj->metadata[$id_field_name]['form_name'] && isset($Proj->metadata[$target_field_name]) && !empty($_POST[$id_field_name])) {
+        if (isset($Proj->metadata[$id_field_name]) && $instrument == $Proj->metadata[$id_field_name]['form_name'] && isset($Proj->metadata[$target_field_name]) && !empty($_POST[$id_field_name])) {
             $user_profile = new UserProfile($_POST[$id_field_name]);
             $data = $user_profile->getProfileData();
 
