@@ -3,6 +3,11 @@ All notable changes to the Send RX project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## [1.3.0] - 2018-02-27
+### Added
+- Bypassing non-crucial instruments to check site completeness (tbembersimeao)
+
+
 ## [1.2.0] - 2018-01-19
 ### Added
 - Allowing only prescribers to send prescriptions. (Tiago Bember Simeao)
@@ -15,7 +20,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [1.1.0] - 2017-12-11
 ### Changed
-- Reformat Warrior prescription template to red molike an outline than a table (Philip Chase)
+- Reformat Warrior prescription template to read more like an outline than a table (Philip Chase)
 - Improving templates styles. (Tiago Bember Simeao)
 - Supporting cross-event Piping on templates. (Tiago Bember Simeao)
 - Create Warrior project pdf template as WarriorPDFTemplate.html (Philip Chase)
