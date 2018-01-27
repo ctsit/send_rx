@@ -321,8 +321,18 @@ class ExternalModule extends AbstractExternalModule {
             send_rx_save_record_field($project_id, $event_id, $record, 'send_rx_dag_id', $group_id);
         }
 
+        global $Proj;
+        $bypass = array_combine($Proj->eventsForms[$event_id], $Proj->eventsForms[$event_id]);
+
+        // Detecting mandatory instruments to check completeness.
+        foreach ($Proj->metadata as $field_name => $field_info) {
+            if (strpos($field_name, 'send_rx_') === 0) {
+                unset($bypass[$field_info['form_name']]);
+            }
+        }
+
         if (
-            $buttons_enabled = send_rx_event_is_complete($project_id, $record, $event_id) &&
+            $buttons_enabled = send_rx_event_is_complete($project_id, $record, $event_id, $bypass) &&
             $staff = send_rx_get_site_users($project_id, $record)
         ) {
             if (isset($_GET['msg'])) {
