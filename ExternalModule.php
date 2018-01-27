@@ -326,7 +326,7 @@ class ExternalModule extends AbstractExternalModule {
 
         // Detecting mandatory instruments to check completeness.
         foreach ($Proj->metadata as $field_name => $field_info) {
-            if (strpos($field_name, 'send_rx_') !== 0) {
+            if (strpos($field_name, 'send_rx_') === 0) {
                 unset($bypass[$field_info['form_name']]);
             }
         }
