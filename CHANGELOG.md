@@ -3,7 +3,7 @@ All notable changes to the Send RX project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 
-## [1.3.0] - 2018-02-27
+## [1.3.0] - 2018-01-27
 ### Added
 - Bypassing non-crucial instruments to check site completeness (tbembersimeao)
 
