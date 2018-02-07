@@ -347,63 +347,71 @@ class ExternalModule extends AbstractExternalModule {
                 }
             }
 
-            if (!($curr_role_values = send_rx_get_user_roles($config['target_project_id'], $group_id))) {
+            if (!($curr_roles = send_rx_get_user_roles($config['target_project_id'], $group_id))) {
                 return;
             }
 
             $db = new RedCapDB();
 
             $input_members = array();
+            $input_roles = array();
+
             foreach ($staff as $member) {
-                if ($db->usernameExists($member['send_rx_user_id'])) {
-                    $input_members[] = $member['send_rx_user_id'];
+                $user_id = $member['send_rx_user_id'];
+
+                if ($db->usernameExists($user_id)) {
+                    $input_members[] = $user_id;
+                    $input_roles[$user_id] = $member['send_rx_user_role'];
                 }
+            }
+
+            if (!($roles_ids = send_rx_get_user_role_ids($config['target_project_id'], $input_roles))) {
+                return;
+            }
+
+            $valid_roles = array();
+            foreach (array_keys(parseEnum($Proj->metadata['send_rx_user_role']['element_enum'])) as $role_name) {
+                $valid_roles[$roles_ids[$role_name]] = $role_name;
             }
 
             $curr_members = send_rx_get_group_members($config['target_project_id'], $group_id);
             $curr_members = array_keys($curr_members);
+            $curr_members = array_combine($curr_members, $curr_members);
+
+            $aux = $curr_roles;
+            foreach ($aux as $user_id => $role_id) {
+                if (!empty($role_name) && !isset($valid_roles[$role_id])) {
+                    // Avoiding to mess up with non-related roles.
+                    unset($curr_roles[$user_id]);
+                    unset($curr_members[$user_id]);
+                }
+            }
 
             // Creating lists of users to be added and removed from the DAG.
             $members_to_add = array_diff($input_members, $curr_members);
             $members_to_del = array_diff($curr_members, $input_members);
 
-            $role_names = array();
-            $input_role_values = array();
-            foreach ($staff as $member) {
-                $curr_user = $member['send_rx_user_id'];
-                $curr_role = $member['send_rx_user_role'];
-                if ($db->usernameExists($curr_user)) {
-                    $input_role_values[$curr_user] = $curr_role;
-                    if (!in_array($curr_role, $role_names)) {
-                        $role_names[] = $curr_role;
-                    }
-                }
-            }
-            if (!($roles_info = send_rx_get_user_role_ids($config['target_project_id'], $role_names))) {
-                return;
-            }
-
-            foreach ($input_role_values as &$val) {
-                $val = $roles_info[$val];
+            foreach ($input_roles as $user_id => $role_name) {
+                $input_roles[$user_id] = $roles_ids[$role_name];
             }
 
             $roles_to_add = array();
             $roles_to_del = array();
 
-            foreach ($input_role_values as $key => $value) {
-                if (!array_key_exists($key, $curr_role_values)) {
-                    $roles_to_add[$key] = $value;
+            foreach ($input_roles as $user_id => $role_id) {
+                if (!isset($curr_roles[$user_id])) {
+                    $roles_to_add[$user_id] = $role_id;
                 }
-                else if ($curr_role_values[$key] != $value) {
-                    $roles_to_add[$key] = $value;
+                elseif ($curr_roles[$user_id] != $role_id) {
+                    $roles_to_add[$user_id] = $role_id;
                 }
             }
 
-            foreach ($curr_role_values as $key => $value) {
-                if (!isset($input_role_values[$key]) && $value != 0) {
+            foreach ($curr_roles as $user_id => $role_id) {
+                if (!isset($input_roles[$user_id]) && $role_id != 0) {
                     // TODO: adapt this list when users become able to join
                     // multiple DAGs.
-                    $roles_to_del[$key] = 0;
+                    $roles_to_del[$user_id] = 0;
                 }
             }
         }
