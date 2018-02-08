@@ -1,7 +1,7 @@
 {
     "name": "Send Rx",
     "namespace": "SendRx\\ExternalModule",
-    "description": "Send Rx is a REDCap extension that allows users to automatically generate prescriptions in PDF format and send them to pharmacies.",
+    "description": "Send Rx is a REDCap extension that allows users to automatically generate prescriptions in PDF format and send them to pharmacies.  See the <b><a href='https://github.com/ctsit/send_rx' target='_blank'>documentation</a></b> at <a href='https://github.com/ctsit/send_rx' target='_blank'>https://github.com/ctsit/send_rx</a>",
     "permissions": [
         "hook_every_page_before_render",
         "hook_every_page_top",
@@ -12,42 +12,42 @@
         {
             "name": "Philip Chase",
             "email": "pbc@ufl.edu",
-            "institution": "University of Florida - CTS-IT"
+            "institution": "University of Florida - CTSI"
         },
         {
             "name": "Taryn Stoffs",
             "email": "tls@ufl.edu",
-            "institution": "University of Florida - CTS-IT"
+            "institution": "University of Florida - CTSI"
         },
         {
             "name": "Surya Prasanna",
             "email": "suryayalla@ufl.edu",
-            "institution": "University of Florida - CTS-IT"
+            "institution": "University of Florida - CTSI"
         },
         {
             "name": "Prasad Lanka",
             "email": "planka@ufl.edu",
-            "institution": "University of Florida - CTS-IT"
+            "institution": "University of Florida - CTSI"
         },
         {
             "name": "Dileep Rajput",
             "email": "rajputd@ufl.edu",
-            "institution": "University of Florida - CTS-IT"
+            "institution": "University of Florida - CTSI"
         },
         {
             "name": "Stewart Wehmeyer",
             "email": "swehmeyer@ufl.edu",
-            "institution": "University of Florida - CTS-IT"
+            "institution": "University of Florida - CTSI"
         },
         {
             "name": "Tiago Bember",
             "email": "tbembersimeao@ufl.edu",
-            "institution": "University of Florida - CTS-IT"
+            "institution": "University of Florida - CTSI"
         },
         {
             "name": "Mike Conlon, Ph.D.",
             "email": "mconlon@ufl.edu",
-            "institution": "University of Florida - CTS-IT"
+            "institution": "University of Florida - CTSI"
         }
     ],
     "project-settings": [
@@ -110,5 +110,8 @@
                 }
             ]
         }
-    ]
+    ],
+    "compatibility": {
+        "redcap-version-min": "8.0.3"
+    }
 }

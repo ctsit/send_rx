@@ -3,7 +3,23 @@ All notable changes to the Send RX project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 
-## [1.3.0] - 2018-02-27
+## [1.3.1] - 2018-02-08
+### Added
+- Add compatibility version number to config.json (Marly Cormar)
+- Add repo and documentation url to the config.json description (Marly Cormar)
+- Protecting non related roles to be affected by permissions rebuild. (Tiago Bember Simeao)
+
+### Changed
+- Update minimum version number to 8.0.3 (Marly Cormar)
+- Change institution format (Marly Cormar)
+- Relabel 'Participant Information' and add DOB (Philip Chase)
+- Relabel 'Prescriber' section and move it to the bottom of the RX (Philip Chase)
+- Change line endings of WarriorPDFTemplate.html to LF (Philip Chase)
+- Swap NPI # for DEA # and widen 'MRN / Pharmacy Patient Identifier' td (Philip Chase)
+- Fix date of release for 1.3.0 in CHANGELOG (Philip Chase)
+
+
+## [1.3.0] - 2018-01-27
 ### Added
 - Bypassing non-crucial instruments to check site completeness (tbembersimeao)
 
