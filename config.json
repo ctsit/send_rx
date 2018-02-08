@@ -1,7 +1,7 @@
 {
     "name": "Send Rx",
     "namespace": "SendRx\\ExternalModule",
-    "description": "Send Rx is a REDCap extension that allows users to automatically generate prescriptions in PDF format and send them to pharmacies.",
+    "description": "Send Rx is a REDCap extension that allows users to automatically generate prescriptions in PDF format and send them to pharmacies.  See the <b><a href='https://github.com/ctsit/send_rx' target='_blank'>documentation</a></b> at <a href='https://github.com/ctsit/send_rx' target='_blank'>https://github.com/ctsit/send_rx</a>",
     "permissions": [
         "hook_every_page_before_render",
         "hook_every_page_top",
