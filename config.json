@@ -110,5 +110,8 @@
                 }
             ]
         }
-    ]
+    ],
+    "compatibility": {
+        "redcap-version-min": "8.0.3"
+    }
 }
