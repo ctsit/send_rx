@@ -281,12 +281,11 @@ class ExternalModule extends AbstractExternalModule {
             $this->includeJs('js/init.js');
         }
 
-        if (
-            strpos(PAGE, 'ExternalModules/manager/project.php') !== false ||
-            strpos(PAGE, 'external_modules/manager/project.php') !== false
-        ) {
+        if (strpos(PAGE, 'ExternalModules/manager/control_center.php') !== false) {
             $this->includeCss('css/config.css');
             $this->includeJs('js/config.js');
+            $this->setJsSetting('modulePrefix', $this->PREFIX);
+
             return;
         }
 

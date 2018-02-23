@@ -7,11 +7,13 @@ $(document).ready(function() {
         $modal[op]('send-rx');
     }
 
+    $modal.find('[field="enabled"]').hide().find('input').click();
+
     ExternalModules.Settings.prototype.configureSettingsOld = ExternalModules.Settings.prototype.configureSettings;
     ExternalModules.Settings.prototype.configureSettings = function() {
         ExternalModules.Settings.prototype.configureSettingsOld();
 
-        if ($modal.data('module') !== 'send_rx') {
+        if ($modal.data('module') !== userProfile.modulePrefix) {
             return;
         }
 
