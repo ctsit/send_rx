@@ -13,7 +13,7 @@ $(document).ready(function() {
     ExternalModules.Settings.prototype.configureSettings = function() {
         ExternalModules.Settings.prototype.configureSettingsOld();
 
-        if ($modal.data('module') !== userProfile.modulePrefix) {
+        if ($modal.data('module') !== sendRx.modulePrefix) {
             return;
         }
 
