@@ -28,4 +28,21 @@ document.addEventListener('DOMContentLoaded', function() {
         $submitButtons.removeAttr('onclick');
         $submitButtons.prop('title', 'Only the prescriber can send the prescription.');
     }
+
+    $('#stayOnPageReminderDialog').on('dialogopen', function(event, ui) {
+        // Overriding dialog message.
+        $(this).html('Are you sure you wish to leave this page?');
+
+        var buttons = $(this).dialog('option', 'buttons');
+        $.each(buttons, function(i, button) {
+            if (button.text === 'Save changes and leave') {
+                // Since "saving" makes no sense on this page, let's remove
+                // "Save changes and leave" button.
+                buttons.splice(i, 1);
+                return false;
+            }
+        });
+
+        $(this).dialog('option', 'buttons', buttons);
+    });
 });
