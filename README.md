@@ -3,13 +3,13 @@
 Send Rx is a REDCap module that allows users to automatically generate prescriptions on PDF format and send them to the pharmacies.
 
 ## Prerequisites
-- REDCap >= 8.0.3 (for versions < 8.0.3, [REDCap Modules](https://github.com/vanderbilt/redcap-external-modules) is required).
+- REDCap >= 8.0.3
 - [Composer](https://getcomposer.org/)
 - [REDCap User Profile](https://github.com/ctsit/redcap_user_profile)
 
 ## Installation
 - Clone this repo into to an `<redcap-root>/modules/send_rx_v<version_number>`.
-- Go to **Control Center > Manage External Modules** and enable Send Rx.
+- Go to **Control Center > External Modules** and enable Send Rx.
 - Run Composer in order to install third-party dependencies:
   - In a terminal, go to your Send Rx root directory
   - [Download Composer](https://getcomposer.org/download/)
@@ -18,12 +18,12 @@ Send Rx is a REDCap module that allows users to automatically generate prescript
 ## Configuration
 The steps below will walk you through a study research use case.
 
-### Step 1: Making sure that Table-based authentication is enabled
-Send Rx requires Table-base authentication method to work, so if your REDCap does not have it, you may need to follow the steps below:
+### Step 1: Making sure that user authentication is enabled
+Send Rx requires user authentication method to work, so if your REDCap does not have it, you may need to follow the steps below:
 1. Go to **Control Manager > Add Users (Table-based Only)**
 2. Add a new user that will be the new admin account (`site_admin` will be deprecated)
 3. Go to **Control Manager > Administrators & Acct Managers** and add the new user to the administrators list
-4. Go to **Control Manager > Security & Authentication**, change authentication method to "Table-based", and save
+4. Go to **Control Manager > Security & Authentication**, select an authentication method of your choice (e.g. Table-based), and save
 5. Check your email inbox and look for a "REDCap access granted" email
 6. Open the email contents, and click on "Set your new REDCap password" link
 7. Set your password
@@ -31,18 +31,18 @@ Send Rx requires Table-base authentication method to work, so if your REDCap doe
 
 ### Step 2: Creating User Profiles project
 1. Access **+ New Project** page, then import `samples/UserProfiles.xml` file.
-2. If User Profile module is not enabled yet, you may do that by accessing **Control Center > Manage External Modules**.
-3. Yet on **Control Center > Manage External Modules**, configure the module as follows:
+2. If User Profile module is not enabled yet, you may do that by accessing **Control Center > External Modules**.
+3. Yet on **Control Center > External Modules**, configure the module as follows:
   - Project: User Profiles (or any name you might have given to the project)
   - Username field: `send_rx_user_id`
 
 ### Step 3: Creating Sites Project
 1. Make sure you are logged in as the admin user created on step 1 (not `site_admin`)
 2. Access **+ New Project** page, then import `samples/SendRxSites.xml` file.
-3. Go to **Manage Extensions** section and enable Send Rx module for this project
-4. Yet on Manage Extensions page, click on Send Rx **Configure** button and set fields as follows:
+3. Go to **External Modules** section and enable Send Rx module for this project
+4. Yet on External Modules page, click on Send Rx **Configure** button and set fields as follows:
   - Type: Site
-  - Target Project: (Leave it blank for now, you are going to set it on step 4.8)
+  - Target Project: (Leave it blank for now, you are going to set it on step 4.7)
   - PDF Template Name: (upload `SamplePDFTemplate.html`) file
   - PDF Template Variables:
     - Key: "study_irb", Value: "2017-1234"
@@ -53,14 +53,13 @@ Send Rx requires Table-base authentication method to work, so if your REDCap doe
 ### Step 4: Creating Patients Project
 1. Make sure you are logged in as the admin user created on step 1 (not `site_admin`)
 2. Access **+ New Project** page, then import `samples/SendRxPatients.xml` file.
-3. Take note of your new project ID (you should see it at the `pid` parameter in your URL).
-4. Go to **Manage Extensions** section and enable Send Rx module for this project
-5. Yet on Manage Extensions page, click on Configure Button and set fields as follows:
+3. Go to **External Modules** section and enable Send Rx module for this project
+4. Yet on External Modules page, click on Configure Button and set fields as follows:
   - Type: Patient
-  - Target Project ID: _Place here the PID from step 3.2_
-6. Go to **User Rights** section and create two roles: `prescriber` and `study_coordinator`
-7. Switch to Sites project, then access **Manage Extensions** and click on Send Rx **Configure** button
-8. Set **Target Project** as sites project defined on step 3 and save.
+  - Target Project: the Sites project defined on section 3
+5. Go to **User Rights** section and create two roles: `prescriber` and `study_coordinator`
+6. Switch to Sites project, then access **External Modules** and click on Send Rx **Configure** button
+7. Set **Target Project** as the project you just imported.
 
 ## Sending your First Test Prescription
 

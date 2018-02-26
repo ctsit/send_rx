@@ -11,7 +11,7 @@ $(document).ready(function() {
     ExternalModules.Settings.prototype.configureSettings = function() {
         ExternalModules.Settings.prototype.configureSettingsOld();
 
-        if ($modal.data('module') !== 'send_rx') {
+        if ($modal.data('module') !== sendRx.modulePrefix) {
             return;
         }
 
