@@ -3,6 +3,13 @@ All notable changes to the Send RX project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## [1.3.2] - 2018-03-05
+### Changed
+- Remove "Save changes and leave" button on Review & Send form (Tiago Bember Simeao)
+- Fixing path reference (control_center.php -> project.php). (Tiago Bember Simeao)
+- Fixes on README, unhardcoding module prefix on js. (Tiago Bember Simeao)
+
+
 ## [1.3.1] - 2018-02-08
 ### Added
 - Add compatibility version number to config.json (Marly Cormar)
