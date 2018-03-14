@@ -109,6 +109,30 @@
                     "type": "rich-text"
                 }
             ]
+        },
+        {
+          "key" : "send-rx-hl7-settings",
+          "name" : "hl7 settings",
+          "required": false,
+          "type": "sub_settings",
+          "sub_settings": [
+            {
+              "key": "send-rx-hl7-end-point",
+              "name": "End-point",
+              "required": false,
+              "type": "text"
+            }, {
+              "key": "send-rx-hl7-channel-ID",
+              "name": "Channel ID",
+              "required": false,
+              "type": "text"
+            }, {
+              "key": "send-rx-hl7-json",
+              "name": "HL7 json message",
+              "required": false,
+              "type": "textarea"
+            }
+          ]
         }
     ],
     "enable-every-page-hooks-on-system-pages": true,
