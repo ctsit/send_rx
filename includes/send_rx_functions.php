@@ -80,6 +80,34 @@ function send_rx_get_project_config($project_id, $project_type) {
 }
 
 /**
+ * Gets hl7 settings for that specific
+ *
+ * @param int $project_id.
+ *   The project id.
+ *
+ * @return associative array $hl7_settings.
+ *   An associative array that carries the hl7 settings with the following keys:
+ *    - send-rx-hl7-end-point: the begining of the URL of the mirth connect server.
+ *    - send-rx-hl7-channel-ID: extension that holds the input connector at the end-point.
+ *    - send-rx-hl7-json: json message to be sent to end-point.
+ */
+ function getHL7Settings($project_id) {
+   $q = ExternalModules::getSettings('send_rx', $project_id, ['send-rx-hl7-end-point', 'send-rx-hl7-channel-ID', 'send-rx-hl7-json']);
+   if (!db_num_rows($q)) {
+       return false;
+   }
+
+   $hl7_settings = [];
+
+   while($result = db_fetch_assoc($q)) {
+     $hl7_settings[$result['key']] = $result['value'];
+   }
+
+   return $hl7_settings;
+ }
+
+
+/**
  * Gets site ID from DAG.
  *
  * @param int $project_id.
