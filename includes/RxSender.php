@@ -387,7 +387,9 @@ class RxSender {
                     break;
 
                 case 'hl7':
-                    // TODO: handle HL7 messages.
+                    $settings = getHL7Settings($this->siteProjectId);
+                    $client = send_rx_generate_mirth_client($settings['send-rx-hl7-end-point']);
+                    $client->request('POST', $settings['send-rx-hl7-channel-ID'], $settings['send-rx-hl7-json']);
                     break;
             }
         }
