@@ -179,6 +179,21 @@ function send_rx_piping($subject, $data) {
     return $subject;
 }
 
+
+/**
+ * Generates a mirth client.
+ *
+ * @param string $endpoint.
+ *   Base url of the REST API being connected to.
+ *
+ * @return REDCapMithClient obj
+ *   TRUE if success, FALSE otherwise.
+ */
+function send_rx_generate_mirth_client($endpoint) {
+  $client_module = ExternalModules::getModuleInstance('redcap_mirth_client', 'v1.0');
+  return $client_module->getClient($endpoint);
+}
+
 /**
  * Generates a PDF file.
  *
