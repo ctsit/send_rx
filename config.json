@@ -111,28 +111,24 @@
             ]
         },
         {
-          "key" : "send-rx-hl7-settings",
-          "name" : "hl7 settings",
+          "key": "hl7-settings",
+          "name": "HL7 settings",
+          "type": "descriptive"
+        },
+        {
+          "key": "send-rx-hl7-end-point",
+          "name": "End-point",
           "required": false,
-          "type": "sub_settings",
-          "sub_settings": [
-            {
-              "key": "send-rx-hl7-end-point",
-              "name": "End-point",
-              "required": false,
-              "type": "text"
-            }, {
-              "key": "send-rx-hl7-channel-ID",
-              "name": "Channel ID",
-              "required": false,
-              "type": "text"
-            }, {
-              "key": "send-rx-hl7-json",
-              "name": "HL7 json message",
-              "required": false,
-              "type": "textarea"
-            }
-          ]
+          "type": "text"
+        }, {
+          "key": "send-rx-hl7-channel-id",
+          "name": "Channel ID",
+          "required": false,
+          "type": "text"
+        }, {
+          "key": "send-rx-hl7-json",
+          "name": "HL7 json message",
+          "type": "textarea"
         }
     ],
     "enable-every-page-hooks-on-system-pages": true,
