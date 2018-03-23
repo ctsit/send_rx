@@ -90,3 +90,15 @@ Send Rx requires user authentication method to work, so if your REDCap does not 
 ## Customizing PDF and email messages
 
 The presented example can be fully adapted to your needs. You may freely create your own PDF template, change the email contents configuration, and override all forms/instruments (as soon as the fields containing `send_rx_` prefix remain untouched). All form fields you update/create will available to be used as wildcards on PDF and email (e.g. `[patient][first_name]`, `[site][send_rx_name]`, `[prescriber][first_name]`, etc).
+
+## Optional HL7 functionality
+
+This module also supports sending HL7 messages. This feature is only functional
+when there is an external end-point that can convert JSON into hl7 and forward
+that hl7 to a healthcare system. To enable this feature go to the send_rx module
+configuration menu on a Sites project. Inside the end-point field enter a url
+that will accept JSON messages and convert them to HL7. Then enter in JSON message
+for the module to send to this end-point in the HL7 json message field. Finally, go
+to a Site record in your Sites project and enable sending HL7 messages. After this
+point whenever a prescriber hits the Send button for a patient in that site the JSON
+provided earlier will be sent to that end-point.
