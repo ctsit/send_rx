@@ -121,11 +121,6 @@
           "required": false,
           "type": "text"
         }, {
-          "key": "send-rx-hl7-extension",
-          "name": "end-point extension",
-          "required": false,
-          "type": "text"
-        }, {
           "key": "send-rx-hl7-json",
           "name": "HL7 json message",
           "type": "textarea"
