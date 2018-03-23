@@ -390,7 +390,7 @@ class RxSender {
                     //send json of hl7 message to mirth-connect
                     $settings = getHL7Settings($this->siteProjectId);
                     $client = send_rx_generate_mirth_client($settings['send-rx-hl7-end-point']);
-                    $response = $client->request('POST', $settings['send-rx-hl7-channel-ID'], $settings['send-rx-hl7-json']);
+                    $response = $client->request('POST', $settings['send-rx-hl7-extension'], $settings['send-rx-hl7-json']);
 
                     //log hl7 message that was sent
                     $success = $response->getStatusCode() == 200;

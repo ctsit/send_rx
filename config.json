@@ -121,7 +121,7 @@
           "required": false,
           "type": "text"
         }, {
-          "key": "send-rx-hl7-channel-id",
+          "key": "send-rx-hl7-extension",
           "name": "Channel ID",
           "required": false,
           "type": "text"
