@@ -111,7 +111,7 @@
             ]
         },
         {
-          "key": "hl7-settings",
+          "key": "send-rx-hl7-settings",
           "name": "HL7 settings",
           "type": "descriptive"
         },

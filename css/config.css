@@ -5,6 +5,6 @@
 .send-rx [field="send-rx-message"],
 .send-rx [field="send-rx-message-subject"],
 .send-rx [field="send-rx-message-body"],
-.send-rx [field="send-rx-hl7-schema"] {
+.send-rx [field^="send-rx-hl7-"] {
     display: none;
 }
