@@ -181,7 +181,7 @@ function send_rx_piping($subject, $data) {
 
 
 /**
- * Generates a mirth client.
+ * Generates a mirth client bound to the given endpoint.
  *
  * @param string $endpoint.
  *   Base url of the REST API being connected to.
