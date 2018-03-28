@@ -43,13 +43,13 @@
 	</ItemGroupDef>
 	<ItemGroupDef OID="site_information.send_rx_delivery_methods___email" Name="" Repeating="No">
 		<ItemRef ItemOID="send_rx_delivery_methods___email" Mandatory="Yes" redcap:Variable="send_rx_delivery_methods"/>
-		<ItemRef ItemOID="send_rx_delivery_methods___h17" Mandatory="Yes" redcap:Variable="send_rx_delivery_methods"/>
+		<ItemRef ItemOID="send_rx_delivery_methods___hl7" Mandatory="Yes" redcap:Variable="send_rx_delivery_methods"/>
 		<ItemRef ItemOID="send_rx_delivery_methods___message_gateway" Mandatory="Yes" redcap:Variable="send_rx_delivery_methods"/>
 		<ItemRef ItemOID="send_rx_delivery_methods___email" Mandatory="Yes" redcap:Variable="send_rx_delivery_methods"/>
-		<ItemRef ItemOID="send_rx_delivery_methods___h17" Mandatory="Yes" redcap:Variable="send_rx_delivery_methods"/>
+		<ItemRef ItemOID="send_rx_delivery_methods___hl7" Mandatory="Yes" redcap:Variable="send_rx_delivery_methods"/>
 		<ItemRef ItemOID="send_rx_delivery_methods___message_gateway" Mandatory="Yes" redcap:Variable="send_rx_delivery_methods"/>
 		<ItemRef ItemOID="send_rx_delivery_methods___email" Mandatory="Yes" redcap:Variable="send_rx_delivery_methods"/>
-		<ItemRef ItemOID="send_rx_delivery_methods___h17" Mandatory="Yes" redcap:Variable="send_rx_delivery_methods"/>
+		<ItemRef ItemOID="send_rx_delivery_methods___hl7" Mandatory="Yes" redcap:Variable="send_rx_delivery_methods"/>
 		<ItemRef ItemOID="send_rx_delivery_methods___message_gateway" Mandatory="Yes" redcap:Variable="send_rx_delivery_methods"/>
 		<ItemRef ItemOID="send_rx_email_recipients" Mandatory="Yes" redcap:Variable="send_rx_email_recipients"/>
 		<ItemRef ItemOID="send_rx_email_subject" Mandatory="No" redcap:Variable="send_rx_email_subject"/>
@@ -87,9 +87,9 @@
 		<Question><TranslatedText>Delivery Methods</TranslatedText></Question>
 		<CodeListRef CodeListOID="send_rx_delivery_methods___email.choices"/>
 	</ItemDef>
-	<ItemDef OID="send_rx_delivery_methods___h17" Name="send_rx_delivery_methods___h17" DataType="boolean" Length="1" redcap:Variable="send_rx_delivery_methods" redcap:FieldType="checkbox" redcap:FieldNote="By what means will prescriptions be delivered to this site&#039;s pharmacy?" redcap:RequiredField="y" redcap:FieldAnnotation="@DEFAULT=&#039;email&#039;">
+	<ItemDef OID="send_rx_delivery_methods___hl7" Name="send_rx_delivery_methods___hl7" DataType="boolean" Length="1" redcap:Variable="send_rx_delivery_methods" redcap:FieldType="checkbox" redcap:FieldNote="By what means will prescriptions be delivered to this site&#039;s pharmacy?" redcap:RequiredField="y" redcap:FieldAnnotation="@DEFAULT=&#039;email&#039;">
 		<Question><TranslatedText>Delivery Methods</TranslatedText></Question>
-		<CodeListRef CodeListOID="send_rx_delivery_methods___h17.choices"/>
+		<CodeListRef CodeListOID="send_rx_delivery_methods___hl7.choices"/>
 	</ItemDef>
 	<ItemDef OID="send_rx_delivery_methods___message_gateway" Name="send_rx_delivery_methods___message_gateway" DataType="boolean" Length="1" redcap:Variable="send_rx_delivery_methods" redcap:FieldType="checkbox" redcap:FieldNote="By what means will prescriptions be delivered to this site&#039;s pharmacy?" redcap:RequiredField="y" redcap:FieldAnnotation="@DEFAULT=&#039;email&#039;">
 		<Question><TranslatedText>Delivery Methods</TranslatedText></Question>
@@ -99,9 +99,9 @@
 		<Question><TranslatedText>Delivery Methods</TranslatedText></Question>
 		<CodeListRef CodeListOID="send_rx_delivery_methods___email.choices"/>
 	</ItemDef>
-	<ItemDef OID="send_rx_delivery_methods___h17" Name="send_rx_delivery_methods___h17" DataType="boolean" Length="1" redcap:Variable="send_rx_delivery_methods" redcap:FieldType="checkbox" redcap:FieldNote="By what means will prescriptions be delivered to this site&#039;s pharmacy?" redcap:RequiredField="y" redcap:FieldAnnotation="@DEFAULT=&#039;email&#039;">
+	<ItemDef OID="send_rx_delivery_methods___hl7" Name="send_rx_delivery_methods___hl7" DataType="boolean" Length="1" redcap:Variable="send_rx_delivery_methods" redcap:FieldType="checkbox" redcap:FieldNote="By what means will prescriptions be delivered to this site&#039;s pharmacy?" redcap:RequiredField="y" redcap:FieldAnnotation="@DEFAULT=&#039;email&#039;">
 		<Question><TranslatedText>Delivery Methods</TranslatedText></Question>
-		<CodeListRef CodeListOID="send_rx_delivery_methods___h17.choices"/>
+		<CodeListRef CodeListOID="send_rx_delivery_methods___hl7.choices"/>
 	</ItemDef>
 	<ItemDef OID="send_rx_delivery_methods___message_gateway" Name="send_rx_delivery_methods___message_gateway" DataType="boolean" Length="1" redcap:Variable="send_rx_delivery_methods" redcap:FieldType="checkbox" redcap:FieldNote="By what means will prescriptions be delivered to this site&#039;s pharmacy?" redcap:RequiredField="y" redcap:FieldAnnotation="@DEFAULT=&#039;email&#039;">
 		<Question><TranslatedText>Delivery Methods</TranslatedText></Question>
@@ -111,9 +111,9 @@
 		<Question><TranslatedText>Delivery Methods</TranslatedText></Question>
 		<CodeListRef CodeListOID="send_rx_delivery_methods___email.choices"/>
 	</ItemDef>
-	<ItemDef OID="send_rx_delivery_methods___h17" Name="send_rx_delivery_methods___h17" DataType="boolean" Length="1" redcap:Variable="send_rx_delivery_methods" redcap:FieldType="checkbox" redcap:FieldNote="By what means will prescriptions be delivered to this site&#039;s pharmacy?" redcap:RequiredField="y" redcap:FieldAnnotation="@DEFAULT=&#039;email&#039;">
+	<ItemDef OID="send_rx_delivery_methods___hl7" Name="send_rx_delivery_methods___hl7" DataType="boolean" Length="1" redcap:Variable="send_rx_delivery_methods" redcap:FieldType="checkbox" redcap:FieldNote="By what means will prescriptions be delivered to this site&#039;s pharmacy?" redcap:RequiredField="y" redcap:FieldAnnotation="@DEFAULT=&#039;email&#039;">
 		<Question><TranslatedText>Delivery Methods</TranslatedText></Question>
-		<CodeListRef CodeListOID="send_rx_delivery_methods___h17.choices"/>
+		<CodeListRef CodeListOID="send_rx_delivery_methods___hl7.choices"/>
 	</ItemDef>
 	<ItemDef OID="send_rx_delivery_methods___message_gateway" Name="send_rx_delivery_methods___message_gateway" DataType="boolean" Length="1" redcap:Variable="send_rx_delivery_methods" redcap:FieldType="checkbox" redcap:FieldNote="By what means will prescriptions be delivered to this site&#039;s pharmacy?" redcap:RequiredField="y" redcap:FieldAnnotation="@DEFAULT=&#039;email&#039;">
 		<Question><TranslatedText>Delivery Methods</TranslatedText></Question>
@@ -149,39 +149,39 @@
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="send_rx_delivery_methods___email.choices" Name="send_rx_delivery_methods___email" DataType="boolean" redcap:Variable="send_rx_delivery_methods" redcap:CheckboxChoices="email, Email|h17, H17|message_gateway, Message Gateway">
+	<CodeList OID="send_rx_delivery_methods___email.choices" Name="send_rx_delivery_methods___email" DataType="boolean" redcap:Variable="send_rx_delivery_methods" redcap:CheckboxChoices="email, Email|hl7, hl7|message_gateway, Message Gateway">
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="send_rx_delivery_methods___h17.choices" Name="send_rx_delivery_methods___h17" DataType="boolean" redcap:Variable="send_rx_delivery_methods" redcap:CheckboxChoices="email, Email|h17, H17|message_gateway, Message Gateway">
+	<CodeList OID="send_rx_delivery_methods___hl7.choices" Name="send_rx_delivery_methods___hl7" DataType="boolean" redcap:Variable="send_rx_delivery_methods" redcap:CheckboxChoices="email, Email|hl7, hl7|message_gateway, Message Gateway">
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="send_rx_delivery_methods___message_gateway.choices" Name="send_rx_delivery_methods___message_gateway" DataType="boolean" redcap:Variable="send_rx_delivery_methods" redcap:CheckboxChoices="email, Email|h17, H17|message_gateway, Message Gateway">
+	<CodeList OID="send_rx_delivery_methods___message_gateway.choices" Name="send_rx_delivery_methods___message_gateway" DataType="boolean" redcap:Variable="send_rx_delivery_methods" redcap:CheckboxChoices="email, Email|hl7, hl7|message_gateway, Message Gateway">
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="send_rx_delivery_methods___email.choices" Name="send_rx_delivery_methods___email" DataType="boolean" redcap:Variable="send_rx_delivery_methods" redcap:CheckboxChoices="email, Email|h17, H17|message_gateway, Message Gateway">
+	<CodeList OID="send_rx_delivery_methods___email.choices" Name="send_rx_delivery_methods___email" DataType="boolean" redcap:Variable="send_rx_delivery_methods" redcap:CheckboxChoices="email, Email|hl7, hl7|message_gateway, Message Gateway">
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="send_rx_delivery_methods___h17.choices" Name="send_rx_delivery_methods___h17" DataType="boolean" redcap:Variable="send_rx_delivery_methods" redcap:CheckboxChoices="email, Email|h17, H17|message_gateway, Message Gateway">
+	<CodeList OID="send_rx_delivery_methods___hl7.choices" Name="send_rx_delivery_methods___hl7" DataType="boolean" redcap:Variable="send_rx_delivery_methods" redcap:CheckboxChoices="email, Email|hl7, hl7|message_gateway, Message Gateway">
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="send_rx_delivery_methods___message_gateway.choices" Name="send_rx_delivery_methods___message_gateway" DataType="boolean" redcap:Variable="send_rx_delivery_methods" redcap:CheckboxChoices="email, Email|h17, H17|message_gateway, Message Gateway">
+	<CodeList OID="send_rx_delivery_methods___message_gateway.choices" Name="send_rx_delivery_methods___message_gateway" DataType="boolean" redcap:Variable="send_rx_delivery_methods" redcap:CheckboxChoices="email, Email|hl7, hl7|message_gateway, Message Gateway">
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="send_rx_delivery_methods___email.choices" Name="send_rx_delivery_methods___email" DataType="boolean" redcap:Variable="send_rx_delivery_methods" redcap:CheckboxChoices="email, Email|h17, H17|message_gateway, Message Gateway">
+	<CodeList OID="send_rx_delivery_methods___email.choices" Name="send_rx_delivery_methods___email" DataType="boolean" redcap:Variable="send_rx_delivery_methods" redcap:CheckboxChoices="email, Email|hl7, hl7|message_gateway, Message Gateway">
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="send_rx_delivery_methods___h17.choices" Name="send_rx_delivery_methods___h17" DataType="boolean" redcap:Variable="send_rx_delivery_methods" redcap:CheckboxChoices="email, Email|h17, H17|message_gateway, Message Gateway">
+	<CodeList OID="send_rx_delivery_methods___hl7.choices" Name="send_rx_delivery_methods___hl7" DataType="boolean" redcap:Variable="send_rx_delivery_methods" redcap:CheckboxChoices="email, Email|hl7, hl7|message_gateway, Message Gateway">
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
 	</CodeList>
-	<CodeList OID="send_rx_delivery_methods___message_gateway.choices" Name="send_rx_delivery_methods___message_gateway" DataType="boolean" redcap:Variable="send_rx_delivery_methods" redcap:CheckboxChoices="email, Email|h17, H17|message_gateway, Message Gateway">
+	<CodeList OID="send_rx_delivery_methods___message_gateway.choices" Name="send_rx_delivery_methods___message_gateway" DataType="boolean" redcap:Variable="send_rx_delivery_methods" redcap:CheckboxChoices="email, Email|hl7, hl7|message_gateway, Message Gateway">
 		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
 		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
 	</CodeList>
