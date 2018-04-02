@@ -91,7 +91,7 @@ function send_rx_get_project_config($project_id, $project_type) {
  *    - send-rx-hl7-json: json message to be sent to end-point.
  */
  function getHL7Settings($project_id) {
-   $q = ExternalModules::getSettings('send_rx', $project_id, ['send-rx-hl7-end-point', 'send-rx-hl7-json']);
+   $q = ExternalModules::getSettings('send_rx', $project_id, ['send-rx-hl7-end-point', 'send-rx-hl7-json', 'send-rx-hl7-username', 'send-rx-hl7-password']);
    if (!db_num_rows($q)) {
        return false;
    }
@@ -188,9 +188,9 @@ function send_rx_piping($subject, $data) {
  * @return REDCapMithClient obj
  *   TRUE if success, FALSE otherwise.
  */
-function send_rx_generate_mirth_client($endpoint) {
+function send_rx_generate_mirth_client($endpoint, $credidentials) {
   $client_module = ExternalModules::getModuleInstance('redcap_mirth_client', 'v1.0');
-  return $client_module->getClient($endpoint);
+  return $client_module->getClient($endpoint, $credidentials);
 }
 
 /**
