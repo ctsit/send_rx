@@ -11,6 +11,7 @@ require_once 'includes/RxSender.php';
 use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;
 use Records;
+use RCView;
 use RedCapDB;
 use REDCap;
 use SendRx\RxSender;
@@ -75,13 +76,21 @@ class ExternalModule extends AbstractExternalModule {
             $modals = '<div id="send-rx-logs-details">';
 
             // Populating tables and creating one modal for each entry.
+            $rx_sent = false;
             foreach (array_reverse($logs) as $key => $row) {
                 $table .= '<tr>';
 
                 $row[0] = $types[$row[0]];
-                $row[1] = $row[1] ? 'Yes' : 'No';
                 $row[2] = date('m/d/y - h:i a', $row[2]);
                 $row[3] = str_replace(',', '<br>', $row[3]);
+
+                if ($row[1]) {
+                    $rx_sent = true;
+                    $row[1] = 'Yes';
+                }
+                else {
+                    $row[1] = 'No';
+                }
 
                 foreach (range(0, 2) as $i) {
                     $table .= '<td>' . $row[$i] . '</td>';
@@ -162,6 +171,15 @@ class ExternalModule extends AbstractExternalModule {
 
         $this->setJsSetting('sendForm', $settings);
         $this->includeJs('js/send-form.js');
+
+        if ($settings['currentUserIsPrescriber']) {
+            $this->includeCss('css/send-form.css');
+
+            $msg = $rx_sent ? 'This prescription ' . RCView::b('has already been sent') . '. Are you sure you want to re-send it?' : 'Are you sure you want to send this prescription?';
+            $msg = RCView::img(array('src' => APP_PATH_IMAGES . 'warning.png')) . ' ' . RCView::span(array(), $msg);
+
+            echo RCView::div(array('id' => 'send-rx-confirmation-modal', 'title' => 'Send Rx?'), RCView::p(array(), $msg));
+        }
     }
 
     /**

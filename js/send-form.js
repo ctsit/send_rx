@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
     $('#submit-btn-savenextform').html('Send & Go to Next Form');
     $('#submit-btn-saveexitrecord').html('Send & Exit Record');
     $('#submit-btn-savenextrecord').html('Send & Go To Next Record');
+    $('#submit-btn-savecompresp').html('Send & Mark Survey as Complete');
 
     // Showing logs table.
     $('#send_rx_logs-tr .data').html(settings.table);
@@ -22,10 +23,37 @@ document.addEventListener('DOMContentLoaded', function() {
     var $submitButtons = $('button[id^="submit-btn-"]');
     $submitButtons.addClass('btn-success');
 
-    if (!settings.currentUserIsPrescriber) {
+    // Removing save callbacks (to be moved to confirmation modal).
+    var $saveElements = $('[id^="submit-btn-save"]');
+    $saveElements.removeAttr('onclick');
+
+    if (settings.currentUserIsPrescriber) {
+        // Adding confirmation modal.
+        $saveElements.click(function() {
+            var currSubmitElement = this;
+
+            $('#send-rx-confirmation-modal').dialog({
+                resizable: false,
+                height: 'auto',
+                width: 400,
+                modal: true,
+                buttons: {
+                    'Send Rx': function() {
+                        dataEntrySubmit(currSubmitElement);
+                        $(this).dialog('close');
+                    },
+                    Cancel: function() {
+                        $(this).dialog('close');
+                    }
+                }
+            });
+
+            return false;
+        });
+    }
+    else {
         // Disable submit buttons if prescriber is not set.
         $submitButtons.prop('disabled', true);
-        $submitButtons.removeAttr('onclick');
         $submitButtons.prop('title', 'Only the prescriber can send the prescription.');
     }
 
