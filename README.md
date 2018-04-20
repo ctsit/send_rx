@@ -20,8 +20,9 @@ The steps below will walk you through a study research use case.
 
 ### Step 1: Making sure that user authentication is enabled
 Send Rx requires user authentication method to work, so if your REDCap does not have it, you may need to follow the steps below:
+
 1. Go to **Control Manager > Add Users (Table-based Only)**
-2. Add a new user that will be the new admin account (`site_admin` will be deprecated)
+2. Add a new user that will be the new admin account (since `site_admin` will become deprecated)
 3. Go to **Control Manager > Administrators & Acct Managers** and add the new user to the administrators list
 4. Go to **Control Manager > Security & Authentication**, select an authentication method of your choice (e.g. Table-based), and save
 5. Check your email inbox and look for a "REDCap access granted" email
@@ -63,29 +64,20 @@ Send Rx requires user authentication method to work, so if your REDCap does not 
 
 ## Sending your First Test Prescription
 
-### Step 1: Creating a few test users
-1. Go to **Control Manager > Add Users (Table-based Only)** and create a few test users.
-2. Go to **Control Manager > Browse Users** and click on **View Users**.
-3. For each account you created:
-  - Access its details page;
-  - Click on **Create user profile** button;
-  - Fill and submit the user profile information.
-
-### Step 2: Create a Site/Pharmacy
+### Step 1: Create a Site/Pharmacy
 1. On site project, go to **Add / Edit records** and then click on **Add new record**.
-2. Fill **Site Information** form step and go ahead to the next step
-3. On **Delivery methods step**, choose `Email` as the delivery type, then fill the email address you want to use in your test, and save.
-4. On **Site Staff** step, add the test users you created previously (make sure to add prescribers and at least one study coordinator), then click on **Save & Exit**
-5. On record home page, will might be able to see two buttons: **Rebuild staff permissions** and **Revoke staff permissions**
-6. Click on **Rebuild staff permissions** to grant permissions to your staff
+2. On **Site Information** form, fill out site name, then select `Email` as delivery type, then set the email address you want to use in your test, and finally save - making sure sure your form is set as *Complete*.
+4. On **Site Staff** step, select **Create a new user account from scratch**, fill out user information, make sure your form is set as *Complete*, then click on **Save & Go To Next Instance**
+5. Repeat the step above a few times - making sure to add at least one prescriber and one study coordinator - then click on **Save & Exit**
+6. You will be redirected to record home page, in which you should be able to see two buttons: **Rebuild staff permissions** and **Revoke staff permissions** (if both buttons are disabled, make sure all forms previously filled are set as *Complete*, i.e. they appear as green bullets)
+7. Click on **Rebuild staff permissions** to grant permissions to your staff
 
-### Step 3: Create a Prescription and Send it
-1. Log in as study coordinator.
+### Step 2: Create a Prescription and Send it
+1. Log in as study coordinator
 2. On patient project, go to **Add / Edit records** and then click on **Add new record**
-3. Complete all steps until the last step (**Review & Send Rx**).
-5. On review step, click on **Send and Stay**
-6. At **Messages History** block you should now see the notification contents you just sent.
-7. Check your email inbox.
+3. Fill out all forms until the last one - **Review & Send Rx** - then click on **Send and Stay**
+4. At **Messages History** block you should now see the notification contents you just sent
+5. Check your email inbox
 
 ## Customizing PDF and email messages
 
