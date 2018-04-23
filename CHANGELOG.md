@@ -2,6 +2,15 @@
 All notable changes to the Send RX project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.4.0] - 2018-04-23
+### Added
+- Adding confirmation modal on sending rx operation. (Tiago Bember Simeao)
+- Adding option to create users from site staff form. (Tiago Bember Simeao)
+
+### Changed
+- Change method for locating composer's vendor folder (Philip Chase)
+- Preventing conflicts with other configuration modals. (Tiago Bember Simeao)
+
 
 ## [1.3.2] - 2018-03-05
 ### Changed
