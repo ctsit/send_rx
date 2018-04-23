@@ -1,0 +1,12 @@
+#send-rx-confirmation-modal {
+    display: none;
+}
+
+#send-rx-confirmation-modal p img {
+    float: left;
+}
+
+#send-rx-confirmation-modal p span {
+    float: right;
+    width: 310px;
+}

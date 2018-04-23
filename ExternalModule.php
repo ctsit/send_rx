@@ -11,6 +11,7 @@ require_once 'includes/RxSender.php';
 use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;
 use Records;
+use RCView;
 use RedCapDB;
 use REDCap;
 use SendRx\RxSender;
@@ -24,7 +25,7 @@ class ExternalModule extends AbstractExternalModule {
     /**
      * @inheritdoc.
      */
-    function hook_data_entry_form_top($project_id, $record, $instrument, $event_id, $group_id) {
+    function hook_data_entry_form_top($project_id, $record = null, $instrument, $event_id, $group_id = null, $repeat_instance = 1) {
         // New PDF is generated based on pdf_is_updated flag.
         // Reset flag once PDF is generated to avoid duplicate generation of the same PDF.
         global $Proj;
@@ -33,6 +34,92 @@ class ExternalModule extends AbstractExternalModule {
             if ($Proj->metadata['send_rx_dag_id']['form_name'] == $instrument) {
                 // Hiding DAG ID field.
                 $this->includeJs('js/dag-id-field.js');
+            }
+            elseif ($Proj->metadata['send_rx_user_id']['form_name'] == $instrument) {
+                global $lang;
+
+                $this->includeJs('js/create-staff.js');
+                $this->setJsSetting('usernameValidateRegexElement', RCView::div(array(
+                    'id' => 'valregex-username',
+                    'datatype' => 'text',
+                    'label' => $lang['control_center_45'],
+                ), '/^([a-zA-Z0-9_\.\-\@])+$/'));
+                $this->setJsSetting('getUserProfileInfoUrl', $this->getUrl('includes/get_user_profile_info_ajax.php'));
+
+                // Creating artificial fields to make user able to create
+                // to account + profile directly from this form.
+                $base_field = $Proj->metadata['send_rx_user_id'];
+
+                $select_field_name = 'send_rx_new_user_opt';
+                $form_name = $base_field['form_name'];
+                $Proj->forms[$form_name]['fields'][$select_field_name] = $label;
+
+                $options = array(
+                    'existing' => 'Select an existing user',
+                    'new' => 'Create a new user account from scratch',
+                );
+
+                $enum = array();
+                foreach ($options as $key => $label) {
+                    $enum[] = $key . ', ' . $label;
+                }
+
+                // Adding select list field that asks user whether to select an
+                // existing user or create a new account.
+                $Proj->metadata[$select_field_name] = array(
+                    'field_name' => $select_field_name,
+                    'element_label' => '',
+                    'element_type' => 'radio',
+                    'element_enum' => implode(' \n', $enum),
+                    'misc' => '@DEFAULT="existing"',
+                ) + $base_field;
+
+                $base_field['misc'] = '';
+                $base_field['element_type'] = 'text';
+                $base_field['element_enum'] = '';
+                $base_field['element_preceding_header'] = '';
+                $base_field['field_order']++;
+
+                $fields = array(
+                    'id' => 'Username',
+                    'first_name' => 'First name',
+                    'last_name' => 'Last name',
+                    'email' => 'Email',
+                );
+
+                // Shifting position of existing fields to make room for the
+                // fake fields.
+                $count = count($fields) + 1;
+                foreach (array_keys($Proj->forms[$form_name]['fields']) as $field_name) {
+                    if ($Proj->metadata[$field_name]['field_order'] > $Proj->metadata[$select_field_name]['field_order']) {
+                        $Proj->metadata[$field_name]['field_order'] += $count;
+                    }
+                }
+
+                $Proj->metadata['send_rx_user_id']['field_order']++;
+                $Proj->metadata['send_rx_user_id']['element_preceding_header'] = '';
+
+                // Updating fields count.
+                $Proj->numFields += $count;
+
+                // Adding username, first name, last name and email fake fields.
+                foreach ($fields as $suffix => $label) {
+                    $field_name = 'send_rx_new_user_' . $suffix;
+                    $label = 'New user -- ' . $label;
+
+                    $base_field['field_name'] = $field_name;
+                    $base_field['element_label'] = $label;
+                    $base_field['field_order']++;
+
+                    $Proj->metadata[$field_name] = $base_field;
+                    $Proj->forms[$form_name]['fields'][$field_name] = $label;
+                }
+
+                // Adding email validation.
+                $Proj->metadata[$field_name]['element_validation_type'] = 'email';
+
+                // Re-sorting form fields.
+                uksort($Proj->forms[$form_name]['fields'], array($this, '_formFieldCmp'));
             }
 
             return;
@@ -75,13 +162,21 @@ class ExternalModule extends AbstractExternalModule {
             $modals = '<div id="send-rx-logs-details">';
 
             // Populating tables and creating one modal for each entry.
+            $rx_sent = false;
             foreach (array_reverse($logs) as $key => $row) {
                 $table .= '<tr>';
 
                 $row[0] = $types[$row[0]];
-                $row[1] = $row[1] ? 'Yes' : 'No';
                 $row[2] = date('m/d/y - h:i a', $row[2]);
                 $row[3] = str_replace(',', '<br>', $row[3]);
+
+                if ($row[1]) {
+                    $rx_sent = true;
+                    $row[1] = 'Yes';
+                }
+                else {
+                    $row[1] = 'No';
+                }
 
                 foreach (range(0, 2) as $i) {
                     $table .= '<td>' . $row[$i] . '</td>';
@@ -144,7 +239,7 @@ class ExternalModule extends AbstractExternalModule {
             if ($sender->getPrescriberData()) {
                 // Generate PDF.
                 $sender->generatePDFFile();
-                send_rx_save_record_field($project_id, $event_id, $record, 'send_rx_pdf_is_updated', '1', $repeat_instance);
+                send_rx_save_record_field($project_id, $event_id, $record, 'send_rx_pdf_is_updated', '1');
                 echo '<div class="darkgreen" style="margin-bottom:30px;"><img src="' . APP_PATH_IMAGES . 'tick.png"> A new prescription PDF preview has been created.</div>';
             }
             else {
@@ -162,6 +257,15 @@ class ExternalModule extends AbstractExternalModule {
 
         $this->setJsSetting('sendForm', $settings);
         $this->includeJs('js/send-form.js');
+
+        if ($settings['currentUserIsPrescriber']) {
+            $this->includeCss('css/send-form.css');
+
+            $msg = $rx_sent ? 'This prescription ' . RCView::b('has already been sent') . '. Are you sure you want to re-send it?' : 'Are you sure you want to send this prescription?';
+            $msg = RCView::img(array('src' => APP_PATH_IMAGES . 'warning.png')) . ' ' . RCView::span(array(), $msg);
+
+            echo RCView::div(array('id' => 'send-rx-confirmation-modal', 'title' => 'Send Rx?'), RCView::p(array(), $msg));
+        }
     }
 
     /**
@@ -441,23 +545,48 @@ class ExternalModule extends AbstractExternalModule {
     /**
      * @inheritdoc.
      */
-    function hook_save_record($project_id, $record, $instrument, $event_id, $group_id, $survey_hash, $response_id) {
+    function hook_save_record($project_id, $record = null, $instrument, $event_id, $group_id = null, $survey_hash = null, $response_id = null, $repeat_instance = 1) {
         global $Proj;
 
         // Auto create a DAG in patients project when a new site is created.
         // Link this DAG Id to the site created.
         if ($config = send_rx_get_project_config($project_id, 'site')) {
-            if (!isset($Proj->metadata['send_rx_dag_id']) || $Proj->metadata['send_rx_dag_id']['form_name'] != $instrument) {
-                return;
+            if ($Proj->metadata['send_rx_dag_id']['form_name'] == $instrument) {
+                $data = send_rx_get_record_data($project_id, $record, $event_id);
+                if ($data['send_rx_dag_id']) {
+                    send_rx_rename_dag($config['target_project_id'], $data['send_rx_site_name'], $data['send_rx_dag_id']);
+                }
+                else {
+                    $group_id = send_rx_add_dag($config['target_project_id'], $data['send_rx_site_name']);
+                    send_rx_save_record_field($project_id, $event_id, $record, 'send_rx_dag_id', $group_id);
+                }
             }
+            elseif ($Proj->metadata['send_rx_user_id']['form_name'] == $instrument) {
+                if (empty($_POST['send_rx_new_user_opt']) || $_POST['send_rx_new_user_opt'] != 'new') {
+                    return;
+                }
 
-            $data = send_rx_get_record_data($project_id, $record, $event_id);
-            if ($data['send_rx_dag_id']) {
-                send_rx_rename_dag($config['target_project_id'], $data['send_rx_site_name'], $data['send_rx_dag_id']);
-            }
-            else {
-                $group_id = send_rx_add_dag($config['target_project_id'], $data['send_rx_site_name']);
-                send_rx_save_record_field($project_id, $event_id, $record, 'send_rx_dag_id', $group_id);
+                $values = array();
+                foreach (array('id', 'first_name', 'last_name', 'email') as $suffix) {
+                    if (empty($_POST['send_rx_new_user_' . $suffix])) {
+                        return;
+                    }
+
+                    $values['send_rx_user_' . $suffix] = trim(strip_tags(label_decode($_POST['send_rx_new_user_' . $suffix])));
+                }
+
+                $username = preg_replace('/[^a-z A-Z0-9_\.\-\@]/', '', $values['send_rx_user_id']);
+                if ($username != $values['send_rx_user_id']) {
+                    // Invalid username.
+                    return;
+                }
+
+                if (!UserProfile::createProfile($values)) {
+                    return;
+                }
+
+                send_rx_create_user($username, $values['send_rx_user_first_name'], $values['send_rx_user_last_name'], $values['send_rx_user_email']);
+                send_rx_save_record_field($project_id, $event_id, $record, 'send_rx_user_id', $username, $repeat_instance);
             }
 
             return;
@@ -503,7 +632,7 @@ class ExternalModule extends AbstractExternalModule {
         // New PDF needs to be generated as changes are made to form after PDF is created.
         // Reset pdf_is_updated flag to generate new PDF.
         $field_name = 'send_rx_pdf_is_updated';
-        send_rx_save_record_field($project_id, $event_id, $record, $field_name, '0', $repeat_instance);
+        send_rx_save_record_field($project_id, $event_id, $record, $field_name, '0');
     }
 
     /**
@@ -536,5 +665,21 @@ class ExternalModule extends AbstractExternalModule {
      */
     protected function setJsSetting($key, $value) {
         echo '<script>sendRx.' . $key . ' = ' . json_encode($value) . ';</script>';
+    }
+
+    /**
+     * Auxiliary function to compare the order between two fields.
+     *
+     * @param string $a
+     *   Name of the field to be compared.
+     * @param string $b
+     *   Name of the field to compare with.
+     *
+     * @return
+     *   TRUE if $a comes first than $b, FALSE otherwise.
+     */
+    function _formFieldCmp($a, $b) {
+        global $Proj;
+        return $Proj->metadata[$a]['field_order'] >= $Proj->metadata[$b]['field_order'];
     }
 }

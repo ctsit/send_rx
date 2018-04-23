@@ -4,7 +4,7 @@
  * Helper Send RX functions.
  */
 
-include_once dirname(__DIR__) . '/vendor/autoload.php';
+include_once dirname(APP_PATH_DOCROOT) . '/vendor/autoload.php';
 use ExternalModules\ExternalModules;
 use UserProfile\UserProfile;
 
@@ -587,4 +587,100 @@ function send_rx_rename_dag($project_id, $group_name, $group_id) {
     $group_id = db_escape($group_id);
 
     db_query('UPDATE redcap_data_access_groups SET group_name = "' . $group_name . '" WHERE project_id = ' . $project_id . ' AND group_id = ' . $group_id);
+}
+
+/**
+ * Creates a basic user.
+ *
+ * @param string $username
+ *   The new username.
+ * @param string $firstname
+ *   The new user first name.
+ * @param string $lastname
+ *   The new user last name.
+ * @param string $email
+ *   The new user email address.
+ * @param bool $send_notification
+ *   Defines whether to send a notification to the user. Defaults to TRUE.
+ *
+ * @return bool
+ *   TRUE if success, FALSE otherwise.
+ */
+function send_rx_create_user($username, $firstname, $lastname, $email, $send_notification = true, $add_to_whitelist = true) {
+    if (User::getUserInfo($username)) {
+        // User already exists.
+        return false;
+    }
+
+    global $default_datetime_format, $default_number_format_decimal, $default_number_format_thousands_sep;
+
+    $db = new RedCapDB();
+    $sql = $db->saveUser(null, $username, $firstname, $lastname, $email,
+                         null, null, null, null, null, null, 0, generateRandomHash(8),
+                         $default_datetime_format, $default_number_format_decimal, $default_number_format_thousands_sep,
+                         1, null, null, '4_HOURS', '0', 0, 0, 0);
+
+    if (empty($sql)) {
+        return false;
+    }
+
+    // Log the new user
+    Logging::logEvent(implode(";\n", $sql), 'redcap_auth', 'MANAGE', $username, 'user = ' . $username, 'Create username');
+
+    if ($add_to_whitelist) {
+        // Adding user to whitelist, if whitelist is enabled.
+        $q = db_query('SELECT 1 FROM redcap_config WHERE field_name = "enable_user_whitelist" AND value = 1');
+        if (db_num_rows($q)) {
+            $sql = 'INSERT INTO redcap_user_whitelist VALUES ("' . db_real_escape_string($username) . '")';
+            if (!db_query($sql)) {
+                return false;
+            }
+
+            Logging::logEvent($sql, 'redcap_user_whitelist', 'MANAGE', '', '', 'Add user to whitelist');
+        }
+    }
+
+    if (!$send_notification) {
+        return true;
+    }
+
+    global $auth_meth;
+
+    switch ($auth_meth) {
+        case 'table':
+            global $lang, $project_contact_email;
+
+            $msg = new Message();
+            $msg->setTo($email);
+            $msg->setToName($firstname . ' ' . $lastname);
+            $msg->setFrom($project_contact_email);
+
+            // Set up the email subject.
+            $msg->setSubject('REDCap ' . $lang['control_center_101']);
+
+            // Get reset password link
+            $resetpasslink = Authentication::getPasswordResetLink($username);
+
+            $br = RCView::br();
+            $body = $lang['control_center_4488'] . ' "' . RCView::b($username) . '"' . $lang['period'] . ' ' .
+                    $lang['control_center_4486'] . $br . $br .
+                    RCView::a(array('href' => $resetpasslink), $lang['control_center_4487']);
+
+            // Set up email body.
+            $msg->setBody($body, true);
+
+            // Send the email.
+            return $msg->send();
+
+        case 'shibboleth':
+            $user_info = User::getUserInfo($username);
+            if ($code = User::setUserVerificationCode($user_info['ui_id'], 1)) {
+                // Send the email.
+                return User::sendUserVerificationCode($email, $code, 1, $username);
+            }
+
+            break;
+    }
+
+    return false;
 }

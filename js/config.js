@@ -7,18 +7,28 @@ $(document).ready(function() {
         $modal[op]('send-rx');
     }
 
-    ExternalModules.Settings.prototype.configureSettingsOld = ExternalModules.Settings.prototype.configureSettings;
-    ExternalModules.Settings.prototype.configureSettings = function() {
-        ExternalModules.Settings.prototype.configureSettingsOld();
-
+    $modal.on('show.bs.modal', function() {
+        // Making sure we are overriding this modules's modal only.
         if ($modal.data('module') !== sendRx.modulePrefix) {
             return;
         }
 
-        $(subject).change(function() {
-            sendRxBranchingLogic();
-        });
+        if (typeof ExternalModules.Settings.prototype.configureSettingsOld === 'undefined') {
+            ExternalModules.Settings.prototype.configureSettingsOld = ExternalModules.Settings.prototype.configureSettings;
+        }
 
-        sendRxBranchingLogic();
-    }
+        ExternalModules.Settings.prototype.configureSettings = function() {
+            ExternalModules.Settings.prototype.configureSettingsOld();
+
+            if ($modal.data('module') !== sendRx.modulePrefix) {
+                return;
+            }
+
+            $(subject).change(function() {
+                sendRxBranchingLogic();
+            });
+
+            sendRxBranchingLogic();
+        };
+    });
 });
