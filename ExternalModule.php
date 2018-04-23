@@ -248,19 +248,23 @@ class ExternalModule extends AbstractExternalModule {
         }
 
         $prescriber_field = 'send_rx_prescriber_id';
-        $data = REDCap::getData($project_id, 'array', $record, $prescriber_field, $event_id);
+        $pdf_field = 'send_rx_pdf';
+        $data = REDCap::getData($project_id, 'array', $record, array($prescriber_field, $pdf_field), $event_id);
+
         $settings = array(
             'currentUserIsPrescriber' => $data[$record][$event_id][$prescriber_field] == USERID,
             'instrument' => $instrument,
             'table' => $table,
+            'pdfIsSet' => !empty($data[$record][$event_id][$pdf_field]),
+            'completeReplacement' => RCView::hidden(array('value' => $rx_sent ? 2 : 0, 'name' => $instrument . '_complete')),
+            'sendBtn' => RCView::button(array('name' => 'send-rx-btn', 'class' => 'btn btn-primary btn-success send-rx-btn'), 'Send Rx'),
         );
 
         $this->setJsSetting('sendForm', $settings);
         $this->includeJs('js/send-form.js');
+        $this->includeCss('css/send-form.css');
 
         if ($settings['currentUserIsPrescriber']) {
-            $this->includeCss('css/send-form.css');
-
             $msg = $rx_sent ? 'This prescription ' . RCView::b('has already been sent') . '. Are you sure you want to re-send it?' : 'Are you sure you want to send this prescription?';
             $msg = RCView::img(array('src' => APP_PATH_IMAGES . 'warning.png')) . ' ' . RCView::span(array(), $msg);
 
@@ -618,12 +622,25 @@ class ExternalModule extends AbstractExternalModule {
 
         // Checking if we are on PDF form step.
         if ($Proj->metadata['send_rx_pdf']['form_name'] == $instrument) {
-            $data = $sender->getPrescriberData();
+            $patient_data = $sender->getPatientData();
+            if (empty($patient_data[$event_id]['send_rx_pdf'])) {
+                return;
+            }
 
             // Only the prescriber can send the prescription.
-            if ($data['send_rx_user_id'] == USERID) {
-                // Send prescription.
-                $sender->send(false);
+            $prescriber_data = $sender->getPrescriberData();
+            if ($prescriber_data['send_rx_user_id'] != USERID) {
+                return;
+            }
+
+            // Send prescription.
+            if (!$sender->send(false)) {
+                return;
+            }
+
+            $field_name = $instrument . '_complete';
+            if ($patient_data[$event_id][$field_name] != 2) {
+                send_rx_save_record_field($project_id, $event_id, $record, $field_name, '2');
             }
 
             return;
