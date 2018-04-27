@@ -388,13 +388,18 @@ class RxSender {
 
                 case 'hl7':
                     //send json of hl7 message to mirth-connect
-                    $settings = getHL7Settings($this->siteProjectId);
-                    $client = send_rx_generate_mirth_client($settings['send-rx-hl7-end-point'], ['username' => $settings['send-rx-hl7-username'], 'password' => $settings['send-rx-hl7-password']]);
-                    $response = $client->request('POST', '', $settings['send-rx-hl7-json']);
+                    $payload = getHL7JsonPayload($this->siteProjectId);
+                    $client = send_rx_generate_mirth_client('mirth_connect');
 
-                    //log hl7 message that was sent
-                    $success = !is_null($response) && $response->getStatusCode() == 200;
-                    $this->log($type, $success, $settings['send-rx-hl7-end-point'], 'POST', $settings['send-rx-hl7-json']);
+                    if(is_null($client)) {
+                        $this->log($type, false, 'mirth_connect', 'POST', $payload);
+                    } else {
+                        $response = $client->request('POST', '', $payload);
+
+                        //log hl7 message that was sent
+                        $success = !is_null($response) && $response->getStatusCode() == 200;
+                        $this->log($type, $success, 'mirth_connect', 'POST', $payload);
+                    }
                     break;
             }
         }
