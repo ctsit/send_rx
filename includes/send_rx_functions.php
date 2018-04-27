@@ -80,29 +80,23 @@ function send_rx_get_project_config($project_id, $project_type) {
 }
 
 /**
- * Gets hl7 settings for that specific
+ * Get json payload for hl7 message
  *
  * @param int $project_id.
  *   The project id.
  *
- * @return associative array $hl7_settings.
- *   An associative array that carries the hl7 settings with the following keys:
- *    - send-rx-hl7-end-point: the begining of the URL of the mirth connect server.
- *    - send-rx-hl7-json: json message to be sent to end-point.
+ * @return string
+ *   JSON formatted string that contains all of the data that must be sent
  */
- function getHL7Settings($project_id) {
-   $q = ExternalModules::getSettings('send_rx', $project_id, ['send-rx-hl7-end-point', 'send-rx-hl7-json', 'send-rx-hl7-username', 'send-rx-hl7-password']);
+ function getHL7JsonPayload($project_id) {
+   $q = ExternalModules::getSettings('send_rx', $project_id, ['send-rx-hl7-json']);
    if (!db_num_rows($q)) {
        return false;
    }
 
-   $hl7_settings = [];
+   $result = db_fetch_assoc($q);
 
-   while($result = db_fetch_assoc($q)) {
-     $hl7_settings[$result['key']] = $result['value'];
-   }
-
-   return $hl7_settings;
+   return $result['value'];
  }
 
 
