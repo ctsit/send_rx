@@ -182,9 +182,9 @@ function send_rx_piping($subject, $data) {
  * @return REDCapMithClient obj
  *   TRUE if success, FALSE otherwise.
  */
-function send_rx_generate_mirth_client($endpoint, $credidentials) {
+function send_rx_generate_mirth_client($endpoint_id) {
   $client_module = ExternalModules::getModuleInstance('redcap_mirth_client', 'v1.0');
-  return $client_module->getClient($endpoint, $credidentials);
+  return $client_module->getClient($endpoint_id);
 }
 
 /**
