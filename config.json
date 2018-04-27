@@ -115,23 +115,6 @@
           "name": "HL7 settings",
           "type": "descriptive"
         },
-        {
-          "key": "send-rx-hl7-end-point",
-          "name": "End-point",
-          "required": false,
-          "type": "text"
-        },
-        { "key": "send-rx-hl7-username",
-          "name": "username",
-          "required": false,
-          "type": "text"
-        },
-        {
-          "key": "send-rx-hl7-password",
-          "name": "password",
-          "required": false,
-          "type": "password"
-        },
          {
           "key": "send-rx-hl7-json",
           "name": "HL7 json message",
