@@ -10,3 +10,21 @@
     float: right;
     width: 310px;
 }
+
+.send-rx-btns-container {
+    padding-bottom: 2px;
+}
+
+.send-rx-btns-container button {
+    float: left;
+    font-size: 13px;
+    margin-top: 0 !important;
+}
+
+.send-rx-btns-container button[name="submit-btn-cancel"] {
+    margin-right: 5px;
+}
+
+#formSaveTip .send-rx-btn {
+    width: 100%;
+}
