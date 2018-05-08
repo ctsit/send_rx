@@ -1,37 +1,38 @@
 document.addEventListener('DOMContentLoaded', function() {
     var settings = sendRx.sendForm;
-    var helpTxt = '<div style="color: #666;font-size: 11px;"><b>ATTENTION:</b> The prescription will be sent by submitting this form.</div>';
-
-    $(helpTxt).insertBefore($('button[name="submit-btn-cancel"]')[0]);
 
     // Removing operation buttons on PDF file.
     if ($('#send_rx_pdf-linknew')) {
         $('#send_rx_pdf-linknew').remove();
     }
 
-    $('#submit-btn-saverecord').html('Send & Exit Form');
-    $('#submit-btn-savecontinue').html('Send & Stay');
-    $('#submit-btn-savenextform').html('Send & Go to Next Form');
-    $('#submit-btn-saveexitrecord').html('Send & Exit Record');
-    $('#submit-btn-savenextrecord').html('Send & Go To Next Record');
-    $('#submit-btn-savecompresp').html('Send & Mark Survey as Complete');
-
     // Showing logs table.
     $('#send_rx_logs-tr .data').html(settings.table);
 
-    // Changing color of submit buttons.
-    var $submitButtons = $('button[id^="submit-btn-"]');
-    $submitButtons.addClass('btn-success');
+    // Removing "Form Status" delimiter.
+    $('#' + settings.instrument + '_complete-sh-tr').remove();
 
-    // Removing save callbacks (to be moved to confirmation modal).
-    var $saveElements = $('[id^="submit-btn-save"]');
-    $saveElements.removeAttr('onclick');
+    // Hiding "Complete?" field and setting it as complete only if a
+    // prescription has been succesfully sent already.
+    $('#' + settings.instrument + '_complete-tr').replaceWith(settings.completeReplacement);
 
-    if (settings.currentUserIsPrescriber) {
-        // Adding confirmation modal.
-        $saveElements.click(function() {
-            var currSubmitElement = this;
+    // Adding class to submit buttons container for styling purposes.
+    $('#__SUBMITBUTTONS__-div').addClass('send-rx-btns-container');
 
+    // Removing all submit buttons.
+    $('button[id^="submit-btn-"]').remove();
+    $('.send-rx-btns-container .btn-group').remove();
+
+    // Adding Send Rx  button.
+    $('.send-rx-btns-container').append(settings.sendBtn);
+    $('#formSaveTip .btn-group').html(settings.sendBtn);
+
+    // Updating Cancel button text.
+    $('button[name="submit-btn-cancel"]').text('-- Leave & Continue later --');
+
+    var $sendBtns = $('button[name="send-rx-btn"]');
+    if (settings.currentUserIsPrescriber && settings.pdfIsSet) {
+        $sendBtns.click(function() {
             $('#send-rx-confirmation-modal').dialog({
                 resizable: false,
                 height: 'auto',
@@ -39,7 +40,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 modal: true,
                 buttons: {
                     'Send Rx': function() {
-                        dataEntrySubmit(currSubmitElement);
+                        // Saving form and staying on the same page.
+                        dataEntrySubmit('submit-btn-savecontinue');
                         $(this).dialog('close');
                     },
                     Cancel: function() {
@@ -52,9 +54,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     else {
-        // Disable submit buttons if prescriber is not set.
-        $submitButtons.prop('disabled', true);
-        $submitButtons.prop('title', 'Only the prescriber can send the prescription.');
+        // Disable submit buttons if prescriber is not set or if PDF is not set.
+        $sendBtns.prop('disabled', true);
+        var helper = settings.currentUserIsPrescriber ? 'Prescription file is not set.' : 'Only the prescriber can send the prescription.';
+        $sendBtns.prop('title', helper);
     }
 
     $('#stayOnPageReminderDialog').on('dialogopen', function(event, ui) {
