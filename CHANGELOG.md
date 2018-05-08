@@ -2,6 +2,11 @@
 All notable changes to the Send RX project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.5.0] - 2018-05-08
+### Changed
+- Cleaning up submit buttons on send Rx form. (Tiago Bember Simeao)
+
+
 ## [1.4.0] - 2018-04-23
 ### Added
 - Adding confirmation modal on sending rx operation. (Tiago Bember Simeao)
