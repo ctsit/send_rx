@@ -587,8 +587,8 @@ function send_rx_event_is_complete($project_id, $record, $event_id, $exclude = a
  *   The group ID.
  */
 function send_rx_add_dag($project_id, $group_name, $group_id = null) {
-    $project_id = db_escape($project_id);
-    $group_name = db_escape($group_name);
+    $project_id = intval($project_id);
+    $group_name = intval($group_name);
 
     db_query('INSERT INTO redcap_data_access_groups (project_id, group_name) VALUES (' . $project_id . ', "' . $group_name . '")');
     return db_insert_id();
@@ -605,9 +605,9 @@ function send_rx_add_dag($project_id, $group_name, $group_id = null) {
  *   The group ID.
  */
 function send_rx_rename_dag($project_id, $group_name, $group_id) {
-    $project_id = db_escape($project_id);
-    $group_name = db_escape($group_name);
-    $group_id = db_escape($group_id);
+    $project_id = intval($project_id);
+    $group_name = intval($group_name);
+    $group_id = db_real_escape_string($group_id);
 
     db_query('UPDATE redcap_data_access_groups SET group_name = "' . $group_name . '" WHERE project_id = ' . $project_id . ' AND group_id = ' . $group_id);
 }
