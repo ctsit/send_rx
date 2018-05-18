@@ -95,8 +95,8 @@ function send_rx_get_site_id_from_dag($project_id, $group_id) {
         SELECT record FROM redcap_data
         WHERE
             field_name = "send_rx_dag_id" AND
-            project_id = ' . db_escape($project_id) . ' AND
-            value = ' . db_escape($group_id) . '
+            project_id = "' . intval($project_id) . '" AND
+            value = "' . intval($group_id) . '"
         LIMIT 1';
 
     $q = db_query($sql);
@@ -186,7 +186,7 @@ function send_rx_generate_pdf_file($contents, $file_path) {
  *   The file path.
  */
 function send_rx_get_edoc_file_path($file_id) {
-    $sql = 'SELECT stored_name FROM redcap_edocs_metadata WHERE doc_id = ' . db_escape($file_id);
+    $sql = 'SELECT stored_name FROM redcap_edocs_metadata WHERE doc_id = "' . intval($file_id) . '"';
     $q = db_query($sql);
 
     if (!db_num_rows($q)) {
@@ -254,11 +254,12 @@ function send_rx_upload_file($file_path) {
  *   TRUE if success, FALSE otherwise.
  */
 function send_rx_edoc_file_delete($file_id) {
+    $file_id = intval($file_id);
     if (!$file_path = send_rx_get_edoc_file_path($file_id)) {
         return false;
     }
 
-    if (!db_query('DELETE FROM redcap_edocs_metadata WHERE doc_id = ' . db_escape($file_id))) {
+    if (!db_query('DELETE FROM redcap_edocs_metadata WHERE doc_id = "' . $file_id . '"')) {
         return false;
     }
 
@@ -286,27 +287,43 @@ function send_rx_edoc_file_delete($file_id) {
  *   TRUE if success, FALSE otherwise.
  */
 function send_rx_save_record_field($project_id, $event_id, $record_id, $field_name, $value, $instance = null) {
-    $readsql = "SELECT 1 from redcap_data where project_id = $project_id and event_id = $event_id and record = '".db_escape($record_id)."' and field_name = '".db_escape($field_name)."' " . ($instance == null ? "AND instance is null" : "AND instance = '".db_escape($instance)."'");
+    $project_id = intval($project_id);
+    $event_id = intval($event_id);
+    $record_id = db_real_escape_string($record_id);
+    $field_name = db_real_escape_string($field_name);
+    $value = db_real_escape_string($value);
+    $instance = intval($instance);
 
-    $q = db_query($readsql);
-    if (!$q) return false;
+    $sql = 'SELECT 1 FROM redcap_data
+            WHERE project_id = "' . $project_id . '" AND
+                  event_id = "' . $event_id . '" AND
+                  record = "' . $record_id . '" AND
+                  field_name = "' . $field_name . '" AND
+                  instance ' . ($instance ? '= "' . $instance . '"' : 'IS NULL');
 
-    $record_count = db_result($q, 0);
-    if ($record_count == 0) {
-        if (isSet($instance)) {
-            $sql = "INSERT INTO redcap_data (project_id, event_id, record, field_name, value, instance) " . "VALUES ($project_id, $event_id, '".db_escape($record_id)."', '".db_escape($field_name)."', '".db_escape($value)."' , $instance)";
-        } else {
-            $sql = "INSERT INTO redcap_data (project_id, event_id, record, field_name, value) " . "VALUES ($project_id, $event_id, '".db_escape($record_id)."', '".db_escape($field_name)."', '".db_escape($value)."')";
-        }
-        $q = db_query($sql);
-        if (!$q) return false;
-        return true;
-    } else {
-        $sql = "UPDATE redcap_data set value = '".db_escape($value)."' where project_id = $project_id and event_id = $event_id and record = '".db_escape($record_id)."' and field_name = '".db_escape($field_name)."' " . ($instance == null ? "AND instance is null" : "AND instance = '".db_escape($instance)."'");
-        $q = db_query($sql);
-        if (!$q) return false;
-        return true;
+    if (!$q = db_query($sql)) {
+        return false;
     }
+
+    if (db_num_rows($q)) {
+        $sql = 'UPDATE redcap_data SET value = "' . $value . '"
+                WHERE project_id = "' . $project_id . '" AND
+                      event_id = "' . $event_id . '" AND
+                      record = "' . $record_id . '" AND
+                      field_name = "' . $field_name . '" AND
+                      instance ' . ($instance ? '= "' . $instance . '"' : 'IS NULL');
+    }
+    else {
+        $instance = $instance ? '"' . $instance . '"' : 'NULL';
+        $sql = 'INSERT INTO redcap_data (project_id, event_id, record, field_name, value, instance)
+                VALUES ("' . $project_id . '", "' . $event_id . '", "' . $record_id . '", "' . $field_name . '", "' . $value . '", ' . $instance . ')';
+    }
+
+    if (!$q = db_query($sql)) {
+        return false;
+    }
+
+    return true;
 }
 
 /**
@@ -430,10 +447,10 @@ function send_rx_get_group_members($project_id, $group_id, $user_role = null) {
 
     $sql = 'SELECT u.username FROM redcap_user_rights u';
     if ($user_role) {
-        $sql .= ' INNER JOIN redcap_user_roles r ON u.role_id = r.role_id AND r.role_name = "' . db_escape($user_role) . '"';
+        $sql .= ' INNER JOIN redcap_user_roles r ON u.role_id = r.role_id AND r.role_name = "' . db_real_escape_string($user_role) . '"';
     }
 
-    $sql .= ' WHERE u.project_id = ' . db_escape($project_id) . ' AND u.group_id = ' . db_escape($group_id);
+    $sql .= ' WHERE u.project_id = "' . intval($project_id) . '" AND u.group_id = "' . intval($group_id) . '"';
 
     $q = db_query($sql);
     if (db_num_rows($q)) {
@@ -456,8 +473,10 @@ function send_rx_get_group_members($project_id, $group_id, $user_role = null) {
  */
 function send_rx_get_user_roles($project_id) {
     $user_roles = array();
-    $sql = 'SELECT rit.username, rol.role_name, rol.role_id FROM redcap_user_rights rit left join redcap_user_roles rol on rol.project_id = rit.project_id and rit.role_id = rol.role_id';
-    $sql .= ' WHERE rit.project_id = ' . db_escape($project_id);
+    $sql = 'SELECT rit.username, rol.role_name, rol.role_id
+            FROM redcap_user_rights rit
+            LEFT JOIN redcap_user_roles rol on rol.project_id = rit.project_id and rit.role_id = rol.role_id
+            WHERE rit.project_id = "' . intval($project_id) . '"';
 
     $q = db_query($sql);
     if (db_num_rows($q)) {
@@ -466,7 +485,8 @@ function send_rx_get_user_roles($project_id) {
             $curr_user = $result['username'];
             $user_roles[$curr_user] = $curr_role;
         }
-    } else {
+    }
+    else {
         return false;
     }
 
@@ -486,8 +506,10 @@ function send_rx_get_user_roles($project_id) {
  */
 function send_rx_get_user_role_ids($pid, $role_names) {
     $roles = array();
-    $sql = 'SELECT role_id, role_name from redcap_user_roles where project_id = ' . ($pid) . ' and role_name in ';
-    $sql .= '("' . implode('","', $role_names) . '")';
+    $sql = 'SELECT role_id, role_name
+            FROM redcap_user_roles
+            WHERE project_id = "' . intval($pid) . '" AND
+                  role_name IN ("' . implode('", "', array_map('db_real_escape_string', $role_names)) . '")';
 
     $roles_info = array();
     $q = db_query($sql);
@@ -497,7 +519,8 @@ function send_rx_get_user_role_ids($pid, $role_names) {
             $rname = $result['role_name'];
             $roles_info[$rname] = $rid;
         }
-    } else {
+    }
+    else {
         return false;
     }
 
@@ -564,8 +587,8 @@ function send_rx_event_is_complete($project_id, $record, $event_id, $exclude = a
  *   The group ID.
  */
 function send_rx_add_dag($project_id, $group_name, $group_id = null) {
-    $project_id = db_escape($project_id);
-    $group_name = db_escape($group_name);
+    $project_id = intval($project_id);
+    $group_name = intval($group_name);
 
     db_query('INSERT INTO redcap_data_access_groups (project_id, group_name) VALUES (' . $project_id . ', "' . $group_name . '")');
     return db_insert_id();
@@ -582,9 +605,9 @@ function send_rx_add_dag($project_id, $group_name, $group_id = null) {
  *   The group ID.
  */
 function send_rx_rename_dag($project_id, $group_name, $group_id) {
-    $project_id = db_escape($project_id);
-    $group_name = db_escape($group_name);
-    $group_id = db_escape($group_id);
+    $project_id = intval($project_id);
+    $group_name = intval($group_name);
+    $group_id = db_real_escape_string($group_id);
 
     db_query('UPDATE redcap_data_access_groups SET group_name = "' . $group_name . '" WHERE project_id = ' . $project_id . ' AND group_id = ' . $group_id);
 }
