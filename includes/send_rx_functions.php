@@ -580,7 +580,7 @@ function send_rx_event_is_complete($project_id, $record, $event_id, $exclude = a
  *
  * @param int $project_id
  *   The project ID.
- * @param int $group_name
+ * @param string $group_name
  *   The group name.
  *
  * @return int
@@ -599,7 +599,7 @@ function send_rx_add_dag($project_id, $group_name) {
  *
  * @param int $project_id
  *   The project ID.
- * @param int $group_name
+ * @param string $group_name
  *   The group name.
  * @param int $group_id
  *   The group ID.
