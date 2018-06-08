@@ -635,13 +635,13 @@ function send_rx_create_user($username, $firstname, $lastname, $email, $send_not
         return false;
     }
 
-    global $default_datetime_format, $default_number_format_decimal, $default_number_format_thousands_sep;
+    global $default_datetime_format, $default_number_format_decimal, $default_number_format_thousands_sep, $auth_meth;
 
     $db = new RedCapDB();
     $sql = $db->saveUser(null, $username, $firstname, $lastname, $email,
                          null, null, null, null, null, null, 0, generateRandomHash(8),
                          $default_datetime_format, $default_number_format_decimal, $default_number_format_thousands_sep,
-                         1, null, null, '4_HOURS', '0', 0, 0, 0);
+                         1, null, null, '4_HOURS', '0', 0, $auth_meth == 'table' ? 0 : 1, 0);
 
     if (empty($sql)) {
         return false;
@@ -666,8 +666,6 @@ function send_rx_create_user($username, $firstname, $lastname, $email, $send_not
     if (!$send_notification) {
         return true;
     }
-
-    global $auth_meth;
 
     switch ($auth_meth) {
         case 'table':
