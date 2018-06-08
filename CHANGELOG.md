@@ -2,6 +2,15 @@
 All notable changes to the Send RX project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.5.1] - 2018-06-08
+### Changed
+- Fixing user creation bug under Shib. (Tiago Bember Simeao)
+- Fixing DAG add/rename functions header documentation. (Tiago Bember Simeao)
+- Fixing bug on sanitation of variables. (Tiago Bember Simeao)
+- Improve SQL injection security in the send_rx_rename_dag() and the send_rx_add_dag() methods (Dileep)
+- Improving security against SQL injection. (Tiago Bember Simeao)
+
+
 ## [1.5.0] - 2018-05-08
 ### Changed
 - Cleaning up submit buttons on send Rx form. (Tiago Bember Simeao)
