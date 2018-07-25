@@ -4,7 +4,7 @@
  * Helper Send RX functions.
  */
 
-include_once dirname(APP_PATH_DOCROOT) . '/vendor/autoload.php';
+require_once dirname(__FILE__) . '/../vendor/autoload.php';
 use ExternalModules\ExternalModules;
 use UserProfile\UserProfile;
 
