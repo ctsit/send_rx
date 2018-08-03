@@ -6,6 +6,7 @@ Send Rx is a REDCap module that allows users to automatically generate prescript
 - REDCap >= 8.0.3
 - [Composer](https://getcomposer.org/)
 - [REDCap User Profile](https://github.com/ctsit/redcap_user_profile)
+- [DAG Switcher](https://github.com/lsgs/redcap-dag-switcher)
 
 ## Installation
 - Clone this repo into to an `<redcap-root>/modules/send_rx_v<version_number>`.
@@ -55,12 +56,13 @@ Send Rx requires user authentication method to work, so if your REDCap does not 
 1. Make sure you are logged in as the admin user created on step 1 (not `site_admin`)
 2. Access **+ New Project** page, then import `samples/SendRxPatients.xml` file.
 3. Go to **External Modules** section and enable Send Rx module for this project
-4. Yet on External Modules page, click on Configure Button and set fields as follows:
+4. Enable DAG Switcher for this project
+5. Yet on External Modules page, click on Configure Button and set fields as follows:
   - Type: Patient
   - Target Project: the Sites project defined on section 3
-5. Go to **User Rights** section and create two roles: `prescriber` and `study_coordinator`
-6. Switch to Sites project, then access **External Modules** and click on Send Rx **Configure** button
-7. Set **Target Project** as the project you just imported.
+6. Go to **User Rights** section and create two roles: `prescriber` and `study_coordinator`
+7. Switch to Sites project, then access **External Modules** and click on Send Rx **Configure** button
+8. Set **Target Project** as the project you just imported.
 
 ## Sending your First Test Prescription
 
@@ -69,7 +71,7 @@ Send Rx requires user authentication method to work, so if your REDCap does not 
 2. On **Site Information** form, fill out site name, then select `Email` as delivery type, then set the email address you want to use in your test, and finally save - making sure sure your form is set as *Complete*.
 4. On **Site Staff** step, select **Create a new user account from scratch**, fill out user information, make sure your form is set as *Complete*, then click on **Save & Go To Next Instance**
 5. Repeat the step above a few times - making sure to add at least one prescriber and one study coordinator - then click on **Save & Exit**
-6. You will be redirected to record home page, in which you should be able to see two buttons: **Rebuild staff permissions** and **Revoke staff permissions** (if both buttons are disabled, make sure all forms previously filled are set as *Complete*, i.e. they appear as green bullets)
+6. Go to **Record Status Dashboard** where you should be able to see two buttons: **Rebuild staff permissions** and **Revoke staff permissions** (if both buttons are disabled, make sure all forms previously filled are set as *Complete*, i.e. they appear as green bullets)
 7. Click on **Rebuild staff permissions** to grant permissions to your staff
 
 ### Step 2: Create a Prescription and Send it

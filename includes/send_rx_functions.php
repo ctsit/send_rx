@@ -467,27 +467,32 @@ function send_rx_get_group_members($project_id, $group_id, $user_role = null) {
  *
  * @param int $project_id
  *   The project ID.
+ * @param array $role_names
+ *   Array of role_names.
  *
  * @return array
  *   Array of users info, keyed by role. Returns FALSE if failure.
  */
-function send_rx_get_user_roles($project_id) {
+function send_rx_get_user_roles($project_id, $role_names = array()) {
     $user_roles = array();
     $sql = 'SELECT rit.username, rol.role_name, rol.role_id
             FROM redcap_user_rights rit
-            LEFT JOIN redcap_user_roles rol on rol.project_id = rit.project_id and rit.role_id = rol.role_id
-            WHERE rit.project_id = "' . intval($project_id) . '"';
+            INNER JOIN redcap_user_roles rol on rol.project_id = rit.project_id and rit.role_id = rol.role_id';
+
+    if ($role_names) {
+        $sql .= ' AND rol.role_name IN ("' . implode('", "', array_map('db_escape', $role_names)) . '")';
+    }
+
+    $sql .= ' WHERE rit.project_id = "' . intval($project_id) . '"';
 
     $q = db_query($sql);
     if (db_num_rows($q)) {
         while ($result = db_fetch_assoc($q)) {
-            $curr_role = $result['role_id'];
-            $curr_user = $result['username'];
-            $user_roles[$curr_user] = $curr_role;
+            $user_roles[$result['username']] = $result['role_id'];
         }
     }
     else {
-        return false;
+        return array();
     }
 
     return $user_roles;
@@ -504,20 +509,18 @@ function send_rx_get_user_roles($project_id) {
  * @return array
  *   Array of roles, keyed by role_name. Returns FALSE if failure.
  */
-function send_rx_get_user_role_ids($pid, $role_names) {
-    $roles = array();
-    $sql = 'SELECT role_id, role_name
-            FROM redcap_user_roles
-            WHERE project_id = "' . intval($pid) . '" AND
-                  role_name IN ("' . implode('", "', array_map('db_real_escape_string', $role_names)) . '")';
-
+function send_rx_get_user_role_ids($pid, $role_names = array()) {
     $roles_info = array();
+
+    $sql = 'SELECT role_id, role_name FROM redcap_user_roles WHERE project_id = "' . intval($pid) . '"';
+    if ($role_names) {
+        $sql .= ' AND role_name IN ("' . implode('", "', array_map('db_escape', $role_names)) . '")';
+    }
+
     $q = db_query($sql);
     if (db_num_rows($q)) {
         while ($result = db_fetch_assoc($q)) {
-            $rid = $result['role_id'];
-            $rname = $result['role_name'];
-            $roles_info[$rname] = $rid;
+            $roles_info[$result['role_id']] = $result['role_name'];
         }
     }
     else {
@@ -704,4 +707,31 @@ function send_rx_create_user($username, $firstname, $lastname, $email, $send_not
     }
 
     return false;
+}
+
+/**
+ * Read the current configuration of users and enabled DAGs from the
+ * most recent DAG Switcher record in redcap_log_event
+ * @return array
+ *  keys: Usernames
+ *  values: Array of DAGids user may switch to
+ * [
+ *   "user1": [],
+ *   "user2: [0,123,124],
+ *   "user3": [123,124]
+ * ]
+ */
+function send_rx_get_user_dags($project_id) {
+    $sql = '
+        SELECT data_values FROM redcap_log_event
+        WHERE project_id = "' . db_escape($project_id) . '" AND
+              description = "DAG Switcher"
+        ORDER BY log_event_id DESC LIMIT 1';
+
+    if (!($q = db_query($sql)) || !db_num_rows($q)) {
+        return array();
+    }
+
+    $row = $q->fetch_assoc();
+    return json_decode($row['data_values'], true);
 }
