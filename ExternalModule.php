@@ -472,13 +472,14 @@ class ExternalModule extends AbstractExternalModule {
             return;
         }
 
+        $msg = '';
         $user_dags = send_rx_get_user_dags($config['target_project_id']);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && in_array($_POST['operation'], array('rebuild', 'revoke'))) {
             $msg = 'The permissions have been revoked successfully.';
 
             // Revoking dags.
-            foreach (array_keys($_POST['user_dags']) as $user_id) {
+            foreach (array_unique(array_merge(array_keys($_POST['user_dags']), array_keys($user_dags))) as $user_id) {
                 if (isset($user_dags[$user_id])) {
                     $user_dags[$user_id] = array_diff($user_dags[$user_id], $all_dags);
                 }
@@ -605,7 +606,6 @@ class ExternalModule extends AbstractExternalModule {
         );
 
         if (!$revoke_btn_enabled) {
-            // Disable button when there are no
             $attrs['disabled'] = true;
         }
 
