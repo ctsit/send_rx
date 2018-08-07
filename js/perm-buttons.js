@@ -1,6 +1,5 @@
 $(function() {
     var settings = sendRx.permsRebuild;
-    var url = app_path_webroot + 'UserRights/assign_user.php?pid=' + settings.pid;
 
     if (settings.msg !== '') {
         // Showing success message.
@@ -15,34 +14,40 @@ $(function() {
         if ($(this).hasClass('rebuild-perms-btn')) {
             // Rebuilding roles.
             var op = 'rebuild';
-            var users = settings.rebuildRoles;
+            var roles = settings.rebuildRoles;
         }
         else if ($(this).hasClass('revoke-perms-btn')) {
             // Revoking roles.
             var op = 'revoke';
-            var users = settings.revokeRoles;
+            var roles = settings.revokeRoles;
         }
         else {
             return false;
         }
 
+        // Disabling the clicked button to avoid double clicks.
+        $(this).prop('disabled', true);
+
+        // Setting operation field to be submitted.
         $form.find('[name="operation"]').val(op);
 
-        var count = Object.keys(users).length;
-
-        if (!count) {
-            $form.submit();
-            return;
-        }
-
-        $.each(users, function(key, value) {
-            $.post(settings.url, { username: key, role_id: value, notify_email_role: 0 }, function() {
-                if (!--count) {
-                    // Submit the form when the last role has been
-                    // granted/revoked.
-                    $form.submit();
-                }
-            });
-        });
+        // Assigning/revoking roles.
+        sendRx.permsRebuild.assignRoles(Object.keys(roles), roles, $form);
     });
 });
+
+sendRx.permsRebuild.assignRoles = function(usersQueue, roles, $form) {
+    if (!usersQueue.length) {
+        // Submit the form when the last role is granted/revoked.
+        $form.submit();
+        return;
+    }
+
+    // Getting next user from queue.
+    var userId = usersQueue.shift();
+
+    // Calling user role assign endpoint.
+    $.post(sendRx.permsRebuild.url, { username: userId, role_id: roles[userId], notify_email_role: 0 }, function() {
+        sendRx.permsRebuild.assignRoles(usersQueue, roles, $form);
+    });
+}
