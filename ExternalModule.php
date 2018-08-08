@@ -397,8 +397,15 @@ class ExternalModule extends AbstractExternalModule {
             return;
         }
 
-        // Checking if we are on record home page.
-        if (PAGE != 'DataEntry/record_home.php' || empty($_GET['id'])) {
+        // Checking if we are on record status dashboard page.
+        if (PAGE != 'DataEntry/record_status_dashboard.php' || !$project_id) {
+            return;
+        }
+
+        global $Proj;
+
+        if (count($Proj->eventInfo) != 1) {
+            // Multiple events are not supported.
             return;
         }
 
@@ -408,27 +415,27 @@ class ExternalModule extends AbstractExternalModule {
             return;
         }
 
-        $record = $_GET['id'];
-
-        $data = send_rx_get_record_data($project_id, $record);
-        reset($data);
-
-        $event_id = key($data);
-        $data = $data[$event_id];
-
-        if (!isset($data['send_rx_dag_id']) || empty($data['send_rx_site_name'])) {
+        if (!$valid_role_names = array_keys(parseEnum($Proj->metadata['send_rx_user_role']['element_enum']))) {
             return;
         }
 
-        if (!$group_id = $data['send_rx_dag_id']) {
-            if (!$group_id = send_rx_add_dag($config['target_project_id'], $data['send_rx_site_name'])) {
-                return;
-            }
-
-            send_rx_save_record_field($project_id, $event_id, $record, 'send_rx_dag_id', $group_id);
+        $count = count($valid_role_names);
+        if (!$valid_role_names = send_rx_get_user_role_ids($config['target_project_id'], $valid_role_names)) {
+            // There are no remote roles.
+            return;
         }
 
-        global $Proj;
+        if (count($valid_role_names) != $count) {
+            // Thre are remote roles missing.
+            return;
+        }
+
+        $valid_role_ids = array_flip($valid_role_names);
+        $user_role_ids = send_rx_get_user_roles($config['target_project_id'], $valid_role_names);
+
+        reset($Proj->eventInfo);
+        $event_id = key($Proj->eventInfo);
+
         $bypass = array_combine($Proj->eventsForms[$event_id], $Proj->eventsForms[$event_id]);
 
         // Detecting mandatory instruments to check completeness.
@@ -438,111 +445,182 @@ class ExternalModule extends AbstractExternalModule {
             }
         }
 
-        if (
-            $buttons_enabled = send_rx_event_is_complete($project_id, $record, $event_id, $bypass) &&
-            $staff = send_rx_get_site_users($project_id, $record)
-        ) {
-            if (isset($_GET['msg'])) {
-                $msgs = array(
-                    'rebuild_perms' => 'The permissions have been rebuilt successfully.',
-                    'revoke_perms' => 'The permissions have been revoked successfully.',
-                );
+        $all_dags = array();
+        foreach (REDCap::getData($project_id) as $id => $data) {
+            $data = $data[$event_id];
 
-                if (isset($msgs[$_GET['msg']])) {
-                    // Showing success message.
-                    echo '<div class="darkgreen" style="margin:8px 0 5px;"><img src="' . APP_PATH_IMAGES . 'tick.png"> ' . $msgs[$_GET['msg']] . '</div>';
-                }
-            }
-
-            if (!($curr_roles = send_rx_get_user_roles($config['target_project_id'], $group_id))) {
+            if (!isset($data['send_rx_dag_id']) || empty($data['send_rx_site_name'])) {
                 return;
             }
 
-            $db = new RedCapDB();
+            if (!$dag = $data['send_rx_dag_id']) {
+                if (!$dag = send_rx_add_dag($config['target_project_id'], $data['send_rx_site_name'])) {
+                    return;
+                }
 
-            $input_members = array();
-            $input_roles = array();
+                send_rx_save_record_field($project_id, $event_id, $record, 'send_rx_dag_id', $dag);
+            }
+
+            if (!send_rx_event_is_complete($project_id, $id, $event_id, $bypass)) {
+                return;
+            }
+
+            $all_dags[$id] = REDCap::escapeHtml($dag);
+        }
+
+        if (empty($all_dags)) {
+            return;
+        }
+
+        $msg = '';
+        $user_dags = send_rx_get_user_dags($config['target_project_id']);
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && in_array($_POST['operation'], array('rebuild', 'revoke'))) {
+            $msg = 'The permissions have been revoked successfully.';
+
+            // Revoking dags.
+            foreach (array_unique(array_merge(array_keys($_POST['user_dags']), array_keys($user_dags))) as $user_id) {
+                if (isset($user_dags[$user_id])) {
+                    $user_dags[$user_id] = array_diff($user_dags[$user_id], $all_dags);
+                }
+            }
+
+            if ($_POST['operation'] == 'rebuild') {
+                $msg = 'The permissions have been rebuilt successfully.';
+
+                // Granting dags.
+                foreach ($_POST['user_dags'] as $user_id => $dags) {
+                    // In order to be assigned to a DAG, the user needs to have
+                    // some role.
+                    if (!isset($user_role_ids[$user_id])) {
+                        continue;
+                    }
+
+                    $user_dags[$user_id] = isset($user_dags[$user_id]) ? array_merge($user_dags[$user_id], $dags) : $dags;
+                    sort($user_dags[$user_id], SORT_NUMERIC);
+                }
+            }
+
+            REDCap::logEvent('DAG Switcher', json_encode($user_dags), '', null, null, $config['target_project_id']);
+
+            // Showing success message.
+            $msg = RCView::div(array(
+                'class' => 'darkgreen',
+                'style' => 'margin: 8px 0 5px;',
+            ), RCView::img(array('src' => APP_PATH_IMAGES . 'tick.png')) . ' ' . $msg);
+        }
+
+        $form = RCView::hidden(array('name' => 'operation'));
+        $input_dags = array();
+        $input_roles = array();
+        $db = new RedCapDB();
+
+        $rebuild_btn_enabled = false;
+        $revoke_btn_enabled = !empty($user_role_ids);
+
+        foreach ($all_dags as $id => $dag) {
+            if (!$staff = send_rx_get_site_users($project_id, $id)) {
+                continue;
+            }
 
             foreach ($staff as $member) {
                 $user_id = $member['send_rx_user_id'];
-
-                if ($db->usernameExists($user_id)) {
-                    $input_members[] = $user_id;
-                    $input_roles[$user_id] = $member['send_rx_user_role'];
+                if (!$db->usernameExists($user_id)) {
+                    continue;
                 }
-            }
 
-            if (!($roles_ids = send_rx_get_user_role_ids($config['target_project_id'], $input_roles))) {
-                return;
-            }
+                $role_id = $member['send_rx_user_role'];
 
-            $valid_roles = array();
-            foreach (array_keys(parseEnum($Proj->metadata['send_rx_user_role']['element_enum'])) as $role_name) {
-                $valid_roles[$roles_ids[$role_name]] = $role_name;
-            }
-
-            $curr_members = send_rx_get_group_members($config['target_project_id'], $group_id);
-            $curr_members = array_keys($curr_members);
-            $curr_members = array_combine($curr_members, $curr_members);
-
-            $aux = $curr_roles;
-            foreach ($aux as $user_id => $role_id) {
-                if (!empty($role_name) && !isset($valid_roles[$role_id])) {
-                    // Avoiding to mess up with non-related roles.
-                    unset($curr_roles[$user_id]);
-                    unset($curr_members[$user_id]);
+                if (!$rebuild_btn_enabled && (!isset($user_dags[$user_id]) || array_search($dag, $user_dags[$user_id]) === false)) {
+                    $rebuild_btn_enabled = true;
                 }
-            }
 
-            // Creating lists of users to be added and removed from the DAG.
-            $members_to_add = array_diff($input_members, $curr_members);
-            $members_to_del = array_diff($curr_members, $input_members);
+                // If a user member of multiple sites, it's assumed that
+                // its role is the same for all of them.
+                $input_roles[$user_id] = $member['send_rx_user_role'];
 
-            foreach ($input_roles as $user_id => $role_name) {
-                $input_roles[$user_id] = $roles_ids[$role_name];
-            }
-
-            $roles_to_add = array();
-            $roles_to_del = array();
-
-            foreach ($input_roles as $user_id => $role_id) {
-                if (!isset($curr_roles[$user_id])) {
-                    $roles_to_add[$user_id] = $role_id;
+                if (!isset($input_dags[$user_id])) {
+                    $input_dags[$user_id] = array();
                 }
-                elseif ($curr_roles[$user_id] != $role_id) {
-                    $roles_to_add[$user_id] = $role_id;
-                }
-            }
 
-            foreach ($curr_roles as $user_id => $role_id) {
-                if (!isset($input_roles[$user_id]) && $role_id != 0) {
-                    // TODO: adapt this list when users become able to join
-                    // multiple DAGs.
-                    $roles_to_del[$user_id] = 0;
+                $input_dags[$user_id][] = $dag;
+                $form .= RCView::hidden(array('name' => 'user_dags[' . REDCap::escapeHtml($user_id) . '][]', 'value' => $dag));
+            }
+        }
+
+        // Calculating the roles that need to be granted/revoked.
+        $rebuild_roles = array();
+        foreach ($input_roles as $user_id => $role_id) {
+            $role_id = $valid_role_ids[$role_id];
+
+            if (!isset($user_role_ids[$user_id]) || $user_role_ids[$user_id] != $role_id) {
+                $rebuild_roles[$user_id] = $role_id;
+            }
+        }
+
+        foreach (array_keys($user_role_ids) as $user_id) {
+            if (!isset($input_roles[$user_id])) {
+                $rebuild_roles[$user_id] = 0;
+            }
+        }
+
+        // Defining whether Rebuild and Revoke buttons should be enabled.
+        if (!$rebuild_btn_enabled && !empty($rebuild_roles)) {
+            $rebuild_btn_enabled = true;
+        }
+
+        if (!$rebuild_btn_enabled || !$revoke_btn_enabled) {
+            foreach ($user_dags as $user_id => $dags) {
+                if (!$dags = array_intersect($dags, $all_dags)) {
+                    continue;
+                }
+
+                $revoke_btn_enabled = true;
+                if ($rebuild_btn_enabled) {
+                    break;
+                }
+
+                if (!isset($input_dags[$user_id]) || array_diff($dags, $input_dags[$user_id])) {
+                    $rebuild_btn_enabled = true;
+                    break;
                 }
             }
         }
 
-        // Buttons markup.
-        $buttons = '<button class="btn btn-success send-rx-access-btn" id="send-rx-rebuild-access-btn" style="margin-right:5px;">Rebuild staff permissions</button>';
-        $buttons .= '<button class="btn btn-danger send-rx-access-btn" id="send-rx-revoke-access-btn">Revoke staff permissions</button>';
-        $buttons = '<div id="access-btns">' . $buttons . '</div>';
-
-        $settings = array(
-            'pid' => $config['target_project_id'],
-            'groupId' => $group_id,
-            'buttons' => $buttons,
-            'buttonsEnabled' => $buttons_enabled,
-            'membersToAdd' => $members_to_add,
-            'membersToDel' => $members_to_del,
-            'rolesToAdd' => $roles_to_add,
-            'rolesToDel' => $roles_to_del,
-            'currMembers' => $curr_members,
-            'revokeRoles' => array_combine($curr_members, array_fill(0, count($curr_members), 0)) + $roles_to_del,
-            'revokeGroups' => array_merge($curr_members, $members_to_del),
+        $attrs = array(
+            'type' => 'button',
+            'style' => 'margin-right: 5px;',
+            'class' => 'rebuild-perms-btn btn btn-success',
         );
 
-        $this->setJsSetting('permButtons', $settings);
+        if (!$rebuild_btn_enabled) {
+            $attrs['disabled'] = true;
+        }
+
+        // Adding Rebuild permissions button.
+        $form .= RCView::button($attrs, 'Rebuild staff permissions');
+
+        $attrs = array(
+            'type' => 'button',
+            'class' => 'revoke-perms-btn btn btn-danger',
+        );
+
+        if (!$revoke_btn_enabled) {
+            $attrs['disabled'] = true;
+        }
+
+        // Adding Revoke permissions button.
+        $form .= RCView::button($attrs, 'Revoke staff permissions');
+
+        $settings = array(
+            'msg' => $msg,
+            'url' => APP_PATH_WEBROOT . 'UserRights/assign_user.php?pid=' . REDCap::escapeHtml($config['target_project_id']),
+            'form' => RCView::form(array('method' => 'post', 'id' => 'send_rx_perms', 'style' => 'margin-top: 20px;'), $form),
+            'rebuildRoles' => $rebuild_roles,
+            'revokeRoles' => array_combine(array_keys($user_role_ids), array_fill(0, count($user_role_ids), 0)),
+        );
+
+        $this->setJsSetting('permsRebuild', $settings);
         $this->includeJs('js/perm-buttons.js');
     }
 
