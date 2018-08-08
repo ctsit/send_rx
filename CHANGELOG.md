@@ -2,6 +2,14 @@
 All notable changes to the Send RX project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.6.0] - 2018-08-08
+### Added
+- Add support for multiple DAGs (integration with DAG Switcher) (Tiago Bember Simeao)
+
+### Changed
+- Fix issue by changing constant APP_PATH_DOCROOT with macro __FILE__. (Marly Cormar)
+
+
 ## [1.5.1] - 2018-06-08
 ### Changed
 - Fixing user creation bug under Shib. (Tiago Bember Simeao)
