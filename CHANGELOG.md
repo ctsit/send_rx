@@ -2,6 +2,13 @@
 All notable changes to the Send RX project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+
+## [1.6.1] - 2018-08-09
+### Changed
+- Revert changes to how PHP libraries are located (Philip Chase)
+- Add separate instructions for manual and automated installation of Composer dependencies (Philip Chase)
+
+
 ## [1.6.0] - 2018-08-08
 ### Added
 - Add support for multiple DAGs (integration with DAG Switcher) (Tiago Bember Simeao)

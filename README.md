@@ -8,11 +8,16 @@ Send Rx is a REDCap module that allows users to automatically generate prescript
 - [REDCap User Profile](https://github.com/ctsit/redcap_user_profile)
 - [DAG Switcher](https://github.com/lsgs/redcap-dag-switcher)
 
-## Installation
+## Manual Installation
 - Clone this repo into to an `<redcap-root>/modules/send_rx_v<version_number>`.
 - Go to **Control Center > External Modules** and enable Send Rx.
-- Run Composer in order to install third-party dependencies:
-  - In a terminal, go to your Send Rx root directory
+- Automated installation of Composer dependencies (required)
+  send\_rx assumes composer dependencies have been installers in `<redcap-root>/vendor`.
+  The redcap\_deployment packaging tools do this by default.  We recommend you use
+  them--at least once--to assure that composer-installed libraries are installed in
+  the correct location.
+- Manual installation of Composer dependencies (optional)
+  - In a terminal, go to your REDCap root directory
   - [Download Composer](https://getcomposer.org/download/)
   - Run `php composer.phar install`
 
