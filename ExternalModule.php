@@ -136,7 +136,7 @@ class ExternalModule extends AbstractExternalModule {
         }
 
         // Getting Rx sender to make sure we are in a patient project.
-        if (!$sender = RxSender::getSender($project_id, $event_id, $record)) {
+        if (!$sender = RxSender::getSender($project_id, $event_id, $record, $this)) {
             return;
         }
 
@@ -694,7 +694,7 @@ class ExternalModule extends AbstractExternalModule {
         }
 
         // Getting Rx sender to make sure we are in a patient project.
-        if (!$sender = RxSender::getSender($project_id, $event_id, $record)) {
+        if (!$sender = RxSender::getSender($project_id, $event_id, $record, $this)) {
             return;
         }
 
