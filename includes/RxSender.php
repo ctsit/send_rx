@@ -13,6 +13,7 @@ use Files;
 use Project;
 use Records;
 use REDCap;
+use SendRx\ExternalModule\ExternalModule;
 use SendRx\LockUtil;
 use UserProfile\UserProfile;
 
@@ -38,6 +39,13 @@ class RxSender {
      * @var int
      */
     protected $patientId;
+
+    /**
+     * SendRx Module.
+     *
+     * @var SendRx\ExternalModule\ExternalModule
+     */
+    protected $module;
 
     /**
      * Patient record data.
@@ -153,7 +161,7 @@ class RxSender {
      *   An object instance of RXSender extension for the given project, if success.
      *   False otherwise.
      */
-    static function getSender($project_id, $event_id, $patient_id) {
+    static function getSender($project_id, $event_id, $patient_id, ExternalModule $module) {
         if (!$config = send_rx_get_project_config($project_id, 'patient')) {
             return false;
         }
@@ -163,7 +171,7 @@ class RxSender {
             return false;
         }
 
-        return new $class($project_id, $event_id, $patient_id);
+        return new $class($project_id, $event_id, $patient_id, $module);
     }
 
     /**
@@ -173,11 +181,12 @@ class RxSender {
      *
      * TODO: refactor constructor.
      */
-    function __construct($project_id, $event_id, $patient_id) {
+    function __construct($project_id, $event_id, $patient_id, ExternalModule $module) {
         $this->patientProjectId = $project_id;
         $this->patientProj = new Project($this->patientProjectId);
         $this->patientId = $patient_id;
         $this->patientEventId = $event_id;
+        $this->module = $module;
 
         $this->locker = new LockUtil(USERID, $this->patientProjectId, $this->patientId);
 
@@ -348,7 +357,7 @@ class RxSender {
                 }
                 else {
                     // Building download link.
-                    $data[$field_name] = $this->buildFileUrl($value, $field_name, $project_type);
+                    $data[$field_name] = $this->buildFileUrl($field_name, $project_type);
                 }
             }
         }
@@ -447,7 +456,7 @@ class RxSender {
      */
     protected function log($msg_type, $success, $recipients, $subject, $body) {
         // Appending a new entry to the log list.
-        $this->logs[] = array($msg_type, $success, time(), $recipients, $this->username, $subject, $body, $this->patientData['send_rx_pdf']);
+        $this->logs[] = array($msg_type, $success, time(), $recipients, $this->username, $subject, $body, $this->patientData[$this->patientEventId]['send_rx_pdf']);
         $contents = json_encode($this->logs);
 
         $file_path = $this->generateTmpFilePath('json');
@@ -502,25 +511,14 @@ class RxSender {
     /**
      * Builds file URL for download.
      */
-    protected function buildFileUrl($file_id, $field_name, $project_type = 'patient') {
-        global $redcap_version;
-
-        $url = APP_PATH_WEBROOT_FULL . 'redcap_v' . $redcap_version . '/DataEntry/';
-        $url .= 'file_download.php?pid=' . $this->{$project_type . 'ProjectId'};
-
-        $query_params = array(
+    protected function buildFileUrl($field_name, $project_type = 'patient') {
+        $params = array(
+            'pid' => $this->{$project_type . 'ProjectId'},
             'record' => $this->{$project_type . 'Id'},
             'event_id' => $this->{$project_type . 'EventId'},
-            'instance' => 1,
             'field_name' => $field_name,
-            'id' => $file_id,
-            'doc_id_hash' => Files::docIdHash($file_id),
         );
 
-        foreach ($query_params as $key => $value) {
-            $url .= '&' . $key . '=' . $value;
-        }
-
-        return $url;
+        return $this->module->getUrl('plugins/file_download.php?' . http_build_query($params), false, true);
     }
 }
