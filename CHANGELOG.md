@@ -2,9 +2,9 @@
 All notable changes to the Send RX project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [1.6.2] - 2018-08-30
+## [1.6.2] - 2018-09-04
 ### Changed
-- Prevent PDF links expiration on emails (Tiago Bember Simeao)
+- Prevent the expiration of PDF links in emails (Tiago Bember Simeao)
 
 
 ## [1.6.1] - 2018-08-09
