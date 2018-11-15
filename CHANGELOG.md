@@ -2,6 +2,12 @@
 All notable changes to the Send RX project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.6.3] - 2018-11-15
+### Changed
+- Revert "Preventing PDF links expiration on emails." (Philip Chase)
+- Add prescriber email address to WARRIOR PDF template (Philip Chase)
+
+
 ## [1.6.2] - 2018-09-04
 ### Changed
 - Prevent the expiration of PDF links in emails (Tiago Bember Simeao)
