@@ -1,5 +1,6 @@
 {
     "require": {
-        "mpdf/mpdf": "v7.1.3"
+        "mpdf/mpdf": "^7.1",
+        "paragonie/random_compat": "<9.99"
     }
 }
