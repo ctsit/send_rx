@@ -7,6 +7,7 @@
 include_once dirname(APP_PATH_DOCROOT) . '/vendor/autoload.php';
 use ExternalModules\ExternalModules;
 use UserProfile\UserProfile;
+use REDCap;
 
 /**
  * Gets Send RX config from project.
@@ -158,22 +159,29 @@ function send_rx_piping($subject, $data) {
  *   Markup (HTML + CSS) of PDF contents.
  * @param string $file_path
  *   The file path to save the file.
+ * @param int $record_id
+ *   Data entry record ID.
+ * @param int $project_id
+ *   Data entry project ID.
+ * @param int $event_id
+ *   Data entry event ID.
  *
  * @return bool
  *   TRUE if success, FALSE otherwise.
  */
-function send_rx_generate_pdf_file($contents, $file_path) {
+function send_rx_generate_pdf_file($contents, $file_path, $record_id, $event_id, $project_id) {
+    try {
+        $mpdf = new \Mpdf\Mpdf(['tempDir' => APP_PATH_TEMP]);
+        $mpdf->WriteHTML($contents);
+        $mpdf->Output($file_path, 'F');
+    }
+    catch (Exception $e) {
+        REDCap::logEvent('Rx file generation failed', $e->getMessage(), '', $record_id, $event_id, $project_id);
+        return false;
+    }
 
-  try {
-      $mpdf = new \Mpdf\Mpdf(['tempDir' => APP_PATH_TEMP]);
-      $mpdf->WriteHTML($contents);
-      $mpdf->Output($file_path, 'F');
-  }
-  catch (Exception $e) {
-      return false;
-  }
-
-  return true;
+    REDCap::logEvent('New Rx file generated', $file_path, '', $record_id, $event_id, $project_id);
+    return true;
 }
 
 /**

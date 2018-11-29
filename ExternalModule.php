@@ -234,16 +234,18 @@ class ExternalModule extends AbstractExternalModule {
             $pdf_is_updated = $result['value'];
         }
 
-        // Checking if PDF needs to be generated.
+        // Generate PDF if needed.
         if (!$pdf_is_updated) {
-            if ($sender->getPrescriberData()) {
-                // Generate PDF.
-                $sender->generatePDFFile();
+            if ($sender->getPrescriberData() && $sender->generatePDFFile()) {
                 send_rx_save_record_field($project_id, $event_id, $record, 'send_rx_pdf_is_updated', '1');
-                echo '<div class="darkgreen" style="margin-bottom:30px;"><img src="' . APP_PATH_IMAGES . 'tick.png"> A new prescription PDF preview has been created.</div>';
+
+                echo RCView::div(array(
+                    'class' => 'darkgreen',
+                    'style' => 'margin-bottom: 30px;',
+                ), RCView::img(array('src' => APP_PATH_IMAGES . 'tick.png')) . ' A new prescription PDF preview has been created.');
             }
             else {
-                $event_is_complete = false;
+                // TODO: error message.
             }
         }
 
