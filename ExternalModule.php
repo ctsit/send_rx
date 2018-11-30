@@ -44,7 +44,7 @@ class ExternalModule extends AbstractExternalModule {
                     'datatype' => 'text',
                     'label' => $lang['control_center_45'],
                 ), '/^([a-zA-Z0-9_\.\-\@])+$/'));
-                $this->setJsSetting('getUserProfileInfoUrl', $this->getUrl('includes/get_user_profile_info_ajax.php'));
+                $this->setJsSetting('getUserProfileInfoUrl', $this->getUrl('ajax/get_user_profile_info.php'));
 
                 // Creating artificial fields to make user able to create
                 // to account + profile directly from this form.
@@ -478,7 +478,7 @@ class ExternalModule extends AbstractExternalModule {
         $user_dags = send_rx_get_user_dags($config['target_project_id']);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && in_array($_POST['operation'], array('rebuild', 'revoke'))) {
-            $msg = 'The permissions have been revoked successfully.';
+            $msg = 'The permissions have been revoked.';
 
             // Revoking dags.
             foreach (array_unique(array_merge(array_keys($_POST['user_dags']), array_keys($user_dags))) as $user_id) {
@@ -488,7 +488,7 @@ class ExternalModule extends AbstractExternalModule {
             }
 
             if ($_POST['operation'] == 'rebuild') {
-                $msg = 'The permissions have been rebuilt successfully.';
+                $msg = 'The permissions have been rebuilt.';
 
                 // Granting dags.
                 foreach ($_POST['user_dags'] as $user_id => $dags) {
@@ -510,9 +510,17 @@ class ExternalModule extends AbstractExternalModule {
                 'class' => 'darkgreen',
                 'style' => 'margin: 8px 0 5px;',
             ), RCView::img(array('src' => APP_PATH_IMAGES . 'tick.png')) . ' ' . $msg);
+
+            if (!empty($_POST['error_count'])) {
+                // Showing error message.
+                $msg .= RCView::div(array(
+                    'class' => 'red',
+                    'style' => 'margin: 8px 0 5px;',
+                ), RCView::img(array('src' => APP_PATH_IMAGES . 'exclamation.png')) . ' ' . REDCap::escapeHtml($_POST['error_count']) . ' role assignments failed.');
+            }
         }
 
-        $form = RCView::hidden(array('name' => 'operation'));
+        $form = RCView::hidden(array('name' => 'operation')) . RCView::hidden(array('name' => 'error_count'));
         $input_dags = array();
         $input_roles = array();
         $db = new RedCapDB();
@@ -617,6 +625,7 @@ class ExternalModule extends AbstractExternalModule {
         $settings = array(
             'msg' => $msg,
             'url' => APP_PATH_WEBROOT . 'UserRights/assign_user.php?pid=' . REDCap::escapeHtml($config['target_project_id']),
+            'errorLogEndpointUrl' => $this->getUrl('ajax/assign_role_error_log.php'),
             'form' => RCView::form(array('method' => 'post', 'id' => 'send_rx_perms', 'style' => 'margin-top: 20px;'), $form),
             'rebuildRoles' => $rebuild_roles,
             'revokeRoles' => array_combine(array_keys($user_role_ids), array_fill(0, count($user_role_ids), 0)),

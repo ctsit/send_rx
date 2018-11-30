@@ -5,9 +5,9 @@
  */
 
 include_once dirname(APP_PATH_DOCROOT) . '/vendor/autoload.php';
+
 use ExternalModules\ExternalModules;
 use UserProfile\UserProfile;
-use REDCap;
 
 /**
  * Gets Send RX config from project.
@@ -599,10 +599,14 @@ function send_rx_event_is_complete($project_id, $record, $event_id, $exclude = a
  */
 function send_rx_add_dag($project_id, $group_name) {
     $project_id = intval($project_id);
-    $group_name = db_real_escape_string($group_name);
+    $group_name = db_escape($group_name);
+    $sql = 'INSERT INTO redcap_data_access_groups (project_id, group_name) VALUES (' . $project_id . ', "' . $group_name . '")';
 
-    db_query('INSERT INTO redcap_data_access_groups (project_id, group_name) VALUES (' . $project_id . ', "' . $group_name . '")');
-    return db_insert_id();
+    db_query($sql);
+    $group_id = db_insert_id();
+
+    Logging::logEvent($sql, 'redcap_data_access_groups', 'MANAGE', $group_id, 'group_id = ' . $group_id, 'Create data access group', '', '', $project_id);
+    return $group_id;
 }
 
 /**
@@ -617,10 +621,13 @@ function send_rx_add_dag($project_id, $group_name) {
  */
 function send_rx_rename_dag($project_id, $group_name, $group_id) {
     $project_id = intval($project_id);
-    $group_name = db_real_escape_string($group_name);
     $group_id = intval($group_id);
+    $group_name = db_escape($group_name);
 
-    db_query('UPDATE redcap_data_access_groups SET group_name = "' . $group_name . '" WHERE project_id = ' . $project_id . ' AND group_id = ' . $group_id);
+    $sql = 'UPDATE redcap_data_access_groups SET group_name = "' . $group_name . '" WHERE project_id = ' . $project_id . ' AND group_id = ' . $group_id;
+    db_query($sql);
+
+    Logging::logEvent($sql, 'redcap_data_access_groups', 'MANAGE', $group_id, 'group_id = '. $group_id, 'Rename data access group', '', '', $project_id);
 }
 
 /**
