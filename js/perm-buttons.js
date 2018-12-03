@@ -1,11 +1,6 @@
 $(function() {
     var settings = sendRx.permsRebuild;
 
-    if (settings.msg !== '') {
-        // Showing success message.
-        $('#subheader').after(settings.msg);
-    }
-
     // Placing form into markup.
     $('#record_status_table').after(settings.form);
     var $form = $('#send_rx_perms');

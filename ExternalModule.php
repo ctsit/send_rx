@@ -236,17 +236,15 @@ class ExternalModule extends AbstractExternalModule {
 
         // Generate PDF if needed.
         if (!$pdf_is_updated) {
-            if ($sender->getPrescriberData() && $sender->generatePDFFile()) {
-                send_rx_save_record_field($project_id, $event_id, $record, 'send_rx_pdf_is_updated', '1');
+            if ($error = !$sender->getPrescriberData()) {
+                REDCap::logEvent('Rx file generation failed', 'Prescriber information is not available.', '', $record, $event_id, $project_id);
+            }
+            elseif ($error = !$sender->generatePDFFile()) {
+                $msg = send_rx_build_status_message('There was an error while creating the PDF prescription file. Check logs for further details.', true);
+            }
 
-                echo RCView::div(array(
-                    'class' => 'darkgreen',
-                    'style' => 'margin-bottom: 30px;',
-                ), RCView::img(array('src' => APP_PATH_IMAGES . 'tick.png')) . ' A new prescription PDF preview has been created.');
-            }
-            else {
-                // TODO: error message.
-            }
+            $msg = $error ? 'There was an error while creating the PDF prescription file. Check logs for further details.' : 'A new prescription PDF preview has been created.';
+            $this->setJsSetting('statusMessage', send_rx_build_status_message($msg, $error));
         }
 
         $prescriber_field = 'send_rx_prescriber_id';
@@ -389,6 +387,11 @@ class ExternalModule extends AbstractExternalModule {
     function hook_every_page_top($project_id) {
         if ($project_id) {
             $this->includeJs('js/init.js');
+
+            if (isset($_SESSION['send_rx_status_message'])) {
+                $this->setJsSetting('statusMessage', $_SESSION['send_rx_status_message']);
+                unset($_SESSION['send_rx_status_message']);
+            }
         }
 
         if (strpos(PAGE, 'ExternalModules/manager/project.php') !== false) {
@@ -506,19 +509,15 @@ class ExternalModule extends AbstractExternalModule {
             REDCap::logEvent('DAG Switcher', json_encode($user_dags), '', null, null, $config['target_project_id']);
 
             // Showing success message.
-            $msg = RCView::div(array(
-                'class' => 'darkgreen',
-                'style' => 'margin: 8px 0 5px;',
-            ), RCView::img(array('src' => APP_PATH_IMAGES . 'tick.png')) . ' ' . $msg);
+            $msg = send_rx_build_status_message($msg);
 
             if (!empty($_POST['error_count'])) {
                 // Showing error message.
-                $msg .= RCView::div(array(
-                    'class' => 'red',
-                    'style' => 'margin: 8px 0 5px;',
-                ), RCView::img(array('src' => APP_PATH_IMAGES . 'exclamation.png')) . ' ' . REDCap::escapeHtml($_POST['error_count']) . ' role assignments failed.');
+                $msg .= send_rx_build_status_message($_POST['error_count'] . ' role assignments failed. See logs for further details.', true);
             }
         }
+
+        $this->setJsSetting('statusMessage', $msg);
 
         $form = RCView::hidden(array('name' => 'operation')) . RCView::hidden(array('name' => 'error_count'));
         $input_dags = array();
@@ -623,7 +622,6 @@ class ExternalModule extends AbstractExternalModule {
         $form .= RCView::button($attrs, 'Revoke staff permissions');
 
         $settings = array(
-            'msg' => $msg,
             'url' => APP_PATH_WEBROOT . 'UserRights/assign_user.php?pid=' . REDCap::escapeHtml($config['target_project_id']),
             'errorLogEndpointUrl' => $this->getUrl('ajax/assign_role_error_log.php'),
             'form' => RCView::form(array('method' => 'post', 'id' => 'send_rx_perms', 'style' => 'margin-top: 20px;'), $form),
@@ -671,15 +669,14 @@ class ExternalModule extends AbstractExternalModule {
                 $username = preg_replace('/[^a-z A-Z0-9_\.\-\@]/', '', $values['send_rx_user_id']);
                 if ($username != $values['send_rx_user_id']) {
                     // Invalid username.
+                    $_SESSION['send_rx_status_message'] = send_rx_build_status_message('Invalid username.', true);
                     return;
                 }
 
-                if (!UserProfile::createProfile($values)) {
-                    return;
+                if (!UserProfile::createProfile($values) || !send_rx_create_user($username, $values['send_rx_user_first_name'], $values['send_rx_user_last_name'], $values['send_rx_user_email'])) {
+                    // Setting up error message.
+                    $_SESSION['send_rx_status_message'] = send_rx_build_status_message('There was an error while creating the user. Check logs for further details.', true);
                 }
-
-                send_rx_create_user($username, $values['send_rx_user_first_name'], $values['send_rx_user_last_name'], $values['send_rx_user_email']);
-                send_rx_save_record_field($project_id, $event_id, $record, 'send_rx_user_id', $username, $repeat_instance);
             }
 
             return;

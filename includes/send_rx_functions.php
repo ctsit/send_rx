@@ -605,8 +605,8 @@ function send_rx_add_dag($project_id, $group_name) {
     db_query($sql);
     $group_id = db_insert_id();
 
-    Logging::logEvent($sql, 'redcap_data_access_groups', 'MANAGE', $group_id, 'group_id = ' . $group_id, 'Create data access group', '', '', $project_id);
-    return $group_id;
+    REDCap::logEvent('Created external DAG "' . $group_name . '"', 'External DAG ID: ' . $group_id);
+    _send_rx_log_external_dag_event('create', $sql, $group_id, $project_id);
 }
 
 /**
@@ -627,7 +627,8 @@ function send_rx_rename_dag($project_id, $group_name, $group_id) {
     $sql = 'UPDATE redcap_data_access_groups SET group_name = "' . $group_name . '" WHERE project_id = ' . $project_id . ' AND group_id = ' . $group_id;
     db_query($sql);
 
-    Logging::logEvent($sql, 'redcap_data_access_groups', 'MANAGE', $group_id, 'group_id = '. $group_id, 'Rename data access group', '', '', $project_id);
+    REDCap::logEvent('Renamed external DAG to "' . $group_name . '"', 'External DAG ID: ' . $group_id);
+    _send_rx_log_external_dag_event('rename', $group_id, $sql, $group_id, $project_id);
 }
 
 /**
@@ -662,6 +663,7 @@ function send_rx_create_user($username, $firstname, $lastname, $email, $send_not
                          1, null, null, '4_HOURS', '0', 0, $auth_meth == 'table' ? 0 : 1, 0);
 
     if (empty($sql)) {
+        REDCap::logEvent('User creation failed', 'User data could not be saved.');
         return false;
     }
 
@@ -672,7 +674,7 @@ function send_rx_create_user($username, $firstname, $lastname, $email, $send_not
         // Adding user to whitelist, if whitelist is enabled.
         $q = db_query('SELECT 1 FROM redcap_config WHERE field_name = "enable_user_whitelist" AND value = 1');
         if (db_num_rows($q)) {
-            $sql = 'INSERT INTO redcap_user_whitelist VALUES ("' . db_real_escape_string($username) . '")';
+            $sql = 'INSERT INTO redcap_user_whitelist VALUES ("' . db_escape($username) . '")';
             if (!db_query($sql)) {
                 return false;
             }
@@ -749,4 +751,55 @@ function send_rx_get_user_dags($project_id) {
 
     $row = $q->fetch_assoc();
     return json_decode($row['data_values'], true);
+}
+
+/**
+ * Builds markup for status messages.
+ *
+ * @param string $msg
+ *   The message to be displayed.
+ * @param bool $error
+ *   A boolean that determines whether the message is an error one.
+ *
+ * @return string
+ *   The status message markup.
+ */
+function send_rx_build_status_message($msg, $error = false) {
+    $class = 'darkgreen';
+    $icon = 'tick';
+
+    if ($error) {
+        $class = 'red';
+        $icon = 'exclamation';
+    }
+
+    return RCView::div(array(
+        'class' => $class,
+        'style' => 'margin: 8px 0 5px;',
+    ), RCView::img(array('src' => APP_PATH_IMAGES . $icon . '.png')) . ' ' . REDCap::escapeHtml($msg));
+}
+
+/**
+ * Aux function to log DAG operations.
+ *
+ * @oaram $event
+ *   The event to be logged: "create" or "rename".
+ * @oaram $sql
+ *   The executed SQL code.
+ * @param int $group_id
+ *   The group ID.
+ * @param int $project_id
+ *   The project ID.
+ */
+function _send_rx_log_external_dag_event($event, $sql, $group_id, $project_id) {
+    // Removing event ID context, since we are referencing other project.
+    $event_id = isset($_GET['event_id']) ? $_GET['event_id'] : false;
+    unset($_GET['event_id']);
+
+    Logging::logEvent($sql, 'redcap_data_access_groups', 'MANAGE', $group_id, 'group_id = '. $group_id, ucfirst($event) . ' data access group', '', '', $project_id);
+
+    if ($event_id !== false) {
+        // Restoring event ID context.
+        $_GET['event_id'] = $event_id;
+    }
 }
