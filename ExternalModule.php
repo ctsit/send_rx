@@ -650,6 +650,8 @@ class ExternalModule extends AbstractExternalModule {
                 else {
                     $group_id = send_rx_add_dag($config['target_project_id'], $data['send_rx_site_name']);
                     send_rx_save_record_field($project_id, $event_id, $record, 'send_rx_dag_id', $group_id);
+
+                    $_SESSION['send_rx_status_message'] = send_rx_build_status_message('DAG "' . REDCap::escapeHtml($data['send_rx_site_name']) . '" was created on the patient project.');
                 }
             }
             elseif ($Proj->metadata['send_rx_user_id']['form_name'] == $instrument) {
