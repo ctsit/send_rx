@@ -605,8 +605,7 @@ function send_rx_add_dag($project_id, $group_name) {
     db_query($sql);
     $group_id = db_insert_id();
 
-    REDCap::logEvent('Created external DAG "' . $group_name . '"', 'External DAG ID: ' . $group_id);
-    _send_rx_log_external_dag_event('create', $sql, $group_id, $project_id);
+    _send_rx_log_dag_event('create', $sql, $group_id, $group_name, $project_id);
 }
 
 /**
@@ -627,8 +626,7 @@ function send_rx_rename_dag($project_id, $group_name, $group_id) {
     $sql = 'UPDATE redcap_data_access_groups SET group_name = "' . $group_name . '" WHERE project_id = ' . $project_id . ' AND group_id = ' . $group_id;
     db_query($sql);
 
-    REDCap::logEvent('Renamed external DAG to "' . $group_name . '"', 'External DAG ID: ' . $group_id);
-    _send_rx_log_external_dag_event('rename', $group_id, $sql, $group_id, $project_id);
+    _send_rx_log_dag_event('rename', $sql, $group_id, $group_name, $project_id);
 }
 
 /**
@@ -780,7 +778,7 @@ function send_rx_build_status_message($msg, $error = false) {
 }
 
 /**
- * Aux function to log DAG operations.
+ * Aux function to log DAG event on both patient and site projects.
  *
  * @oaram $event
  *   The event to be logged: "create" or "rename".
@@ -788,15 +786,20 @@ function send_rx_build_status_message($msg, $error = false) {
  *   The executed SQL code.
  * @param int $group_id
  *   The group ID.
+ * @param int $group_name
+ *   The group name.
  * @param int $project_id
  *   The project ID.
  */
-function _send_rx_log_external_dag_event($event, $sql, $group_id, $project_id) {
+function _send_rx_log_dag_event($event, $sql, $group_id, $group_name, $project_id) {
+    $label = ucfirst($event);
+    REDCap::logEvent($label . 'd external DAG', 'Name: ' . $group_name . '<br>External ID: ' . $group_id);
+
     // Removing event ID context, since we are referencing other project.
     $event_id = isset($_GET['event_id']) ? $_GET['event_id'] : false;
     unset($_GET['event_id']);
 
-    Logging::logEvent($sql, 'redcap_data_access_groups', 'MANAGE', $group_id, 'group_id = '. $group_id, ucfirst($event) . ' data access group', '', '', $project_id);
+    Logging::logEvent($sql, 'redcap_data_access_groups', 'MANAGE', $group_id, 'group_id = '. $group_id, $label . ' data access group', '', '', $project_id);
 
     if ($event_id !== false) {
         // Restoring event ID context.
