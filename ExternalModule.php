@@ -644,15 +644,32 @@ class ExternalModule extends AbstractExternalModule {
         if ($config = send_rx_get_project_config($project_id, 'site')) {
             if ($Proj->metadata['send_rx_dag_id']['form_name'] == $instrument) {
                 $data = send_rx_get_record_data($project_id, $record, $event_id);
-                if ($data['send_rx_dag_id']) {
-                    send_rx_rename_dag($config['target_project_id'], $data['send_rx_site_name'], $data['send_rx_dag_id']);
-                }
-                else {
+                $error = false;
+
+                if (!$data['send_rx_dag_id']) {
+                    // Creating new DAG.
                     $group_id = send_rx_add_dag($config['target_project_id'], $data['send_rx_site_name']);
                     send_rx_save_record_field($project_id, $event_id, $record, 'send_rx_dag_id', $group_id);
-
-                    $_SESSION['send_rx_status_message'] = send_rx_build_status_message('DAG "' . REDCap::escapeHtml($data['send_rx_site_name']) . '" was created on the patient project.');
+                    $msg = 'DAG "' . REDCap::escapeHtml($data['send_rx_site_name']) . '" was created on the patient project.';
                 }
+                elseif (!$old_name = send_rx_get_dag_name($config['target_project_id'], $data['send_rx_dag_id'])) {
+                    // DAG does not exist.
+                    $msg = 'The selected DAG does not exist.';
+                    $error = true;
+                }
+                elseif ($old_name != $data['send_rx_site_name']) {
+                    // TODO: check if the DAG is already taken by other site.
+
+                    // Renaming DAG.
+                    send_rx_rename_dag($config['target_project_id'], $data['send_rx_site_name'], $data['send_rx_dag_id']);
+                    $msg = 'DAG was renamed from "' . REDCap::escapeHtml($old_name) . '" to "' . REDCap::escapeHtml($data['send_rx_site_name']) . '" on the patient project.';
+                }
+                else {
+                    // The DAG does not need to be renamed. Do nothing.
+                    return;
+                }
+
+                $_SESSION['send_rx_status_message'] = send_rx_build_status_message($msg, $error);
             }
             elseif ($Proj->metadata['send_rx_user_id']['form_name'] == $instrument) {
                 if (empty($_POST['send_rx_new_user_opt']) || $_POST['send_rx_new_user_opt'] != 'new') {

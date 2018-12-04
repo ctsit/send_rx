@@ -632,6 +632,31 @@ function send_rx_rename_dag($project_id, $group_name, $group_id) {
 }
 
 /**
+ * Gets DAG name.
+ *
+ * @param int $project_id
+ *   The project ID.
+ * @param int $group_id
+ *   The group ID.
+ *
+ * @return string|bool
+ *   The DAG name if exists, FALSE otherwise.
+ */
+function send_rx_get_dag_name($project_id, $group_id) {
+    if (intval($group_id) != $group_id) {
+        return false;
+    }
+
+    $q = db_query('SELECT group_name FROM redcap_data_access_groups WHERE project_id = ' . intval($project_id) . ' AND group_id = ' . $group_id);
+    if (!$q || !db_num_rows($q)) {
+        return false;
+    }
+
+    $dag = db_fetch_assoc($q);
+    return $dag['group_name'];
+}
+
+/**
  * Creates a basic user.
  *
  * @param string $username
