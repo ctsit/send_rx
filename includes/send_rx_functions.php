@@ -606,6 +606,8 @@ function send_rx_add_dag($project_id, $group_name) {
     $group_id = db_insert_id();
 
     _send_rx_log_dag_event('create', $sql, $group_id, $group_name, $project_id);
+
+    return $group_id;
 }
 
 /**
