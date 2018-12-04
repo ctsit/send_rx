@@ -180,7 +180,7 @@ function send_rx_generate_pdf_file($contents, $file_path, $record_id, $event_id,
         return false;
     }
 
-    REDCap::logEvent('New Rx file generated', $file_path, '', $record_id, $event_id, $project_id);
+    REDCap::logEvent('Rx file generated', $file_path, '', $record_id, $event_id, $project_id);
     return true;
 }
 
