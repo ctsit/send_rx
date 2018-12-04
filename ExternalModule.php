@@ -239,8 +239,8 @@ class ExternalModule extends AbstractExternalModule {
             if ($error = !$sender->getPrescriberData()) {
                 REDCap::logEvent('Rx file generation failed', 'Prescriber information is not available.', '', $record, $event_id, $project_id);
             }
-            elseif ($error = !$sender->generatePDFFile()) {
-                $msg = send_rx_build_status_message('There was an error while creating the PDF prescription file. Check logs for further details.', true);
+            else {
+                $error = !$sender->generatePDFFile();
             }
 
             $msg = $error ? 'There was an error while creating the PDF prescription file. Check logs for further details.' : 'A new prescription PDF preview has been created.';
