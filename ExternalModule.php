@@ -44,7 +44,7 @@ class ExternalModule extends AbstractExternalModule {
                     'datatype' => 'text',
                     'label' => $lang['control_center_45'],
                 ), '/^([a-zA-Z0-9_\.\-\@])+$/'));
-                $this->setJsSetting('getUserProfileInfoUrl', $this->getUrl('includes/get_user_profile_info_ajax.php'));
+                $this->setJsSetting('getUserProfileInfoUrl', $this->getUrl('ajax/get_user_profile_info.php'));
 
                 // Creating artificial fields to make user able to create
                 // to account + profile directly from this form.
@@ -234,17 +234,17 @@ class ExternalModule extends AbstractExternalModule {
             $pdf_is_updated = $result['value'];
         }
 
-        // Checking if PDF needs to be generated.
+        // Generate PDF if needed.
         if (!$pdf_is_updated) {
-            if ($sender->getPrescriberData()) {
-                // Generate PDF.
-                $sender->generatePDFFile();
-                send_rx_save_record_field($project_id, $event_id, $record, 'send_rx_pdf_is_updated', '1');
-                echo '<div class="darkgreen" style="margin-bottom:30px;"><img src="' . APP_PATH_IMAGES . 'tick.png"> A new prescription PDF preview has been created.</div>';
+            if ($error = !$sender->getPrescriberData()) {
+                REDCap::logEvent('Rx file generation failed', 'Prescriber information is not available.', '', $record, $event_id, $project_id);
             }
             else {
-                $event_is_complete = false;
+                $error = !$sender->generatePDFFile();
             }
+
+            $msg = $error ? 'There was an error while creating the PDF prescription file. Check logs for further details.' : 'A new prescription PDF preview has been created.';
+            $this->setJsSetting('statusMessage', send_rx_build_status_message($msg, $error));
         }
 
         $prescriber_field = 'send_rx_prescriber_id';
@@ -387,6 +387,11 @@ class ExternalModule extends AbstractExternalModule {
     function hook_every_page_top($project_id) {
         if ($project_id) {
             $this->includeJs('js/init.js');
+
+            if (isset($_SESSION['send_rx_status_message'])) {
+                $this->setJsSetting('statusMessage', $_SESSION['send_rx_status_message']);
+                unset($_SESSION['send_rx_status_message']);
+            }
         }
 
         if (strpos(PAGE, 'ExternalModules/manager/project.php') !== false) {
@@ -476,7 +481,7 @@ class ExternalModule extends AbstractExternalModule {
         $user_dags = send_rx_get_user_dags($config['target_project_id']);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && in_array($_POST['operation'], array('rebuild', 'revoke'))) {
-            $msg = 'The permissions have been revoked successfully.';
+            $msg = 'The permissions have been revoked.';
 
             // Revoking dags.
             foreach (array_unique(array_merge(array_keys($_POST['user_dags']), array_keys($user_dags))) as $user_id) {
@@ -486,7 +491,7 @@ class ExternalModule extends AbstractExternalModule {
             }
 
             if ($_POST['operation'] == 'rebuild') {
-                $msg = 'The permissions have been rebuilt successfully.';
+                $msg = 'The permissions have been rebuilt.';
 
                 // Granting dags.
                 foreach ($_POST['user_dags'] as $user_id => $dags) {
@@ -504,13 +509,17 @@ class ExternalModule extends AbstractExternalModule {
             REDCap::logEvent('DAG Switcher', json_encode($user_dags), '', null, null, $config['target_project_id']);
 
             // Showing success message.
-            $msg = RCView::div(array(
-                'class' => 'darkgreen',
-                'style' => 'margin: 8px 0 5px;',
-            ), RCView::img(array('src' => APP_PATH_IMAGES . 'tick.png')) . ' ' . $msg);
+            $msg = send_rx_build_status_message($msg);
+
+            if (!empty($_POST['error_count'])) {
+                // Showing error message.
+                $msg .= send_rx_build_status_message($_POST['error_count'] . ' role assignments failed. See logs for further details.', true);
+            }
         }
 
-        $form = RCView::hidden(array('name' => 'operation'));
+        $this->setJsSetting('statusMessage', $msg);
+
+        $form = RCView::hidden(array('name' => 'operation')) . RCView::hidden(array('name' => 'error_count'));
         $input_dags = array();
         $input_roles = array();
         $db = new RedCapDB();
@@ -613,8 +622,8 @@ class ExternalModule extends AbstractExternalModule {
         $form .= RCView::button($attrs, 'Revoke staff permissions');
 
         $settings = array(
-            'msg' => $msg,
             'url' => APP_PATH_WEBROOT . 'UserRights/assign_user.php?pid=' . REDCap::escapeHtml($config['target_project_id']),
+            'errorLogEndpointUrl' => $this->getUrl('ajax/assign_role_error_log.php'),
             'form' => RCView::form(array('method' => 'post', 'id' => 'send_rx_perms', 'style' => 'margin-top: 20px;'), $form),
             'rebuildRoles' => $rebuild_roles,
             'revokeRoles' => array_combine(array_keys($user_role_ids), array_fill(0, count($user_role_ids), 0)),
@@ -635,13 +644,32 @@ class ExternalModule extends AbstractExternalModule {
         if ($config = send_rx_get_project_config($project_id, 'site')) {
             if ($Proj->metadata['send_rx_dag_id']['form_name'] == $instrument) {
                 $data = send_rx_get_record_data($project_id, $record, $event_id);
-                if ($data['send_rx_dag_id']) {
-                    send_rx_rename_dag($config['target_project_id'], $data['send_rx_site_name'], $data['send_rx_dag_id']);
-                }
-                else {
+                $error = false;
+
+                if (!$data['send_rx_dag_id']) {
+                    // Creating new DAG.
                     $group_id = send_rx_add_dag($config['target_project_id'], $data['send_rx_site_name']);
                     send_rx_save_record_field($project_id, $event_id, $record, 'send_rx_dag_id', $group_id);
+                    $msg = 'DAG "' . REDCap::escapeHtml($data['send_rx_site_name']) . '" was created on the patient project.';
                 }
+                elseif (!$old_name = send_rx_get_dag_name($config['target_project_id'], $data['send_rx_dag_id'])) {
+                    // DAG does not exist.
+                    $msg = 'The selected DAG does not exist.';
+                    $error = true;
+                }
+                elseif ($old_name != $data['send_rx_site_name']) {
+                    // TODO: check if the DAG is already taken by other site.
+
+                    // Renaming DAG.
+                    send_rx_rename_dag($config['target_project_id'], $data['send_rx_site_name'], $data['send_rx_dag_id']);
+                    $msg = 'DAG was renamed from "' . REDCap::escapeHtml($old_name) . '" to "' . REDCap::escapeHtml($data['send_rx_site_name']) . '" on the patient project.';
+                }
+                else {
+                    // The DAG does not need to be renamed. Do nothing.
+                    return;
+                }
+
+                $_SESSION['send_rx_status_message'] = send_rx_build_status_message($msg, $error);
             }
             elseif ($Proj->metadata['send_rx_user_id']['form_name'] == $instrument) {
                 if (empty($_POST['send_rx_new_user_opt']) || $_POST['send_rx_new_user_opt'] != 'new') {
@@ -660,15 +688,14 @@ class ExternalModule extends AbstractExternalModule {
                 $username = preg_replace('/[^a-z A-Z0-9_\.\-\@]/', '', $values['send_rx_user_id']);
                 if ($username != $values['send_rx_user_id']) {
                     // Invalid username.
+                    $_SESSION['send_rx_status_message'] = send_rx_build_status_message('Invalid username.', true);
                     return;
                 }
 
-                if (!UserProfile::createProfile($values)) {
-                    return;
+                if (!UserProfile::createProfile($values) || !send_rx_create_user($username, $values['send_rx_user_first_name'], $values['send_rx_user_last_name'], $values['send_rx_user_email'])) {
+                    // Setting up error message.
+                    $_SESSION['send_rx_status_message'] = send_rx_build_status_message('There was an error while creating the user. Check logs for further details.', true);
                 }
-
-                send_rx_create_user($username, $values['send_rx_user_first_name'], $values['send_rx_user_last_name'], $values['send_rx_user_email']);
-                send_rx_save_record_field($project_id, $event_id, $record, 'send_rx_user_id', $username, $repeat_instance);
             }
 
             return;
