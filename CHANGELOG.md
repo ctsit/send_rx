@@ -2,6 +2,16 @@
 All notable changes to the Send RX project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.7.0] - 2018-12-14
+### Added
+- Add/improve status messages (Tiago Bember Simeao)
+- Add event logging (Tiago Bember Simeao)
+
+### Changed
+- Improve DAG assigment validation. (Tiago Bember Simeao)
+- Make DAG ID field visible for admins in sites project. (Tiago Bember Simeao)
+
+
 ## [1.6.3] - 2018-11-15
 ### Changed
 - Revert "Preventing PDF links expiration on emails." (Philip Chase)
