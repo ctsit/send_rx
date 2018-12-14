@@ -32,8 +32,10 @@ class ExternalModule extends AbstractExternalModule {
 
         if ($config = send_rx_get_project_config($project_id, 'site')) {
             if ($Proj->metadata['send_rx_dag_id']['form_name'] == $instrument) {
-                // Hiding DAG ID field.
-                $this->includeJs('js/dag-id-field.js');
+                if (!SUPER_USER && !ACCOUNT_MANAGER) {
+                    // Hiding DAG ID field.
+                    $Proj->metadata['send_rx_dag_id']['misc'] .= ' @HIDDEN';
+                }
             }
             elseif ($Proj->metadata['send_rx_user_id']['form_name'] == $instrument) {
                 global $lang;
