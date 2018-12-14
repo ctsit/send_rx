@@ -411,10 +411,12 @@ class RxSender {
         $contents = send_rx_piping($contents, $data);
         $file_path = $this->generateTmpFilePath('pdf');
 
-        if (!send_rx_generate_pdf_file($contents, $file_path)) {
+        if (!send_rx_generate_pdf_file($contents, $file_path, $this->patientId, $this->patientEventId, $this->patientProjectId)) {
             return false;
         }
+
         if (!$file_id = send_rx_upload_file($file_path)) {
+            REDCap::logEvent('Rx file upload failed', '', '', $this->patientId, $this->patientEventId, $this->patientProjectId);
             return false;
         }
 
@@ -431,6 +433,7 @@ class RxSender {
         send_rx_save_record_field($this->patientProjectId, $this->patientEventId, $this->patientId, 'send_rx_pdf', $file_id);
         $this->patientData[$this->patientEventId]['send_rx_pdf'] = $file_id;
 
+        REDCap::logEvent('Rx file uploaded', 'File ID: ' . $file_id, '', $this->patientId, $this->patientEventId, $this->patientProjectId);
         return $file_id;
     }
 

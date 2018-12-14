@@ -2,6 +2,12 @@
 
 use UserProfile\UserProfile;
 
+global $isAjax;
+
+if (!$isAjax) {
+    exit;
+}
+
 $response = array('success' => false, 'msg' => 'An error occurred');
 
 if (empty($_GET['username'])) {
