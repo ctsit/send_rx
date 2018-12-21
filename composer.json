@@ -1,5 +1,5 @@
 {
     "require": {
-        "mpdf/mpdf": "v7.1.3"
+        "mpdf/mpdf": "^7.0.1"
     }
 }
