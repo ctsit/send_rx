@@ -5,6 +5,7 @@
  */
 
 include_once dirname(APP_PATH_DOCROOT) . '/vendor/autoload.php';
+
 use ExternalModules\ExternalModules;
 use UserProfile\UserProfile;
 
@@ -158,22 +159,29 @@ function send_rx_piping($subject, $data) {
  *   Markup (HTML + CSS) of PDF contents.
  * @param string $file_path
  *   The file path to save the file.
+ * @param int $record_id
+ *   Data entry record ID.
+ * @param int $project_id
+ *   Data entry project ID.
+ * @param int $event_id
+ *   Data entry event ID.
  *
  * @return bool
  *   TRUE if success, FALSE otherwise.
  */
-function send_rx_generate_pdf_file($contents, $file_path) {
+function send_rx_generate_pdf_file($contents, $file_path, $record_id, $event_id, $project_id) {
+    try {
+        $mpdf = new \Mpdf\Mpdf(['tempDir' => APP_PATH_TEMP]);
+        $mpdf->WriteHTML($contents);
+        $mpdf->Output($file_path, 'F');
+    }
+    catch (Exception $e) {
+        REDCap::logEvent('Rx file generation failed', $e->getMessage(), '', $record_id, $event_id, $project_id);
+        return false;
+    }
 
-  try {
-      $mpdf = new \Mpdf\Mpdf(['tempDir' => APP_PATH_TEMP]);
-      $mpdf->WriteHTML($contents);
-      $mpdf->Output($file_path, 'F');
-  }
-  catch (Exception $e) {
-      return false;
-  }
-
-  return true;
+    REDCap::logEvent('Rx file generated', $file_path, '', $record_id, $event_id, $project_id);
+    return true;
 }
 
 /**
@@ -591,10 +599,15 @@ function send_rx_event_is_complete($project_id, $record, $event_id, $exclude = a
  */
 function send_rx_add_dag($project_id, $group_name) {
     $project_id = intval($project_id);
-    $group_name = db_real_escape_string($group_name);
+    $group_name = db_escape($group_name);
+    $sql = 'INSERT INTO redcap_data_access_groups (project_id, group_name) VALUES (' . $project_id . ', "' . $group_name . '")';
 
-    db_query('INSERT INTO redcap_data_access_groups (project_id, group_name) VALUES (' . $project_id . ', "' . $group_name . '")');
-    return db_insert_id();
+    db_query($sql);
+    $group_id = db_insert_id();
+
+    _send_rx_log_dag_event('create', $sql, $group_id, $group_name, $project_id);
+
+    return $group_id;
 }
 
 /**
@@ -609,10 +622,38 @@ function send_rx_add_dag($project_id, $group_name) {
  */
 function send_rx_rename_dag($project_id, $group_name, $group_id) {
     $project_id = intval($project_id);
-    $group_name = db_real_escape_string($group_name);
     $group_id = intval($group_id);
+    $group_name = db_escape($group_name);
 
-    db_query('UPDATE redcap_data_access_groups SET group_name = "' . $group_name . '" WHERE project_id = ' . $project_id . ' AND group_id = ' . $group_id);
+    $sql = 'UPDATE redcap_data_access_groups SET group_name = "' . $group_name . '" WHERE project_id = ' . $project_id . ' AND group_id = ' . $group_id;
+    db_query($sql);
+
+    _send_rx_log_dag_event('rename', $sql, $group_id, $group_name, $project_id);
+}
+
+/**
+ * Gets DAG name.
+ *
+ * @param int $project_id
+ *   The project ID.
+ * @param int $group_id
+ *   The group ID.
+ *
+ * @return string|bool
+ *   The DAG name if exists, FALSE otherwise.
+ */
+function send_rx_get_dag_name($project_id, $group_id) {
+    if (intval($group_id) != $group_id) {
+        return false;
+    }
+
+    $q = db_query('SELECT group_name FROM redcap_data_access_groups WHERE project_id = ' . intval($project_id) . ' AND group_id = ' . $group_id);
+    if (!$q || !db_num_rows($q)) {
+        return false;
+    }
+
+    $dag = db_fetch_assoc($q);
+    return $dag['group_name'];
 }
 
 /**
@@ -647,6 +688,7 @@ function send_rx_create_user($username, $firstname, $lastname, $email, $send_not
                          1, null, null, '4_HOURS', '0', 0, $auth_meth == 'table' ? 0 : 1, 0);
 
     if (empty($sql)) {
+        REDCap::logEvent('User creation failed', 'User data could not be saved.');
         return false;
     }
 
@@ -657,7 +699,7 @@ function send_rx_create_user($username, $firstname, $lastname, $email, $send_not
         // Adding user to whitelist, if whitelist is enabled.
         $q = db_query('SELECT 1 FROM redcap_config WHERE field_name = "enable_user_whitelist" AND value = 1');
         if (db_num_rows($q)) {
-            $sql = 'INSERT INTO redcap_user_whitelist VALUES ("' . db_real_escape_string($username) . '")';
+            $sql = 'INSERT INTO redcap_user_whitelist VALUES ("' . db_escape($username) . '")';
             if (!db_query($sql)) {
                 return false;
             }
@@ -734,4 +776,60 @@ function send_rx_get_user_dags($project_id) {
 
     $row = $q->fetch_assoc();
     return json_decode($row['data_values'], true);
+}
+
+/**
+ * Builds markup for status messages.
+ *
+ * @param string $msg
+ *   The message to be displayed.
+ * @param bool $error
+ *   A boolean that determines whether the message is an error one.
+ *
+ * @return string
+ *   The status message markup.
+ */
+function send_rx_build_status_message($msg, $error = false) {
+    $class = 'darkgreen';
+    $icon = 'tick';
+
+    if ($error) {
+        $class = 'red';
+        $icon = 'exclamation';
+    }
+
+    return RCView::div(array(
+        'class' => $class,
+        'style' => 'margin: 8px 0 5px;',
+    ), RCView::img(array('src' => APP_PATH_IMAGES . $icon . '.png')) . ' ' . REDCap::escapeHtml($msg));
+}
+
+/**
+ * Aux function to log DAG event on both patient and site projects.
+ *
+ * @oaram $event
+ *   The event to be logged: "create" or "rename".
+ * @oaram $sql
+ *   The executed SQL code.
+ * @param int $group_id
+ *   The group ID.
+ * @param int $group_name
+ *   The group name.
+ * @param int $project_id
+ *   The project ID.
+ */
+function _send_rx_log_dag_event($event, $sql, $group_id, $group_name, $project_id) {
+    $label = ucfirst($event);
+    REDCap::logEvent($label . 'd external DAG', 'Name: ' . $group_name . '<br>External ID: ' . $group_id);
+
+    // Removing event ID context, since we are referencing other project.
+    $event_id = isset($_GET['event_id']) ? $_GET['event_id'] : false;
+    unset($_GET['event_id']);
+
+    Logging::logEvent($sql, 'redcap_data_access_groups', 'MANAGE', $group_id, 'group_id = '. $group_id, $label . ' data access group', '', '', $project_id);
+
+    if ($event_id !== false) {
+        // Restoring event ID context.
+        $_GET['event_id'] = $event_id;
+    }
 }
