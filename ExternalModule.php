@@ -698,6 +698,8 @@ class ExternalModule extends AbstractExternalModule {
                     // Setting up error message.
                     $_SESSION['send_rx_status_message'] = send_rx_build_status_message('There was an error while creating the user. Check logs for further details.', true);
                 }
+
+                send_rx_save_record_field($project_id, $event_id, $record, 'send_rx_user_id', $username, $repeat_instance);
             }
 
             return;
