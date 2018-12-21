@@ -2,6 +2,12 @@
 All notable changes to the Send RX project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.7.1] - 2018-12-21
+### Changed
+- Adding user account reference after creation. (Tiago Bember Simeao)
+- Move authors who no longer work at CTS-IT from config.json to Authors file (Philip Chase)
+
+
 ## [1.7.0] - 2018-12-14
 ### Added
 - Add/improve status messages (Tiago Bember Simeao)
