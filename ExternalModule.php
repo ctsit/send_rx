@@ -245,6 +245,7 @@ class ExternalModule extends AbstractExternalModule {
                 $error = !$sender->generatePDFFile();
             }
 
+            // log the appropriate message
             $msg = $error ? 'There was an error while creating the PDF prescription file. Check logs for further details.' : 'A new prescription PDF preview has been created.';
             $this->setJsSetting('statusMessage', send_rx_build_status_message($msg, $error));
         }
