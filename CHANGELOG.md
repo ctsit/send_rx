@@ -2,6 +2,11 @@
 All notable changes to the Send RX project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.7.2] - 2018-12-27
+### Changed
+- Set send_rx_pdf_is_updated = 1 on successful PDF generation (Philip Chase, tbembersimeao)
+
+
 ## [1.7.1] - 2018-12-21
 ### Changed
 - Adding user account reference after creation. (Tiago Bember Simeao)
