@@ -434,6 +434,10 @@ class RxSender {
         $this->patientData[$this->patientEventId]['send_rx_pdf'] = $file_id;
 
         REDCap::logEvent('Rx file uploaded', 'File ID: ' . $file_id, '', $this->patientId, $this->patientEventId, $this->patientProjectId);
+
+        // prevent regeneration of the PDF
+        send_rx_save_record_field($project_id, $event_id, $record, 'send_rx_pdf_is_updated', '1');
+
         return $file_id;
     }
 
