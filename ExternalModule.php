@@ -278,7 +278,7 @@ class ExternalModule extends AbstractExternalModule {
     /**
      * @inheritdoc.
      */
-    function hook_every_page_before_render($project_id) {
+    function hook_every_page_before_render($project_id = null) {
         if (empty($project_id)) {
             return;
         }
