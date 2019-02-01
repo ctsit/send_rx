@@ -2,6 +2,12 @@
 All notable changes to the Send RX project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+
+## [1.7.3] - 2019-02-01
+### Changed
+- Allow for the project_id to be null in hook_every_page_before_render as it is handled by the method. (Marly Cormar)
+
+
 ## [1.7.2] - 2018-12-27
 ### Changed
 - Set send_rx_pdf_is_updated = 1 on successful PDF generation (Philip Chase, tbembersimeao)
