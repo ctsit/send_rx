@@ -3,6 +3,11 @@ All notable changes to the Send RX project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## [1.7.4] - 2019-03-11
+### Changed
+- Lowercase the value in the prescriber_field before comparison with the REDCap current username (Philip Chase)
+
+
 ## [1.7.3] - 2019-02-01
 ### Changed
 - Allow for the project_id to be null in hook_every_page_before_render as it is handled by the method. (Marly Cormar)
