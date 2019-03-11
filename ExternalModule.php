@@ -255,7 +255,7 @@ class ExternalModule extends AbstractExternalModule {
         $data = REDCap::getData($project_id, 'array', $record, array($prescriber_field, $pdf_field), $event_id);
 
         $settings = array(
-            'currentUserIsPrescriber' => $data[$record][$event_id][$prescriber_field] == USERID,
+            'currentUserIsPrescriber' => strtolower($data[$record][$event_id][$prescriber_field]) == strtolower(USERID),
             'instrument' => $instrument,
             'table' => $table,
             'pdfIsSet' => !empty($data[$record][$event_id][$pdf_field]),
