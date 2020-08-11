@@ -7,7 +7,8 @@
 include_once dirname(APP_PATH_DOCROOT) . '/vendor/autoload.php';
 
 use ExternalModules\ExternalModules;
-use UserProfile\UserProfile;
+    use SendRx\ExternalModule\ExternalModule;
+    use UserProfile\UserProfile;
 
 /**
  * Gets Send RX config from project.
@@ -35,29 +36,30 @@ function send_rx_get_project_config($project_id, $project_type) {
     if (!in_array($project_type, array('patient', 'site'))) {
         return false;
     }
+    $externalModule = New ExternalModule();
 
-    $q = ExternalModules::getSettings('send_rx', $project_id);
-    if (!db_num_rows($q)) {
+    $projSettings = $externalModule->framework->getProjectSettings($project_id);
+
+    if (empty($projSettings)) {
         return false;
     }
 
     $config = array();
-    while ($result = db_fetch_assoc($q)) {
-        if ($result['type'] == 'json' || $result['type'] == 'json-array') {
-            $result['value'] = json_decode($result['value']);
+    foreach ( $projSettings as $result ) {
+        if ( $result['type'] == 'json' || $result['type'] == 'json-array' ) {
+            $result['value'] = json_decode( $result['value'] );
 
-            if (strpos($result['key'], 'send-rx-pdf-template-variable-') === false) {
-                $result['value'] = reset($result['value']);
+            if ( strpos( $result['key'], 'send-rx-pdf-template-variable-' ) === false ) {
+                $result['value'] = reset( $result['value'] );
             }
-        }
-        elseif ($result['type'] == 'file') {
-            $result['value'] = send_rx_get_edoc_file_contents($result['value']);
+        } elseif ( $result['type'] == 'file' ) {
+            $result['value'] = send_rx_get_edoc_file_contents( $result['value'] );
         }
 
-        $config[str_replace('-', '_', str_replace('send-rx-', '', $result['key']))] = $result['value'];
+        $config[str_replace( '-', '_', str_replace( 'send-rx-', '', $result['key'] ) )] = $result['value'];
     }
 
-    if ($config['type'] != $project_type || empty($config['target_project_id'])) {
+    if ( $config['type'] != $project_type || empty( $config['target_project_id'] ) ) {
         return false;
     }
 
