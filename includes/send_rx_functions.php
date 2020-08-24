@@ -6,8 +6,8 @@
 
 include_once dirname(APP_PATH_DOCROOT) . '/vendor/autoload.php';
 
+use SendRx\ExternalModule\ExternalModule;
 use ExternalModules\ExternalModules;
-    use SendRx\ExternalModule\ExternalModule;
     use UserProfile\UserProfile;
 
 /**
@@ -36,11 +36,17 @@ function send_rx_get_project_config($project_id, $project_type) {
     if (!in_array($project_type, array('patient', 'site'))) {
         return false;
     }
-    $externalModule = New ExternalModule();
+    // since $module isn't defined, getting a module to pull data out of
+    $externalModule = new ExternalModule();
+    $config = $externalModule->getConfig();
 
-    $projSettings = $externalModule->framework->getProjectSettings($project_id);
+    if ( $config['project-settings'] ) {
+        $projSettings = $config['project-settings'];
+    } else {
+        $projSettings = [];
+    }
+    if ( empty( $projSettings ) ) {
 
-    if (empty($projSettings)) {
         return false;
     }
 
