@@ -33,24 +33,29 @@ use ExternalModules\ExternalModules;
  *   Returns FALSE if the project is not configure properly.
  */
 function send_rx_get_project_config($project_id, $project_type) {
-    if (!in_array($project_type, array('patient', 'site'))) {
+
+    if ( !in_array( $project_type, array( 'patient', 'site' ) ) ) {
         return false;
     }
-    // since $module isn't defined, getting a module to pull data out of
+    // since $module isn't defined, getting a module to pull data out
     $externalModule = new ExternalModule();
-    $config = $externalModule->getConfig();
+    // going to the database to retrieve that project specific settings.
+    $sql = "SELECT * FROM `redcap_external_module_settings` where `project_id` = ?";
+    $moduleConfigResult = $externalModule->query( $sql, [ $project_id ] );
 
-    if ( $config['project-settings'] ) {
-        $projSettings = $config['project-settings'];
-    } else {
-        $projSettings = [];
+    $projSettings = [];
+    // pulling a row of the module settings.
+    while ( $moduleConfigRow = $moduleConfigResult->fetch_assoc() ) {
+        $projSettings[] = $moduleConfigRow;
     }
+
     if ( empty( $projSettings ) ) {
 
         return false;
     }
 
     $config = array();
+    // assemble the config and decoding json as applicable
     foreach ( $projSettings as $result ) {
         if ( $result['type'] == 'json' || $result['type'] == 'json-array' ) {
             $result['value'] = json_decode( $result['value'] );
@@ -61,7 +66,6 @@ function send_rx_get_project_config($project_id, $project_type) {
         } elseif ( $result['type'] == 'file' ) {
             $result['value'] = send_rx_get_edoc_file_contents( $result['value'] );
         }
-
         $config[str_replace( '-', '_', str_replace( 'send-rx-', '', $result['key'] ) )] = $result['value'];
     }
 
@@ -69,10 +73,12 @@ function send_rx_get_project_config($project_id, $project_type) {
         return false;
     }
 
+    // assembling the pdf Template array with the keys and values as applicable.
     if (!empty($config['pdf_template_variable_key'])) {
         $config['pdf_template_variables'] = array_combine($config['pdf_template_variable_key'], $config['pdf_template_variable_value']);
     }
 
+    // removing the keys that aren't required.
     $to_remove = array(
         'enabled',
         'pdf_template_variable',
