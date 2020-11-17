@@ -718,7 +718,9 @@ function send_rx_create_user($username, $firstname, $lastname, $email, $send_not
 
             $msg = new Message();
             $msg->setTo($email);
-            $msg->setToName($firstname . ' ' . $lastname);
+            if (method_exists($msg, 'setToName')) {
+                $msg->setToName($firstname . ' ' . $lastname);
+            }
             $msg->setFrom($project_contact_email);
 
             // Set up the email subject.
