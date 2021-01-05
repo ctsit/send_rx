@@ -3,6 +3,12 @@ All notable changes to the Send RX project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## [1.7.5] - 2021-01-05
+### Changed
+- Add pres_aspirin_dd to WarriorPDFTemplate.html (Philip Chase)
+- Remove repatha and aspirin from the RX template (Philip Chase)
+
+
 ## [1.7.4] - 2019-03-11
 ### Changed
 - Lowercase the value in the prescriber_field before comparison with the REDCap current username (Philip Chase)
