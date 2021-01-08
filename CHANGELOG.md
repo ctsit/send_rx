@@ -3,6 +3,11 @@ All notable changes to the Send RX project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## [1.7.6] - 2021-01-08
+### Changed
+- Fallback to Site default template if no overriding template is set (Kyle Chesney)
+
+
 ## [1.7.5] - 2021-01-05
 ### Changed
 - Add pres_aspirin_dd to WarriorPDFTemplate.html (Philip Chase)

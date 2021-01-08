@@ -297,6 +297,10 @@ class RxSender {
         if ($edoc_id = $data['send_rx_pdf_template']) {
             $data['send_rx_pdf_template'] = send_rx_get_edoc_file_contents($edoc_id);
         }
+        // Use the Site project's default PDF Template if there is no overriding PDF file
+        if ($edoc_id == '') {
+            $data['send_rx_pdf_template'] = send_rx_get_edoc_file_contents($this->siteConfig['pdf_template']);
+        }
 
         $this->siteData = $data;
     }
