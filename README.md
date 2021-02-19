@@ -39,7 +39,7 @@ Send Rx requires user authentication method to work, so if your REDCap does not 
 ### Step 2: Creating User Profiles project
 1. Access **+ New Project** page, then import `samples/UserProfiles.xml` file.
 2. If User Profile module is not enabled yet, you may do that by accessing **Control Center > External Modules**.
-3. Yet on **Control Center > External Modules**, configure the module as follows:
+3. Then on **Control Center > External Modules**, configure the module as follows:
   - Project: User Profiles (or any name you might have given to the project)
   - Username field: `send_rx_user_id`
 
@@ -47,7 +47,7 @@ Send Rx requires user authentication method to work, so if your REDCap does not 
 1. Make sure you are logged in as the admin user created on step 1 (not `site_admin`)
 2. Access **+ New Project** page, then import `samples/SendRxSites.xml` file.
 3. Go to **External Modules** section and enable Send Rx module for this project
-4. Yet on External Modules page, click on Send Rx **Configure** button and set fields as follows:
+4. Then on External Modules page, click on Send Rx **Configure** button and set fields as follows:
   - Type: Site
   - Target Project: (Leave it blank for now, you are going to set it on step 4.7)
   - PDF Template Name: (upload `SamplePDFTemplate.html`) file
@@ -62,7 +62,7 @@ Send Rx requires user authentication method to work, so if your REDCap does not 
 2. Access **+ New Project** page, then import `samples/SendRxPatients.xml` file.
 3. Go to **External Modules** section and enable Send Rx module for this project
 4. Enable DAG Switcher for this project
-5. Yet on External Modules page, click on Configure Button and set fields as follows:
+5. Then on External Modules page, click on Configure Button and set fields as follows:
   - Type: Patient
   - Target Project: the Sites project defined on section 3
 6. Go to **User Rights** section and create two roles: `prescriber` and `study_coordinator`
@@ -78,6 +78,7 @@ Send Rx requires user authentication method to work, so if your REDCap does not 
 5. Repeat the step above a few times - making sure to add at least one prescriber and one study coordinator - then click on **Save & Exit**
 6. Go to **Record Status Dashboard** where you should be able to see two buttons: **Rebuild staff permissions** and **Revoke staff permissions** (if both buttons are disabled, make sure all forms previously filled are set as *Complete*, i.e. they appear as green bullets)
 7. Click on **Rebuild staff permissions** to grant permissions to your staff
+8. You may need to navigate to the **Patients** project and assign your coordinator and prescriber user(s) to the proper DAG
 
 ### Step 2: Create a Prescription and Send it
 1. Log in as study coordinator
