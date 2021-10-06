@@ -79,9 +79,10 @@ Send Rx requires user authentication method to work, so if your REDCap does not 
 6. Go to **Record Status Dashboard** where you should be able to see two buttons: **Rebuild staff permissions** and **Revoke staff permissions** (if both buttons are disabled, make sure all forms previously filled are set as *Complete*, i.e. they appear as green bullets)
 7. Click on **Rebuild staff permissions** to grant permissions to your staff
 8. You may need to navigate to the **Patients** project and assign your coordinator and prescriber user(s) to the proper DAG
+9. Make sure that the "Data Access Group (DAG) ID" of the Site project's "Site Information" form contains the Group ID number of the prescriber user in the Patients Project's DAG page.
 
 ### Step 2: Create a Prescription and Send it
-1. Log in as study coordinator
+1. Log in as prescriber
 2. On patient project, go to **Add / Edit records** and then click on **Add new record**
 3. Fill out all forms until the last one - **Review & Send Rx** - then click on **Send and Stay**
 4. At **Messages History** block you should now see the notification contents you just sent
