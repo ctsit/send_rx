@@ -82,7 +82,7 @@ Send Rx requires user authentication method to work, so if your REDCap does not 
 9. Make sure that the "Data Access Group (DAG) ID" of the Site project's "Site Information" form contains the Group ID number of the prescriber user in the Patients Project's DAG page.
 
 ### Step 2: Create a Prescription and Send it
-1. Log in as presciber
+1. Log in as prescriber
 2. On patient project, go to **Add / Edit records** and then click on **Add new record**
 3. Fill out all forms until the last one - **Review & Send Rx** - then click on **Send and Stay**
 4. At **Messages History** block you should now see the notification contents you just sent
