@@ -766,8 +766,9 @@ function send_rx_create_user($username, $firstname, $lastname, $email, $send_not
  * ]
  */
 function send_rx_get_user_dags($project_id) {
+    $log_event_table = method_exists('\REDCap', 'getLogEventTable') ? \REDCap::getLogEventTable($project_id) : "redcap_log_event";
     $sql = '
-        SELECT data_values FROM redcap_log_event
+        SELECT data_values FROM ' . $log_event_table . '
         WHERE project_id = "' . db_escape($project_id) . '" AND
               description = "DAG Switcher"
         ORDER BY log_event_id DESC LIMIT 1';
