@@ -10,23 +10,8 @@
     ],
     "authors": [
         {
-            "name": "Philip Chase",
-            "email": "pbc@ufl.edu",
-            "institution": "University of Florida - CTSI"
-        },
-        {
-            "name": "Taryn Stoffs",
-            "email": "tls@ufl.edu",
-            "institution": "University of Florida - CTSI"
-        },
-        {
-            "name": "Tiago Bember",
-            "email": "tbembersimeao@ufl.edu",
-            "institution": "University of Florida - CTSI"
-        },
-        {
-            "name": "Marly Cormar",
-            "email": "marlycormar@ufl.edu",
+            "name": "University of Florida CTS-IT",
+            "email": "CTSIT-REDCAP-MODULE-SUPPO@LISTS.UFL.EDU",
             "institution": "University of Florida - CTSI"
         }
     ],
