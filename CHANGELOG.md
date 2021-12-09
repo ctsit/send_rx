@@ -3,6 +3,17 @@ All notable changes to the Send RX project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## [1.7.7] - 2021-12-09
+### Added
+- Add vascepa to Warrior PDF Template (Philip Chase)
+- Update README to clarify needed DAG ID field (Kyle Chesney)
+- Fix issues preventing use with REDCap 10+, updates are backwards compatible (Kyle Chesney)
+
+### Changed
+- Reformat WarriorPDFTemplate.html (Philip Chase)
+- Replaced config.json authors with CTSIT-REDCAP-MODULE-SUPPO@LISTS.UFL.EDU (Kyle Chesney)
+
+
 ## [1.7.6] - 2021-01-08
 ### Changed
 - Fallback to Site default template if no overriding template is set (Kyle Chesney)
