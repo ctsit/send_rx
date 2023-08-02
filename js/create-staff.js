@@ -2,8 +2,8 @@
  * Branching logic according to user setup mode: existing or new.
  */
 sendRx.doStaffBranching = function(value) {
-    var $newUserFields = $('input[name^="send_rx_new_user_"][type="text"]').parent().parent();
-    var $existingUserFields = $('select[name="send_rx_user_id"]').parent().parent().parent();
+    var $newUserFields = $('input[name^="send_rx_new_user_"][type="text"]').parent().parent().parent();
+    var $existingUserFields = $('select[name="send_rx_user_id"]').parent().parent().parent().parent();
 
     if (value == 'new') {
         $newUserFields.show();

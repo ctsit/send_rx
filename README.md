@@ -6,7 +6,7 @@ Send Rx is a REDCap module that allows users to automatically generate prescript
 - REDCap >= 8.0.3
 - [Composer](https://getcomposer.org/)
 - [REDCap User Profile](https://github.com/ctsit/redcap_user_profile)
-- [DAG Switcher](https://github.com/lsgs/redcap-dag-switcher)
+- [DAG Switcher](https://github.com/lsgs/redcap-dag-switcher) (Note: this module has long since been rolled into REDCap Core. It is probably neither required nor available.)
 
 ## Manual Installation
 - Clone this repo into to an `<redcap-root>/modules/send_rx_v<version_number>`.
@@ -46,6 +46,7 @@ Send Rx requires user authentication method to work, so if your REDCap does not 
 ### Step 3: Creating Sites Project
 1. Make sure you are logged in as the admin user created on step 1 (not `site_admin`)
 2. Access **+ New Project** page, then import `samples/SendRxSites.xml` file.
+3. Go to **External Modules** section and enable User Profile module for this project. No configuration at the project level is necessary.
 3. Go to **External Modules** section and enable Send Rx module for this project
 4. Then on External Modules page, click on Send Rx **Configure** button and set fields as follows:
   - Type: Site
@@ -60,12 +61,13 @@ Send Rx requires user authentication method to work, so if your REDCap does not 
 ### Step 4: Creating Patients Project
 1. Make sure you are logged in as the admin user created on step 1 (not `site_admin`)
 2. Access **+ New Project** page, then import `samples/SendRxPatients.xml` file.
-3. Go to **External Modules** section and enable Send Rx module for this project
-4. Enable DAG Switcher for this project
+3. Create a data access group named "ESU". Note its DAG ID.
+4. Go to **External Modules** section and enable Send Rx module for this project
 5. Then on External Modules page, click on Configure Button and set fields as follows:
   - Type: Patient
   - Target Project: the Sites project defined on section 3
 6. Go to **User Rights** section and create two roles: `prescriber` and `study_coordinator`
+6. Add a user to the study_coordinator role and assign them to the ESU DAG.
 7. Switch to Sites project, then access **External Modules** and click on Send Rx **Configure** button
 8. Set **Target Project** as the project you just imported.
 
@@ -73,7 +75,7 @@ Send Rx requires user authentication method to work, so if your REDCap does not 
 
 ### Step 1: Create a Site/Pharmacy
 1. On site project, go to **Add / Edit records** and then click on **Add new record**.
-2. On **Site Information** form, fill out site name, then select `Email` as delivery type, then set the email address you want to use in your test, and finally save - making sure sure your form is set as *Complete*.
+2. On **Site Information** form, set the site name to ESU, set the DAG ID to that one for ESU on the Patients project, set `Email` as delivery type, set the email address you want to use in your test, and finally save - making sure sure your form is set as *Complete*.
 4. On **Site Staff** step, select **Create a new user account from scratch**, fill out user information, make sure your form is set as *Complete*, then click on **Save & Go To Next Instance**
 5. Repeat the step above a few times - making sure to add at least one prescriber and one study coordinator - then click on **Save & Exit**
 6. Go to **Record Status Dashboard** where you should be able to see two buttons: **Rebuild staff permissions** and **Revoke staff permissions** (if both buttons are disabled, make sure all forms previously filled are set as *Complete*, i.e. they appear as green bullets)
