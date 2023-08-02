@@ -3,6 +3,12 @@ All notable changes to the Send RX project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## [1.7.8] - 2023-08-02
+### Changed
+- Update README.md (Philip Chase)
+- Update hiding operations of user fields in site project for RC13+ (Kyle Chesney)
+
+
 ## [1.7.7] - 2021-12-09
 ### Added
 - Add vascepa to Warrior PDF Template (Philip Chase)
