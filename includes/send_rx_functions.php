@@ -450,15 +450,16 @@ function send_rx_get_site_users($project_id, $site_id, $user_role = null) {
  * @return array
  *   Array of users info, keyed by username. Returns FALSE if failure.
  */
-function send_rx_get_group_members($project_id, $group_id, $user_role = null) {
+function send_rx_get_group_members($project_id, $group_id, $user_role = 'prescriber') {
     $users = array();
 
-    $sql = 'SELECT u.username FROM redcap_user_rights u';
+    $sql = 'select distinct username from (SELECT u.username FROM redcap_user_rights u';
     if ($user_role) {
-        $sql .= ' INNER JOIN redcap_user_roles r ON u.role_id = r.role_id AND r.role_name = "' . db_real_escape_string($user_role) . '"';
+        $sql .= ' INNER JOIN redcap_user_roles r ON u.role_id = r.role_id AND r.role_name = "' . db_real_escape_string($user_role) . '"' . ' LEFT JOIN redcap_data_access_groups_users dag ON (r.project_id = dag.project_id) and (u.username = dag.username)';
     }
 
-    $sql .= ' WHERE u.project_id = "' . intval($project_id) . '" AND u.group_id = "' . intval($group_id) . '"';
+    $sql .= ' WHERE u.project_id = "' . intval($project_id) . '" AND (dag.group_id = "' .
+    intval($group_id) . '" OR u.group_id = "' . intval($group_id) . '")) asdf';
 
     $q = db_query($sql);
     if (db_num_rows($q)) {
