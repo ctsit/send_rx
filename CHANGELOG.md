@@ -2,6 +2,10 @@
 All notable changes to the Send RX project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.7.9] - 2024-01-24
+### Changed
+- Also query DAG switcher data in send_rx_get_group_members (@pbchase)
+
 
 ## [1.7.8] - 2023-08-02
 ### Changed
