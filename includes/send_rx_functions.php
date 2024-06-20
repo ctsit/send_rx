@@ -81,6 +81,27 @@ function send_rx_get_project_config($project_id, $project_type) {
 }
 
 /**
+ * Get json payload for hl7 message
+ *
+ * @param int $project_id.
+ *   The project id.
+ *
+ * @return string
+ *   JSON formatted string that contains all of the data that must be sent
+ */
+ function getHL7JsonPayload($project_id) {
+   $q = ExternalModules::getSettings('send_rx', $project_id, ['send-rx-hl7-json']);
+   if (!db_num_rows($q)) {
+       return false;
+   }
+
+   $result = db_fetch_assoc($q);
+
+   return $result['value'];
+ }
+
+
+/**
  * Gets site ID from DAG.
  *
  * @param int $project_id.
@@ -150,6 +171,21 @@ function send_rx_piping($subject, $data) {
     }
 
     return $subject;
+}
+
+
+/**
+ * Generates a mirth client bound to the given endpoint.
+ *
+ * @param string $endpoint.
+ *   Base url of the REST API being connected to.
+ *
+ * @return REDCapMithClient obj
+ *   TRUE if success, FALSE otherwise.
+ */
+function send_rx_generate_mirth_client($endpoint_id) {
+  $client_module = ExternalModules::getModuleInstance('redcap_mirth_client', 'v1.0');
+  return $client_module->getClient($endpoint_id);
 }
 
 /**

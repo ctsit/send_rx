@@ -74,6 +74,16 @@
                     "type": "rich-text"
                 }
             ]
+        },
+        {
+          "key": "send-rx-hl7-settings",
+          "name": "HL7 settings",
+          "type": "descriptive"
+        },
+         {
+          "key": "send-rx-hl7-json",
+          "name": "HL7 json message",
+          "type": "textarea"
         }
     ],
     "enable-every-page-hooks-on-system-pages": true,

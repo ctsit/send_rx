@@ -391,7 +391,19 @@ class RxSender {
                     break;
 
                 case 'hl7':
-                    // TODO: handle HL7 messages.
+                    //send json of hl7 message to mirth-connect
+                    $payload = getHL7JsonPayload($this->siteProjectId);
+                    $client = send_rx_generate_mirth_client('mirth_connect');
+
+                    if(is_null($client)) {
+                        $this->log($type, false, 'mirth_connect', 'POST', $payload);
+                    } else {
+                        $response = $client->request('POST', '', $payload);
+
+                        //log hl7 message that was sent
+                        $success = !is_null($response) && $response->getStatusCode() == 200;
+                        $this->log($type, $success, 'mirth_connect', 'POST', $payload);
+                    }
                     break;
             }
         }

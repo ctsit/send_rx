@@ -1,10 +1,5 @@
-.send-rx [field="send-rx-pdf-template"],
-.send-rx [field="send-rx-pdf-template-variable"],
-.send-rx [field="send-rx-pdf-template-variable-key"],
-.send-rx [field="send-rx-pdf-template-variable-value"],
-.send-rx [field="send-rx-message"],
-.send-rx [field="send-rx-message-subject"],
-.send-rx [field="send-rx-message-body"],
-.send-rx [field="send-rx-hl7-schema"] {
+.send-rx [field^="send-rx-pdf-template"],
+.send-rx [field^="send-rx-message"],
+.send-rx [field^="send-rx-hl7"] {
     display: none;
 }
